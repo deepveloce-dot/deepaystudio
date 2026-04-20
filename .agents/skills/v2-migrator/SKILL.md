@@ -30,7 +30,6 @@ Before writing a migrator, confirm which data needs migration:
 
 | Redux Slice | Legacy Key | v2 Target | Rationale |
 |---|---|---|---|
-| `memory` | `memory.embedderModel` | `preference: feature.memory.embedder_model_id` | Full `Model` object → extract and store only model ID |
 | `nutstore` | `nutstore.autoSyncEnabled` | `preference: data.nutstore.auto_sync_enabled` | Toggle setting |
 | `knowledge` | `knowledge.defaultEmbedModel` | `preference: feature.knowledge.default_embed_model_id` | Full `Model` object → extract and store only model ID |
 | `selectionStore` | `selectionStore.quickAssistantId` | `preference: feature.quick_assistant.id` | User selection |
@@ -77,7 +76,7 @@ Renderer Process                          Main Process
                                           +---------------------------+
 ```
 
-**Multi-renderer note:** Cherry Studio has multiple renderer windows (main app, mini window, selection toolbar). Only the dedicated migration window triggers migration. Main process owns all migration logic; renderers receive progress via IPC.
+**Multi-renderer note:** Cherry Studio has multiple renderer windows (main app, quick assistant, selection toolbar). Only the dedicated migration window triggers migration. Main process owns all migration logic; renderers receive progress via IPC.
 
 ## Key Files
 
@@ -525,7 +524,7 @@ When analyzing a Redux slice for migration, check if the data follows the **Laye
 - Extract FK IDs from embedded full objects (e.g., `Model` → `modelId`)
 - Presets live in code (`packages/shared/data/presets/`), overrides live in preferences
 
-See `docs/en/references/data/best-practice-layered-preset-pattern.md` for full pattern documentation, and `packages/shared/data/presets/code-tools.ts` for a reference implementation.
+See `docs/references/data/best-practice-layered-preset-pattern.md` for full pattern documentation, and `packages/shared/data/presets/code-tools.ts` for a reference implementation.
 
 ## Cross-Domain References & Foreign Keys
 
@@ -734,5 +733,5 @@ try {
 
 ## Documentation References
 
-- `docs/en/references/data/v2-migration-guide.md` - Migration engine architecture
-- `docs/en/references/data/database-patterns.md` - SQLite schema conventions
+- `docs/references/data/v2-migration-guide.md` - Migration engine architecture
+- `docs/references/data/database-patterns.md` - SQLite schema conventions
