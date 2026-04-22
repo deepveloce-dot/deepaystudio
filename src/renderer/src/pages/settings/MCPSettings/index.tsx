@@ -1,38 +1,19 @@
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import Ai302ProviderLogo from '@renderer/assets/images/providers/302ai.webp'
-import BailianProviderLogo from '@renderer/assets/images/providers/bailian.png'
-import LanyunProviderLogo from '@renderer/assets/images/providers/lanyun.png'
-import MCPRouterProviderLogo from '@renderer/assets/images/providers/mcprouter.webp'
-import ModelScopeProviderLogo from '@renderer/assets/images/providers/modelscope.png'
-import TokenFluxProviderLogo from '@renderer/assets/images/providers/tokenflux.png'
+import { MenuItem, MenuList } from '@cherrystudio/ui'
 import DividerWithText from '@renderer/components/DividerWithText'
 import { McpLogo } from '@renderer/components/Icons'
-import ListItem from '@renderer/components/ListItem'
 import Scrollbar from '@renderer/components/Scrollbar'
-import { useTheme } from '@renderer/context/ThemeProvider'
-import { useMCPServers } from '@renderer/hooks/useMCPServers'
+import { Link, Outlet, useLocation, useNavigate } from '@tanstack/react-router'
 import { Button, Flex } from 'antd'
 import { FolderCog, Package, ShoppingBag } from 'lucide-react'
 import type { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { SettingContainer } from '..'
-import BuiltinMCPServerList from './BuiltinMCPServerList'
-import InstallNpxUv from './InstallNpxUv'
-import McpMarketList from './McpMarketList'
-import ProviderDetail from './McpProviderSettings'
-import McpServersList from './McpServersList'
-import McpSettings from './McpSettings'
-import NpxSearch from './NpxSearch'
-import { getProviderDisplayName, providers } from './providers/config'
+import { getMCPProviderLogo, getProviderDisplayName, providers } from './providers/config'
 
 const MCPSettings: FC = () => {
-  const { theme } = useTheme()
   const { t } = useTranslation()
-  const { mcpServers } = useMCPServers()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -68,54 +49,49 @@ const MCPSettings: FC = () => {
     return providers.some((p) => path === `/settings/mcp/${p.key}`)
   }
 
-  // Provider icons map
-  const providerIcons: Record<string, React.ReactNode> = {
-    modelscope: <ProviderIcon src={ModelScopeProviderLogo} alt="ModelScope" />,
-    tokenflux: <ProviderIcon src={TokenFluxProviderLogo} alt="TokenFlux" />,
-    lanyun: <ProviderIcon src={LanyunProviderLogo} alt="Lanyun" />,
-    '302ai': <ProviderIcon src={Ai302ProviderLogo} alt="302AI" />,
-    bailian: <ProviderIcon src={BailianProviderLogo} alt="Bailian" />,
-    mcprouter: <ProviderIcon src={MCPRouterProviderLogo} alt="MCPRouter" />
-  }
-
   return (
     <Container>
       <MainContainer>
-        <MenuList>
-          <ListItem
-            title={t('settings.mcp.servers', 'MCP Servers')}
-            active={activeView === 'servers'}
-            onClick={() => navigate('/settings/mcp/servers')}
-            icon={<McpLogo width={18} height={18} style={{ opacity: 0.8 }} />}
-            titleStyle={{ fontWeight: 500 }}
-          />
-          <DividerWithText text={t('settings.mcp.discover', 'Discover')} style={{ margin: '10px 0 8px 0' }} />
-          <ListItem
-            title={t('settings.mcp.builtinServers', 'Built-in Servers')}
-            active={activeView === 'builtin'}
-            onClick={() => navigate('/settings/mcp/builtin')}
-            icon={<Package size={18} />}
-            titleStyle={{ fontWeight: 500 }}
-          />
-          <ListItem
-            title={t('settings.mcp.marketplaces', 'Marketplaces')}
-            active={activeView === 'marketplaces'}
-            onClick={() => navigate('/settings/mcp/marketplaces')}
-            icon={<ShoppingBag size={18} />}
-            titleStyle={{ fontWeight: 500 }}
-          />
-          <DividerWithText text={t('settings.mcp.providers', 'Providers')} style={{ margin: '10px 0 8px 0' }} />
-          {providers.map((provider) => (
-            <ListItem
-              key={provider.key}
-              title={getProviderDisplayName(provider, t)}
-              active={activeView === provider.key}
-              onClick={() => navigate(`/settings/mcp/${provider.key}`)}
-              icon={providerIcons[provider.key] || <FolderCog size={16} />}
-              titleStyle={{ fontWeight: 500 }}
+        <McpMenuScroll>
+          <McpMenuList>
+            <MenuItem
+              label={t('settings.mcp.servers', 'MCP Servers')}
+              active={activeView === 'servers'}
+              onClick={() => navigate({ to: '/settings/mcp/servers' })}
+              icon={<McpLogo width={18} height={18} style={{ opacity: 0.8 }} />}
+              className="font-medium"
             />
-          ))}
-        </MenuList>
+            <DividerWithText text={t('settings.mcp.discover', 'Discover')} style={{ margin: '10px 0 8px 0' }} />
+            <MenuItem
+              label={t('settings.mcp.builtinServers', 'Built-in Servers')}
+              active={activeView === 'builtin'}
+              onClick={() => navigate({ to: '/settings/mcp/builtin' })}
+              icon={<Package size={18} />}
+              className="font-medium"
+            />
+            <MenuItem
+              label={t('settings.mcp.marketplaces', 'Marketplaces')}
+              active={activeView === 'marketplaces'}
+              onClick={() => navigate({ to: '/settings/mcp/marketplaces' })}
+              icon={<ShoppingBag size={18} />}
+              className="font-medium"
+            />
+            <DividerWithText text={t('settings.mcp.providers', 'Providers')} style={{ margin: '10px 0 8px 0' }} />
+            {providers.map((provider) => (
+              <MenuItem
+                key={provider.key}
+                label={getProviderDisplayName(provider, t)}
+                active={activeView === provider.key}
+                onClick={() => navigate({ to: `/settings/mcp/${provider.key}` })}
+                icon={(() => {
+                  const logo = getMCPProviderLogo(provider.key)
+                  return logo ? <logo.Avatar size={24} shape="circle" /> : <FolderCog size={16} />
+                })()}
+                className="font-medium"
+              />
+            ))}
+          </McpMenuList>
+        </McpMenuScroll>
         <RightContainer>
           {!isHomePage() && (
             <BackButtonContainer>
@@ -126,50 +102,7 @@ const MCPSettings: FC = () => {
               </Link>
             </BackButtonContainer>
           )}
-          <Routes>
-            <Route index element={<Navigate to="servers" replace />} />
-            <Route path="servers" element={<McpServersList />} />
-            <Route path="settings/:serverId" element={<McpSettings />} />
-            <Route
-              path="npx-search"
-              element={
-                <SettingContainer theme={theme}>
-                  <NpxSearch />
-                </SettingContainer>
-              }
-            />
-            <Route
-              path="mcp-install"
-              element={
-                <SettingContainer style={{ backgroundColor: 'inherit' }}>
-                  <InstallNpxUv />
-                </SettingContainer>
-              }
-            />
-            <Route
-              path="builtin"
-              element={
-                <ContentWrapper>
-                  <BuiltinMCPServerList />
-                </ContentWrapper>
-              }
-            />
-            <Route
-              path="marketplaces"
-              element={
-                <ContentWrapper>
-                  <McpMarketList />
-                </ContentWrapper>
-              }
-            />
-            {providers.map((provider) => (
-              <Route
-                key={provider.key}
-                path={provider.key}
-                element={<ProviderDetail provider={provider} existingServers={mcpServers} />}
-              />
-            ))}
-          </Routes>
+          <Outlet />
         </RightContainer>
       </MainContainer>
     </Container>
@@ -189,34 +122,24 @@ const MainContainer = styled.div`
   overflow: hidden;
 `
 
-const MenuList = styled(Scrollbar)`
+const McpMenuScroll = styled(Scrollbar)`
+  width: var(--settings-width);
+  height: calc(100vh - var(--navbar-height));
+  border-right: 0.5px solid var(--color-border);
+`
+
+const McpMenuList = styled(MenuList)`
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  width: var(--settings-width);
   padding: 12px;
   padding-bottom: 48px;
-  border-right: 0.5px solid var(--color-border);
-  height: calc(100vh - var(--navbar-height));
+  min-height: 100%;
+  box-sizing: border-box;
 `
 
 const RightContainer = styled.div`
   flex: 1;
   position: relative;
-`
-
-const ProviderIcon = styled.img`
-  width: 24px;
-  height: 24px;
-  object-fit: cover;
-  border-radius: 50%;
-  background-color: var(--color-background-soft);
-`
-
-const ContentWrapper = styled.div`
-  padding: 20px;
-  overflow-y: auto;
-  height: 100%;
 `
 
 const BackButtonContainer = styled.div`

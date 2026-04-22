@@ -9,15 +9,13 @@ import type {
   ListOptions
 } from '@types'
 import type { TextStreamPart } from 'ai'
-import { and, desc, eq, not } from 'drizzle-orm'
+import { and, desc, eq, isNotNull } from 'drizzle-orm'
 
 import { BaseService } from '../BaseService'
 import { sessionMessagesTable } from '../database/schema'
 import { agentMessageRepository } from '../database/sessionMessageRepository'
 import type { AgentStreamEvent } from '../interfaces/AgentStreamInterface'
 import ClaudeCodeService from './claudecode'
-
-const claudeCodeService = new ClaudeCodeService()
 
 const logger = loggerService.withContext('SessionMessageService')
 
@@ -113,14 +111,7 @@ class TextStreamAccumulator {
 }
 
 export class SessionMessageService extends BaseService {
-  private static instance: SessionMessageService | null = null
-
-  static getInstance(): SessionMessageService {
-    if (!SessionMessageService.instance) {
-      SessionMessageService.instance = new SessionMessageService()
-    }
-    return SessionMessageService.instance
-  }
+  private cc: ClaudeCodeService = new ClaudeCodeService()
 
   async sessionMessageExists(id: number): Promise<boolean> {
     const database = await this.getDatabase()
@@ -142,8 +133,8 @@ export class SessionMessageService extends BaseService {
     const baseQuery = database
       .select()
       .from(sessionMessagesTable)
-      .where(eq(sessionMessagesTable.session_id, sessionId))
-      .orderBy(sessionMessagesTable.created_at)
+      .where(eq(sessionMessagesTable.sessionId, sessionId))
+      .orderBy(sessionMessagesTable.createdAt)
 
     const result =
       options.limit !== undefined
@@ -161,7 +152,7 @@ export class SessionMessageService extends BaseService {
     const database = await this.getDatabase()
     const result = await database
       .delete(sessionMessagesTable)
-      .where(and(eq(sessionMessagesTable.id, messageId), eq(sessionMessagesTable.session_id, sessionId)))
+      .where(and(eq(sessionMessagesTable.id, messageId), eq(sessionMessagesTable.sessionId, sessionId)))
 
     return result.rowsAffected > 0
   }
@@ -184,7 +175,7 @@ export class SessionMessageService extends BaseService {
     const agentSessionId = await this.getLastAgentSessionId(session.id)
     logger.debug('Session Message stream message data:', { message: req, session_id: agentSessionId })
 
-    const claudeStream = await claudeCodeService.invoke(
+    const claudeStream = await this.cc.invoke(
       req.content,
       session,
       abortController,
@@ -433,14 +424,14 @@ export class SessionMessageService extends BaseService {
     try {
       const database = await this.getDatabase()
       const result = await database
-        .select({ agent_session_id: sessionMessagesTable.agent_session_id })
+        .select({ agentSessionId: sessionMessagesTable.agentSessionId })
         .from(sessionMessagesTable)
-        .where(and(eq(sessionMessagesTable.session_id, sessionId), not(eq(sessionMessagesTable.agent_session_id, ''))))
-        .orderBy(desc(sessionMessagesTable.created_at))
+        .where(and(eq(sessionMessagesTable.sessionId, sessionId), isNotNull(sessionMessagesTable.agentSessionId)))
+        .orderBy(desc(sessionMessagesTable.createdAt))
         .limit(1)
 
-      logger.silly('Last agent session ID result:', { agentSessionId: result[0]?.agent_session_id, sessionId })
-      return result[0]?.agent_session_id || ''
+      logger.silly('Last agent session ID result:', { agentSessionId: result[0]?.agentSessionId, sessionId })
+      return result[0]?.agentSessionId || ''
     } catch (error) {
       logger.error('Failed to get last agent session ID', {
         sessionId,
@@ -477,4 +468,4 @@ export class SessionMessageService extends BaseService {
   }
 }
 
-export const sessionMessageService = SessionMessageService.getInstance()
+export const sessionMessageService = new SessionMessageService()

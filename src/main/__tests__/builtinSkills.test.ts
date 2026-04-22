@@ -28,7 +28,6 @@ vi.mock('electron', () => ({
 }))
 
 vi.mock('../utils', () => ({
-  getDataPath: vi.fn((subPath?: string) => (subPath ? path.join('/userData/Data', subPath) : '/userData/Data')),
   toAsarUnpackedPath: vi.fn((filePath: string) => filePath)
 }))
 
@@ -45,9 +44,7 @@ const { mockRepo, mockEnableForAllAgents } = vi.hoisted(() => ({
 }))
 
 vi.mock('../services/agents/skills/SkillRepository', () => ({
-  SkillRepository: {
-    getInstance: () => mockRepo
-  }
+  skillRepository: mockRepo
 }))
 
 vi.mock('../services/agents/skills/SkillService', () => ({
@@ -70,8 +67,9 @@ vi.mock('../utils/markdownParser', () => ({
   findAllSkillDirectories: vi.fn()
 }))
 
-const resourceSkillsPath = '/app/resources/skills'
-const globalSkillsPath = '/userData/Data/Skills'
+// Matches the stub in tests/main.setup.ts → mockApplicationFactory().getPath
+const resourceSkillsPath = '/mock/feature.agents.skills.builtin'
+const globalSkillsPath = '/mock/feature.agents.skills'
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -134,10 +132,10 @@ describe('installBuiltinSkills', () => {
     expect(mockRepo.getByFolderName).toHaveBeenCalledWith('my-skill')
     expect(mockRepo.insert).toHaveBeenCalledWith(
       expect.objectContaining({
-        folder_name: 'my-skill',
+        folderName: 'my-skill',
         source: 'builtin',
         // Legacy column — deliberately false in the new per-agent model.
-        is_enabled: false
+        isEnabled: false
       })
     )
     // First install of this builtin → fan out to every existing agent.
@@ -251,7 +249,7 @@ describe('installBuiltinSkills', () => {
     // But DB row should be created
     expect(mockRepo.insert).toHaveBeenCalledWith(
       expect.objectContaining({
-        folder_name: 'my-skill',
+        folderName: 'my-skill',
         source: 'builtin'
       })
     )
