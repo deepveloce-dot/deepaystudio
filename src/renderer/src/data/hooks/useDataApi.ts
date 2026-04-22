@@ -111,7 +111,9 @@ export type ParamsOption<TPath extends string, TMethod extends string> = TPath e
  * @property isLoading - True during initial load (no cached data)
  * @property isRefreshing - True during background revalidation (has cached data)
  * @property error - Error object if the request failed
- * @property refetch - Trigger a revalidation from the server
+ * @property refetch - Fire-and-forget revalidation trigger. The fresh value arrives
+ *   through the reactive `data` field on the next render; `refetch` itself returns
+ *   nothing. For imperative reads, call `mutate` (typed `KeyedMutator`) instead.
  * @property mutate - SWR mutator for advanced cache control (optimistic updates, manual cache manipulation)
  */
 export interface UseQueryResult<TPath extends ApiPath> {
@@ -279,7 +281,9 @@ export function useQuery<TPath extends ApiPath>(
     ...options?.swrOptions
   })
 
-  const refetch = useCallback(() => mutate(), [mutate])
+  const refetch = useCallback(() => {
+    void mutate()
+  }, [mutate])
 
   return {
     data,

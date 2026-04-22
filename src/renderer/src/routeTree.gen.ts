@@ -35,6 +35,7 @@ import { Route as SettingsAboutRouteImport } from './routes/settings/about'
 import { Route as AppTranslateRouteImport } from './routes/app/translate'
 import { Route as AppOpenclawRouteImport } from './routes/app/openclaw'
 import { Route as AppNotesRouteImport } from './routes/app/notes'
+import { Route as AppLibraryRouteImport } from './routes/app/library'
 import { Route as AppKnowledgeRouteImport } from './routes/app/knowledge'
 import { Route as AppFilesRouteImport } from './routes/app/files'
 import { Route as AppCodeRouteImport } from './routes/app/code'
@@ -188,6 +189,11 @@ const AppNotesRoute = AppNotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLibraryRoute = AppLibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppKnowledgeRoute = AppKnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
@@ -308,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/app/code': typeof AppCodeRoute
   '/app/files': typeof AppFilesRoute
   '/app/knowledge': typeof AppKnowledgeRoute
+  '/app/library': typeof AppLibraryRoute
   '/app/notes': typeof AppNotesRoute
   '/app/openclaw': typeof AppOpenclawRoute
   '/app/translate': typeof AppTranslateRoute
@@ -356,6 +363,7 @@ export interface FileRoutesByTo {
   '/app/code': typeof AppCodeRoute
   '/app/files': typeof AppFilesRoute
   '/app/knowledge': typeof AppKnowledgeRoute
+  '/app/library': typeof AppLibraryRoute
   '/app/notes': typeof AppNotesRoute
   '/app/openclaw': typeof AppOpenclawRoute
   '/app/translate': typeof AppTranslateRoute
@@ -404,6 +412,7 @@ export interface FileRoutesById {
   '/app/code': typeof AppCodeRoute
   '/app/files': typeof AppFilesRoute
   '/app/knowledge': typeof AppKnowledgeRoute
+  '/app/library': typeof AppLibraryRoute
   '/app/notes': typeof AppNotesRoute
   '/app/openclaw': typeof AppOpenclawRoute
   '/app/translate': typeof AppTranslateRoute
@@ -455,6 +464,7 @@ export interface FileRouteTypes {
     | '/app/code'
     | '/app/files'
     | '/app/knowledge'
+    | '/app/library'
     | '/app/notes'
     | '/app/openclaw'
     | '/app/translate'
@@ -503,6 +513,7 @@ export interface FileRouteTypes {
     | '/app/code'
     | '/app/files'
     | '/app/knowledge'
+    | '/app/library'
     | '/app/notes'
     | '/app/openclaw'
     | '/app/translate'
@@ -550,6 +561,7 @@ export interface FileRouteTypes {
     | '/app/code'
     | '/app/files'
     | '/app/knowledge'
+    | '/app/library'
     | '/app/notes'
     | '/app/openclaw'
     | '/app/translate'
@@ -780,6 +792,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/library': {
+      id: '/app/library'
+      path: '/library'
+      fullPath: '/app/library'
+      preLoaderRoute: typeof AppLibraryRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/knowledge': {
       id: '/app/knowledge'
       path: '/knowledge'
@@ -937,6 +956,7 @@ interface AppRouteChildren {
   AppCodeRoute: typeof AppCodeRoute
   AppFilesRoute: typeof AppFilesRoute
   AppKnowledgeRoute: typeof AppKnowledgeRoute
+  AppLibraryRoute: typeof AppLibraryRoute
   AppNotesRoute: typeof AppNotesRoute
   AppOpenclawRoute: typeof AppOpenclawRoute
   AppTranslateRoute: typeof AppTranslateRoute
@@ -953,6 +973,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCodeRoute: AppCodeRoute,
   AppFilesRoute: AppFilesRoute,
   AppKnowledgeRoute: AppKnowledgeRoute,
+  AppLibraryRoute: AppLibraryRoute,
   AppNotesRoute: AppNotesRoute,
   AppOpenclawRoute: AppOpenclawRoute,
   AppTranslateRoute: AppTranslateRoute,
