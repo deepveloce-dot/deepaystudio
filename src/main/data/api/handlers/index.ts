@@ -16,11 +16,13 @@ import type { ApiImplementation } from '@shared/data/api/apiTypes'
 
 import { assistantHandlers } from './assistants'
 import { fileProcessingHandlers } from './fileProcessing'
+import { groupHandlers } from './groups'
 import { knowledgeHandlers } from './knowledges'
 import { mcpServerHandlers } from './mcpServers'
 import { messageHandlers } from './messages'
 import { miniappHandlers } from './miniapps'
 import { modelHandlers } from './models'
+import { pinHandlers } from './pins'
 import { promptHandlers } from './prompts'
 import { providerHandlers } from './providers'
 import { tagHandlers } from './tags'
@@ -48,5 +50,7 @@ export const apiHandlers: ApiImplementation = {
   ...translateHandlers,
   ...mcpServerHandlers,
   ...miniappHandlers,
-  ...tagHandlers
+  ...tagHandlers,
+  ...groupHandlers,
+  ...pinHandlers
 }
