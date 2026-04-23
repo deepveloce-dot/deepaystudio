@@ -9,6 +9,11 @@ import { ApiServerService } from '@main/services/ApiServerService'
 import { AppMenuService } from '@main/services/AppMenuService'
 import { AppUpdaterService } from '@main/services/AppUpdaterService'
 import { CodeCliService } from '@main/services/CodeCliService'
+import {
+  FileProcessingOrchestrationService,
+  MarkdownTaskService,
+  TesseractRuntimeService
+} from '@main/services/fileProcessing'
 import { KnowledgeOrchestrationService, KnowledgeRuntimeService } from '@main/services/knowledge'
 import { KnowledgeVectorStoreService } from '@main/services/knowledge/vectorstore/KnowledgeVectorStoreService'
 import { LanTransferService } from '@main/services/lanTransfer'
@@ -64,10 +69,13 @@ export const services = {
   DataApiService,
   SubWindowService,
   PreferenceService,
+  TesseractRuntimeService,
+  MarkdownTaskService,
   AnalyticsService,
   AppMenuService,
   CodeCliService,
   LanTransferService,
+  FileProcessingOrchestrationService,
   PowerMonitorService,
   SelectionService,
   ShortcutService,
