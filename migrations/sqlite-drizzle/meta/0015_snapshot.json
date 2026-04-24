@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f0501155-b75d-4eda-8cb9-8cd706718d28",
+  "id": "b57d78a6-4b7d-4682-9b6a-12d8283b842a",
   "prevId": "5ed1efb9-bd34-437e-8762-2adfdc9b6816",
   "tables": {
     "agent": {
@@ -2306,13 +2306,12 @@
           "autoincrement": false,
           "default": 1
         },
-        "sort_order": {
-          "name": "sort_order",
-          "type": "integer",
+        "order_key": {
+          "name": "order_key",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": 0
+          "autoincrement": false
         },
         "created_at": {
           "name": "created_at",
@@ -2337,9 +2336,9 @@
         }
       },
       "indexes": {
-        "prompt_sort_order_idx": {
-          "name": "prompt_sort_order_idx",
-          "columns": ["sort_order"],
+        "prompt_order_key_idx": {
+          "name": "prompt_order_key_idx",
+          "columns": ["order_key"],
           "isUnique": false
         },
         "prompt_updated_at_idx": {
@@ -2348,7 +2347,17 @@
           "isUnique": false
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "prompt_current_version_fk": {
+          "name": "prompt_current_version_fk",
+          "tableFrom": "prompt",
+          "tableTo": "prompt_version",
+          "columnsFrom": ["id", "current_version"],
+          "columnsTo": ["prompt_id", "version"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
