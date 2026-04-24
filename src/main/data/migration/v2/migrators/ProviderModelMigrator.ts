@@ -253,8 +253,7 @@ export class ProviderModelMigrator extends BaseMigrator {
     const assistantState = ctx.sources.reduxState.getCategory<AssistantState>('assistants')
     const assistants = [
       ...(Array.isArray(assistantState?.assistants) ? assistantState.assistants : []),
-      ...(Array.isArray(assistantState?.presets) ? assistantState.presets : []),
-      ...(assistantState?.defaultAssistant ? [assistantState.defaultAssistant] : [])
+      ...(Array.isArray(assistantState?.presets) ? assistantState.presets : [])
     ]
 
     for (const assistant of assistants) {
@@ -279,30 +278,45 @@ export class ProviderModelMigrator extends BaseMigrator {
       return
     }
 
+    let skippedBareModelIds = 0
+    const skippedBareModelSamples: string[] = []
     const topicReader = ctx.sources.dexieExport.createStreamReader('topics')
     await topicReader.readInBatches<OldTopic>(BATCH_SIZE, async (topics) => {
       for (const topic of topics) {
-        if (!Array.isArray(topic.messages)) {
+        if (!topic || !Array.isArray(topic.messages)) {
           continue
         }
         for (const message of topic.messages) {
-          this.registerMessageModelReference(message)
+          const wasBareModelIdSkipped = this.registerMessageModelReference(message)
+          if (!wasBareModelIdSkipped) {
+            continue
+          }
+
+          skippedBareModelIds += 1
+          if (skippedBareModelSamples.length < 5) {
+            skippedBareModelSamples.push(`${message.id}:${message.modelId}`)
+          }
         }
       }
     })
+
+    if (skippedBareModelIds > 0) {
+      logger.warn('Skipped legacy bare modelId references during migration', {
+        count: skippedBareModelIds,
+        samples: skippedBareModelSamples
+      })
+    }
   }
 
-  private registerMessageModelReference(message: OldMessage): void {
+  private registerMessageModelReference(message: OldMessage): boolean {
     this.registerModelReference(message.model, `message:${message.id}`)
+    let skippedBareModelId = false
 
     if (typeof message.modelId === 'string' && message.modelId) {
       if (isUniqueModelId(message.modelId)) {
         this.registerModelReference({ id: message.modelId }, `message:${message.id}.modelId`)
       } else if (!message.model) {
-        logger.warn('Skipped legacy bare modelId without provider info', {
-          messageId: message.id,
-          modelId: message.modelId
-        })
+        skippedBareModelId = true
       }
     }
 
@@ -311,6 +325,8 @@ export class ProviderModelMigrator extends BaseMigrator {
         this.registerModelReference(mention, `message:${message.id}.mentions[${index}]`)
       }
     }
+
+    return skippedBareModelId
   }
 
   private registerModelReference(model: Partial<LegacyModel> | null | undefined, source: string): void {

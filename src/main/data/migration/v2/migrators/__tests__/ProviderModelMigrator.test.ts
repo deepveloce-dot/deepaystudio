@@ -3,6 +3,21 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MigrationContext } from '../../core/MigrationContext'
 import { ProviderModelMigrator } from '../ProviderModelMigrator'
 
+const { loggerWarnMock } = vi.hoisted(() => ({
+  loggerWarnMock: vi.fn()
+}))
+
+vi.mock('@logger', () => ({
+  loggerService: {
+    withContext: vi.fn(() => ({
+      info: vi.fn(),
+      warn: loggerWarnMock,
+      error: vi.fn(),
+      debug: vi.fn()
+    }))
+  }
+}))
+
 vi.mock('@application', async () => {
   const { mockApplicationFactory } = await import('@test-mocks/main/application')
   return mockApplicationFactory()
@@ -68,6 +83,7 @@ describe('ProviderModelMigrator', () => {
 
   beforeEach(() => {
     migrator = new ProviderModelMigrator()
+    loggerWarnMock.mockClear()
   })
 
   describe('prepare', () => {
@@ -213,6 +229,36 @@ describe('ProviderModelMigrator', () => {
       expect(modelInsert.map((row) => row.id)).toContain(`${providerId}::[L]gemini-2.5-pro`)
     })
 
+    it('does not collect defaultAssistant models because defaultAssistant is not migrated', async () => {
+      const ctx = createMockContext({
+        llm: {
+          providers: [makeProvider('openai', [{ id: 'gpt-4o' }])]
+        },
+        assistants: {
+          assistants: [],
+          presets: [],
+          defaultAssistant: {
+            id: 'default-assistant',
+            name: 'Default Assistant',
+            model: {
+              id: 'gpt-5.1',
+              provider: 'openai',
+              name: 'GPT 5.1',
+              group: 'OpenAI'
+            }
+          }
+        }
+      })
+      await migrator.prepare(ctx)
+
+      const result = await migrator.execute(ctx)
+
+      expect(result.success).toBe(true)
+      const inserted = (ctx as unknown as { _insertValues: unknown[][] })._insertValues
+      const modelInsert = inserted[1] as Array<Record<string, unknown>>
+      expect(modelInsert.map((row) => row.id)).toEqual(['openai::gpt-4o'])
+    })
+
     it('adds chat message model references that are missing from provider.models', async () => {
       const ctx = createMockContext(
         {
@@ -309,6 +355,72 @@ describe('ProviderModelMigrator', () => {
       expect(modelInsert.map((row) => row.id)).toEqual(['openai::gpt-4o'])
     })
 
+    it('aggregates skipped bare chat message modelId warnings', async () => {
+      const ctx = createMockContext(
+        {
+          llm: {
+            providers: [makeProvider('openai', [{ id: 'gpt-4o' }])]
+          }
+        },
+        {
+          topics: [
+            {
+              id: 'topic-1',
+              messages: [
+                { id: 'message-1', role: 'assistant', modelId: 'gpt-5.1' },
+                { id: 'message-2', role: 'assistant', modelId: 'claude-3.7-sonnet' }
+              ]
+            }
+          ]
+        }
+      )
+
+      const prepareResult = await migrator.prepare(ctx)
+
+      expect(prepareResult.success).toBe(true)
+      expect(loggerWarnMock).toHaveBeenCalledWith('Skipped legacy bare modelId references during migration', {
+        count: 2,
+        samples: ['message-1:gpt-5.1', 'message-2:claude-3.7-sonnet']
+      })
+    })
+
+    it('still registers mentions when a message has only a bare modelId', async () => {
+      const ctx = createMockContext(
+        {
+          llm: {
+            providers: [makeProvider('openai', [{ id: 'gpt-4o' }])]
+          }
+        },
+        {
+          topics: [
+            {
+              id: 'topic-1',
+              messages: [
+                {
+                  id: 'message-1',
+                  role: 'assistant',
+                  modelId: 'gpt-5.1',
+                  mentions: [{ id: 'gpt-5.1', provider: 'openai', name: 'GPT 5.1', group: 'OpenAI' }]
+                }
+              ]
+            }
+          ]
+        }
+      )
+      await migrator.prepare(ctx)
+
+      const result = await migrator.execute(ctx)
+
+      expect(result.success).toBe(true)
+      const inserted = (ctx as unknown as { _insertValues: unknown[][] })._insertValues
+      const modelInsert = inserted[1] as Array<Record<string, unknown>>
+      expect(modelInsert.map((row) => row.id)).toEqual(['openai::gpt-4o', 'openai::gpt-5.1'])
+      expect(loggerWarnMock).toHaveBeenCalledWith('Skipped legacy bare modelId references during migration', {
+        count: 1,
+        samples: ['message-1:gpt-5.1']
+      })
+    })
+
     it('registers composite modelId fallback when message.model is incomplete', async () => {
       const ctx = createMockContext(
         {
@@ -342,7 +454,7 @@ describe('ProviderModelMigrator', () => {
       expect(modelInsert.map((row) => row.id)).toContain('openai::gpt-5.1')
     })
 
-    it('tolerates topics with non-array messages field', async () => {
+    it('tolerates null topics and topics with non-array messages field', async () => {
       const ctx = createMockContext(
         {
           llm: {
@@ -350,10 +462,7 @@ describe('ProviderModelMigrator', () => {
           }
         },
         {
-          topics: [
-            { id: 'topic-broken', messages: 'corrupted' },
-            { id: 'topic-ok', messages: undefined }
-          ]
+          topics: [null, { id: 'topic-broken', messages: 'corrupted' }, { id: 'topic-ok', messages: undefined }]
         }
       )
 
