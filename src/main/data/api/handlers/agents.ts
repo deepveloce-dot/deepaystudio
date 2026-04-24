@@ -9,20 +9,25 @@
  * Skills layer:  src/main/services/agents/skills/SkillService
  */
 
+import { agentChannelService } from '@data/services/AgentChannelService'
 import { agentService } from '@data/services/AgentService'
 import { agentSessionMessageService as sessionMessageService } from '@data/services/AgentSessionMessageService'
 import { agentSessionService as sessionService } from '@data/services/AgentSessionService'
 import { agentTaskService as taskService } from '@data/services/AgentTaskService'
+import { channelManager } from '@main/services/agents/services/channels'
 import { skillService } from '@main/services/agents/skills/SkillService'
 import { DataApiErrorFactory, toDataApiError } from '@shared/data/api'
 import type { HandlersFor } from '@shared/data/api/apiTypes'
 import {
   type AgentSchemas,
+  type ChannelListQuery,
   CreateAgentSchema,
+  CreateChannelSchema,
   CreateSessionSchema,
   CreateTaskSchema,
   type ListQuery,
   UpdateAgentSchema,
+  UpdateChannelSchema,
   UpdateSessionSchema,
   UpdateTaskSchema
 } from '@shared/data/api/schemas/agents'
@@ -180,6 +185,52 @@ export const agentHandlers: HandlersFor<AgentSchemas> = {
       const skill = await skillService.getById(params.skillId)
       if (!skill) throw DataApiErrorFactory.notFound('Skill', params.skillId)
       return skill
+    }
+  },
+
+  '/channels': {
+    GET: async ({ query }) => {
+      return await agentChannelService.listChannels(query as ChannelListQuery | undefined)
+    },
+
+    POST: async ({ body }) => {
+      const parsed = CreateChannelSchema.safeParse(body)
+      if (!parsed.success) throw toDataApiError(parsed.error)
+      const channel = await agentChannelService.createChannel(parsed.data)
+      await channelManager.syncChannel(channel.id)
+      return channel
+    }
+  },
+
+  '/channels/:channelId': {
+    GET: async ({ params }) => {
+      const channel = await agentChannelService.getChannel(params.channelId)
+      if (!channel) throw DataApiErrorFactory.notFound('Channel', params.channelId)
+      return channel
+    },
+
+    PATCH: async ({ params, body }) => {
+      const parsed = UpdateChannelSchema.safeParse(body)
+      if (!parsed.success) throw toDataApiError(parsed.error)
+      const channel = await agentChannelService.updateChannel(params.channelId, parsed.data)
+      if (!channel) throw DataApiErrorFactory.notFound('Channel', params.channelId)
+      await channelManager.syncChannel(params.channelId)
+      return channel
+    },
+
+    DELETE: async ({ params }) => {
+      const deleted = await agentChannelService.deleteChannel(params.channelId)
+      if (!deleted) throw DataApiErrorFactory.notFound('Channel', params.channelId)
+      await channelManager.disconnectChannel(params.channelId)
+      return undefined
+    }
+  },
+
+  '/agents/:agentId/tasks/:taskId/logs': {
+    GET: async ({ params, query }) => {
+      const { page, limit, offset } = paginationFromQuery(query)
+      const { logs, total } = await taskService.getTaskLogs(params.taskId, { limit, offset })
+      return { items: logs, total, page }
     }
   }
 }
