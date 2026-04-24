@@ -6,12 +6,17 @@ import { userModelTable } from '@data/db/schemas/userModel'
 import { userProviderTable } from '@data/db/schemas/userProvider'
 import { loggerService } from '@logger'
 import type { ExecuteResult, PrepareResult, ValidateResult } from '@shared/data/migration/v2/types'
-import type { Provider as LegacyProvider } from '@types'
+import { isUniqueModelId, parseUniqueModelId } from '@shared/data/types/model'
+import type { Model as LegacyModel, Provider as LegacyProvider } from '@types'
 import { sql } from 'drizzle-orm'
 
 import type { MigrationContext } from '../core/MigrationContext'
 import { BaseMigrator } from './BaseMigrator'
+import type { OldAssistant } from './mappings/AssistantMappings'
+import type { OldMessage, OldTopic } from './mappings/ChatMappings'
+import type { LegacyKnowledgeState } from './mappings/KnowledgeMappings'
 import { type OldLlmSettings, transformModel, transformProvider } from './mappings/ProviderModelMappings'
+import { legacyModelToUniqueId } from './transformers/ModelTransformers'
 
 const logger = loggerService.withContext('ProviderModelMigrator')
 
@@ -20,7 +25,19 @@ const BATCH_SIZE = 100
 interface LlmState {
   providers?: LegacyProvider[]
   settings?: OldLlmSettings
+  defaultModel?: Partial<LegacyModel>
+  topicNamingModel?: Partial<LegacyModel>
+  quickModel?: Partial<LegacyModel>
+  translateModel?: Partial<LegacyModel>
 }
+
+interface AssistantState {
+  assistants?: OldAssistant[]
+  presets?: OldAssistant[]
+  defaultAssistant?: OldAssistant
+}
+
+type CollectedModel = Partial<LegacyModel> & { id: string; provider: string }
 
 export class ProviderModelMigrator extends BaseMigrator {
   readonly id = 'provider_model'
@@ -31,11 +48,15 @@ export class ProviderModelMigrator extends BaseMigrator {
   private providers: LegacyProvider[] = []
   private settings: OldLlmSettings = {}
   private totalModelCount = 0
+  private modelsByProvider = new Map<string, Map<string, CollectedModel>>()
+  private providerIds: ReadonlySet<string> = new Set()
 
   override reset(): void {
     this.providers = []
     this.settings = {}
     this.totalModelCount = 0
+    this.modelsByProvider = new Map()
+    this.providerIds = new Set()
   }
 
   async prepare(ctx: MigrationContext): Promise<PrepareResult> {
@@ -68,10 +89,22 @@ export class ProviderModelMigrator extends BaseMigrator {
 
       this.providers = dedupedProviders
       this.settings = llmState.settings ?? {}
-      this.totalModelCount = this.providers.reduce((count, provider) => {
-        const uniqueModelIds = new Set((provider.models ?? []).map((model) => model.id))
-        return count + uniqueModelIds.size
-      }, 0)
+      this.providerIds = new Set(this.providers.map((provider) => provider.id))
+
+      for (const provider of this.providers) {
+        for (const model of provider.models ?? []) {
+          this.registerModelReference({ ...model, provider: provider.id }, `provider:${provider.id}`)
+        }
+      }
+      this.collectLlmModelReferences(llmState)
+      this.collectAssistantModelReferences(ctx)
+      this.collectKnowledgeModelReferences(ctx)
+      await this.collectChatModelReferences(ctx)
+
+      this.totalModelCount = Array.from(this.modelsByProvider.values()).reduce(
+        (count, models) => count + models.size,
+        0
+      )
 
       if (skippedProviders > 0) {
         warnings.push(`Skipped ${skippedProviders} duplicate provider(s)`)
@@ -113,12 +146,12 @@ export class ProviderModelMigrator extends BaseMigrator {
           await tx.insert(userProviderTable).values(transformProvider(provider, this.settings, providerIndex))
           processedProviders++
 
-          const uniqueModels = Array.from(new Map((provider.models ?? []).map((model) => [model.id, model])).values())
+          const uniqueModels = Array.from(this.modelsByProvider.get(provider.id)?.values() ?? [])
 
           for (let modelIndex = 0; modelIndex < uniqueModels.length; modelIndex += BATCH_SIZE) {
             const batch = uniqueModels
               .slice(modelIndex, modelIndex + BATCH_SIZE)
-              .map((model, batchIndex) => transformModel(model, provider.id, modelIndex + batchIndex))
+              .map((model, batchIndex) => transformModel(model as LegacyModel, provider.id, modelIndex + batchIndex))
 
             if (batch.length > 0) {
               await tx.insert(userModelTable).values(batch)
@@ -207,5 +240,147 @@ export class ProviderModelMigrator extends BaseMigrator {
         }
       }
     }
+  }
+
+  private collectLlmModelReferences(llmState: LlmState): void {
+    this.registerModelReference(llmState.defaultModel, 'llm.defaultModel')
+    this.registerModelReference(llmState.topicNamingModel, 'llm.topicNamingModel')
+    this.registerModelReference(llmState.quickModel, 'llm.quickModel')
+    this.registerModelReference(llmState.translateModel, 'llm.translateModel')
+  }
+
+  private collectAssistantModelReferences(ctx: MigrationContext): void {
+    const assistantState = ctx.sources.reduxState.getCategory<AssistantState>('assistants')
+    const assistants = [
+      ...(Array.isArray(assistantState?.assistants) ? assistantState.assistants : []),
+      ...(Array.isArray(assistantState?.presets) ? assistantState.presets : [])
+    ]
+
+    for (const assistant of assistants) {
+      this.registerModelReference(assistant.model, `assistant:${assistant.id}`)
+      this.registerModelReference(assistant.defaultModel, `assistant:${assistant.id}.defaultModel`)
+      this.registerModelReference(assistant.settings?.defaultModel, `assistant:${assistant.id}.settings.defaultModel`)
+    }
+  }
+
+  private collectKnowledgeModelReferences(ctx: MigrationContext): void {
+    const knowledgeState = ctx.sources.reduxState.getCategory<LegacyKnowledgeState>('knowledge')
+    const bases = Array.isArray(knowledgeState?.bases) ? knowledgeState.bases : []
+
+    for (const base of bases) {
+      this.registerModelReference(base.model, `knowledge:${base.id ?? 'unknown'}.model`)
+      this.registerModelReference(base.rerankModel, `knowledge:${base.id ?? 'unknown'}.rerankModel`)
+    }
+  }
+
+  private async collectChatModelReferences(ctx: MigrationContext): Promise<void> {
+    if (!(await ctx.sources.dexieExport.tableExists('topics'))) {
+      return
+    }
+
+    let skippedBareModelIds = 0
+    const skippedBareModelSamples: string[] = []
+    const topicReader = ctx.sources.dexieExport.createStreamReader('topics')
+    await topicReader.readInBatches<OldTopic>(BATCH_SIZE, async (topics) => {
+      for (const topic of topics) {
+        if (!topic || !Array.isArray(topic.messages)) {
+          continue
+        }
+        for (const message of topic.messages) {
+          const wasBareModelIdSkipped = this.registerMessageModelReference(message)
+          if (!wasBareModelIdSkipped) {
+            continue
+          }
+
+          skippedBareModelIds += 1
+          if (skippedBareModelSamples.length < 5) {
+            skippedBareModelSamples.push(`${message.id}:${message.modelId}`)
+          }
+        }
+      }
+    })
+
+    if (skippedBareModelIds > 0) {
+      logger.warn('Skipped legacy bare modelId references during migration', {
+        count: skippedBareModelIds,
+        samples: skippedBareModelSamples
+      })
+    }
+  }
+
+  private registerMessageModelReference(message: OldMessage): boolean {
+    this.registerModelReference(message.model, `message:${message.id}`)
+    let skippedBareModelId = false
+
+    if (typeof message.modelId === 'string' && message.modelId) {
+      if (isUniqueModelId(message.modelId)) {
+        this.registerModelReference({ id: message.modelId }, `message:${message.id}.modelId`)
+      } else if (!message.model) {
+        skippedBareModelId = true
+      }
+    }
+
+    if (Array.isArray(message.mentions)) {
+      for (const [index, mention] of message.mentions.entries()) {
+        this.registerModelReference(mention, `message:${message.id}.mentions[${index}]`)
+      }
+    }
+
+    return skippedBareModelId
+  }
+
+  private registerModelReference(model: Partial<LegacyModel> | null | undefined, source: string): void {
+    const normalized = this.normalizeModelReference(model)
+    if (!normalized) {
+      return
+    }
+
+    if (!this.providerIds.has(normalized.providerId)) {
+      logger.warn('Skipped model reference for unknown provider during migration', {
+        source,
+        providerId: normalized.providerId,
+        modelId: normalized.model.id
+      })
+      return
+    }
+
+    const models = this.getModelMap(normalized.providerId)
+    if (!models.has(normalized.model.id)) {
+      models.set(normalized.model.id, normalized.model)
+    }
+  }
+
+  private normalizeModelReference(
+    model: Partial<LegacyModel> | null | undefined
+  ): { providerId: string; model: CollectedModel } | null {
+    if (!model || typeof model !== 'object') {
+      return null
+    }
+
+    const uniqueId = legacyModelToUniqueId({ id: model.id, provider: model.provider }, model.id)
+    if (!uniqueId) {
+      return null
+    }
+
+    const { providerId, modelId } = parseUniqueModelId(uniqueId)
+    return {
+      providerId,
+      model: {
+        ...model,
+        id: modelId,
+        provider: providerId,
+        name: model.name?.trim() || modelId,
+        group: model.group?.trim() || undefined
+      }
+    }
+  }
+
+  private getModelMap(providerId: string): Map<string, CollectedModel> {
+    let models = this.modelsByProvider.get(providerId)
+    if (!models) {
+      models = new Map()
+      this.modelsByProvider.set(providerId, models)
+    }
+    return models
   }
 }
