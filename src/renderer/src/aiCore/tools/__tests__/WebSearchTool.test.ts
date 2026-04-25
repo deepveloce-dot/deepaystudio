@@ -3,18 +3,30 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { webSearchToolWithPreExtractedKeywords } from '../WebSearchTool'
 
+const getWebSearchProviderAsyncMock = vi.fn()
+const processWebsearchMock = vi.fn()
+const loggerWarnMock = vi.fn()
+
 vi.mock('@renderer/services/WebSearchService', () => ({
   webSearchService: {
-    getWebSearchProvider: vi.fn(),
-    processWebsearch: vi.fn()
+    getWebSearchProviderAsync: getWebSearchProviderAsyncMock,
+    processWebsearch: processWebsearchMock
+  }
+}))
+
+vi.mock('@logger', () => ({
+  loggerService: {
+    withContext: vi.fn(() => ({
+      warn: loggerWarnMock
+    }))
   }
 }))
 
 describe('webSearchToolWithPreExtractedKeywords', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(webSearchService.getWebSearchProvider).mockReturnValue({ id: 'tavily' } as any)
-    vi.mocked(webSearchService.processWebsearch).mockResolvedValue({
+    getWebSearchProviderAsyncMock.mockResolvedValue({ id: 'tavily' } as any)
+    processWebsearchMock.mockResolvedValue({
       query: 'first | second',
       results: [
         {
@@ -23,6 +35,27 @@ describe('webSearchToolWithPreExtractedKeywords', () => {
           url: 'https://example.com/path?utm_source=newsletter#details'
         }
       ]
+    })
+  })
+
+  it('returns an empty result when the configured provider is unavailable', async () => {
+    getWebSearchProviderAsyncMock.mockResolvedValue(undefined)
+
+    const searchTool = webSearchToolWithPreExtractedKeywords(
+      'tavily',
+      { question: ['latest cherry studio'] },
+      'request-1'
+    ) as any
+
+    await expect(searchTool.execute({ additionalContext: undefined })).resolves.toEqual({
+      query: '',
+      results: []
+    })
+
+    expect(processWebsearchMock).not.toHaveBeenCalled()
+    expect(loggerWarnMock).toHaveBeenCalledWith('Skip web search because provider is unavailable', {
+      webSearchProviderId: 'tavily',
+      requestId: 'request-1'
     })
   })
 
@@ -70,7 +103,7 @@ describe('webSearchToolWithPreExtractedKeywords', () => {
         }
       ]
     }
-    vi.mocked(webSearchService.processWebsearch).mockImplementation(
+    processWebsearchMock.mockImplementation(
       () => new Promise((resolve) => setTimeout(() => resolve(searchResponse), 0))
     )
 

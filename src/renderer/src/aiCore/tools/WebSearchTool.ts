@@ -1,3 +1,4 @@
+import { loggerService } from '@logger'
 import { webSearchService } from '@renderer/services/WebSearchService'
 import type { WebSearchProvider, WebSearchProviderResponse } from '@renderer/types'
 import type { ExtractResults } from '@renderer/utils/extract'
@@ -8,6 +9,7 @@ import * as z from 'zod'
 
 export const BUILTIN_WEB_SEARCH_TOOL_NAME = 'builtin_web_search'
 
+const logger = loggerService.withContext('WebSearchTool')
 const MAX_BUILTIN_WEB_SEARCH_QUERIES = 3
 
 function normalizeWebSearchQueries(questions: string[]): string[] {
@@ -43,7 +45,6 @@ export const webSearchToolWithPreExtractedKeywords = (
   },
   requestId: string
 ) => {
-  const webSearchProvider = webSearchService.getWebSearchProvider(webSearchProviderId)
   let cachedSearchResultsPromise: Promise<WebSearchProviderResponse> | undefined
 
   return tool({
@@ -86,6 +87,19 @@ You can use this tool as-is to search with the prepared queries, or provide addi
         return { query: '', results: [] }
       }
 
+      const webSearchProvider = await webSearchService.getWebSearchProviderAsync(webSearchProviderId)
+
+      if (!webSearchProvider) {
+        logger.warn('Skip web search because provider is unavailable', {
+          webSearchProviderId,
+          requestId
+        })
+        return {
+          query: '',
+          results: []
+        }
+      }
+
       // 构建 ExtractResults 结构用于 processWebsearch
       const extractResults: ExtractResults = {
         websearch: {
@@ -93,7 +107,7 @@ You can use this tool as-is to search with the prepared queries, or provide addi
           links: extractedKeywords.links
         }
       }
-      cachedSearchResultsPromise = webSearchService.processWebsearch(webSearchProvider!, extractResults, requestId)
+      cachedSearchResultsPromise = webSearchService.processWebsearch(webSearchProvider, extractResults, requestId)
       try {
         return await cachedSearchResultsPromise
       } catch (error) {

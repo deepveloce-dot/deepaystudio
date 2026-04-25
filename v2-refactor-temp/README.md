@@ -11,6 +11,8 @@ v2-refactor-temp/
 ├── tools/                    # 重构工具
 │   └── data-classify/        # 数据分类与代码生成工具
 ├── docs/                     # 临时文档（如有需要）
+│   ├── breaking-changes.md   # V2 破坏性变更索引
+│   └── breaking-changes/     # 单个破坏性变更记录
 └── README.md                 # 本文件
 ```
 
@@ -23,6 +25,12 @@ v2-refactor-temp/
   - 管理数据分类映射
   - 生成 TypeScript 类型定义和迁移映射
   - 详见 [tools/data-classify/README.md](./tools/data-classify/README.md)
+
+### 文档 (docs/)
+
+- **breaking-changes.md** - V2 破坏性变更索引
+  - 任何移除能力、数据结构不兼容、迁移降级或用户可见行为变化，都需要新增独立文档，并同步追加到该索引
+  - 详见 [docs/breaking-changes.md](./docs/breaking-changes.md)
 
 ## 使用说明
 
