@@ -3622,6 +3622,9 @@
         "summary": "Please summarize the following content. Requirements: Reply in {{language}}; do not include any explanation of this prompt, just give the response directly: \n\n"
       },
       "translate": {
+        "error": {
+          "no_selected_text": "No text selected to translate"
+        },
         "smart_translate_tips": "Smart Translation: Content will be translated to the target language first; content already in the target language will be translated to the alternative language"
       },
       "window": {
@@ -5852,6 +5855,9 @@
     "error": {
       "chat_qwen_mt": "Qwen MT model cannot be used in chat. Please go to the translation page.",
       "detect": {
+        "empty": "Detected language is empty",
+        "failed": "Language detection failed",
+        "invalid": "Detected language is not supported",
         "qwen_mt": "QwenMT model cannot be used for language detection",
         "unknown": "Unknown language detected",
         "update_setting": "Setting failed"
@@ -5859,6 +5865,7 @@
       "empty": "The translation result is empty content",
       "failed": "Translation failed",
       "invalid_source": "Invalid source language",
+      "languages_load_failed": "Failed to load translate languages. Some features may be unavailable.",
       "not_configured": "Translation model is not configured",
       "not_supported": "Unsupported language {{language}}",
       "unknown": "An unknown error occurred during translation"
@@ -5882,11 +5889,20 @@
       "delete": "Delete translation history",
       "empty": "No translation history",
       "error": {
+        "add": "Failed to add translation history",
+        "clear": "Failed to clear translation history",
         "delete": "Deletion failed",
+        "load": "Failed to load translation history",
         "save": "Failed to save translation history"
       },
       "search": {
         "placeholder": "Search translation history"
+      },
+      "success": {
+        "add": "Saved to history",
+        "clear": "History cleared",
+        "delete": "Deleted",
+        "update": "Saved"
       },
       "title": "Translation History"
     },

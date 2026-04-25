@@ -3622,6 +3622,9 @@
         "summary": "请总结下面的内容。要求：使用 {{language}} 语言进行回复；请不要包含对本提示词的任何解释，直接给出回复： \n\n"
       },
       "translate": {
+        "error": {
+          "no_selected_text": "未选中要翻译的文本"
+        },
         "smart_translate_tips": "智能翻译：内容将优先翻译为目标语言；内容已是目标语言的，将翻译为备选语言"
       },
       "window": {
@@ -5852,6 +5855,9 @@
     "error": {
       "chat_qwen_mt": "Qwen MT 模型不可在对话中使用，请转至翻译页面",
       "detect": {
+        "empty": "检测到的语言为空",
+        "failed": "语言检测失败",
+        "invalid": "检测到的语言不受支持",
         "qwen_mt": "QwenMT模型不能用于语言检测",
         "unknown": "检测到未知语言",
         "update_setting": "设置失败"
@@ -5859,6 +5865,7 @@
       "empty": "翻译结果为空内容",
       "failed": "翻译失败",
       "invalid_source": "无效的源语言",
+      "languages_load_failed": "翻译模块初始化失败，部分功能可能不可用",
       "not_configured": "翻译模型未配置",
       "not_supported": "不支持的语言 {{language}}",
       "unknown": "翻译过程中遇到未知错误"
@@ -5882,11 +5889,20 @@
       "delete": "删除翻译历史",
       "empty": "暂无翻译历史",
       "error": {
+        "add": "添加翻译历史失败",
+        "clear": "清空翻译历史失败",
         "delete": "删除失败",
+        "load": "加载翻译历史失败",
         "save": "保存翻译历史失败"
       },
       "search": {
         "placeholder": "搜索翻译历史"
+      },
+      "success": {
+        "add": "已添加到历史",
+        "clear": "已清空",
+        "delete": "删除成功",
+        "update": "已保存"
       },
       "title": "翻译历史"
     },

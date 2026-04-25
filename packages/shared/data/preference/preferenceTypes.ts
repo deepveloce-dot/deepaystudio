@@ -1,4 +1,5 @@
 import type { BootConfigPreferenceKeys } from '@shared/data/bootConfig/bootConfigTypes'
+import * as z from 'zod'
 
 import type { PreferenceSchemas } from './preferenceSchemas'
 
@@ -118,11 +119,30 @@ export type MultiModelGridPopoverTrigger = 'hover' | 'click'
 
 export type AutoDetectionMethod = 'franc' | 'llm' | 'auto'
 
-// 为了支持自定义语言，设置为string别名
-/** zh-cn, en-us, etc. */
-export type TranslateLanguageCode = string
-export type TranslateSourceLanguage = TranslateLanguageCode | 'auto'
-export type TranslateBidirectionalPair = [TranslateLanguageCode, TranslateLanguageCode]
+/**
+ * Strict language code pattern — only real codes such as "en-us" / "zh-cn" / "ja".
+ *
+ * Prefer this in persistence paths (API DTOs, DB entities). {@link TranslateLangCodeSchema}
+ * below widens it with the `'unknown'` UI sentinel, which must not leak into the DB:
+ * there is no matching row in the `translate_language` table, and the history FK
+ * would silently break.
+ *
+ * Pattern: 2–3 lowercase letters, optionally followed by `-` and 2–4 lowercase letters.
+ */
+export const PersistedLangCodeSchema = z.string().regex(/^[a-z]{2,3}(-[a-z]{2,4})?$/)
+
+/**
+ * Permissive language code — {@link PersistedLangCodeSchema} plus the `'unknown'` UI sentinel.
+ *
+ * Use in UI state and detection paths where "unknown" is a meaningful value.
+ * For anything that gets written to the DB, use {@link PersistedLangCodeSchema} instead.
+ */
+export const TranslateLangCodeSchema = z.union([z.literal('unknown'), PersistedLangCodeSchema])
+export type TranslateLangCode = z.infer<typeof TranslateLangCodeSchema>
+export const isTranslateLangCode = (value: unknown): value is TranslateLangCode =>
+  TranslateLangCodeSchema.safeParse(value).success
+export type TranslateSourceLanguage = TranslateLangCode | 'auto'
+export type TranslateBidirectionalPair = [TranslateLangCode, TranslateLangCode]
 
 // ============================================================================
 // WebSearch Types

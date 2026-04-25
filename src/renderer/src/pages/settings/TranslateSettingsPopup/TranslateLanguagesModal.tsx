@@ -1,9 +1,10 @@
 import { Button, InfoTooltip } from '@cherrystudio/ui'
 import { loggerService } from '@logger'
 import EmojiPicker from '@renderer/components/EmojiPicker'
-import useTranslate from '@renderer/hooks/useTranslate'
-import { addCustomLanguage, updateCustomLanguage } from '@renderer/services/TranslateService'
-import type { CustomTranslateLanguage } from '@renderer/types'
+import { useAddLanguage, useUpdateLanguage } from '@renderer/hooks/translate'
+import { useLanguages } from '@renderer/hooks/translate/useLanguages'
+import type { TranslateLanguageVo } from '@renderer/types'
+import { PersistedLangCodeSchema } from '@shared/data/preference/preferenceTypes'
 import { Form, Input, Modal, Popover, Space } from 'antd'
 import type { FC } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -11,25 +12,25 @@ import { useTranslation } from 'react-i18next'
 
 type Props = {
   isOpen: boolean
-  editingCustomLanguage?: CustomTranslateLanguage
-  onAdd: (item: CustomTranslateLanguage) => void
-  onEdit: (item: CustomTranslateLanguage) => void
+  editingLanguage?: TranslateLanguageVo
   onCancel: () => void
 }
 
-const logger = loggerService.withContext('CustomLanguageModal')
+const logger = loggerService.withContext('TranslateLanguagesModal')
 
-const CustomLanguageModal = ({ isOpen, editingCustomLanguage, onAdd, onEdit, onCancel }: Props) => {
+const TranslateLanguagesModal = ({ isOpen, editingLanguage: editingCustomLanguage, onCancel }: Props) => {
   const { t } = useTranslation()
   const [form] = Form.useForm()
   // antd表单的getFieldValue方法在首次渲染时无法获取到值，但emoji需要获取表单值来显示，所以单独管理状态
   const defaultEmoji = '🏳️'
   const [emoji, setEmoji] = useState(defaultEmoji)
-  const { translateLanguages } = useTranslate()
+  const { languages } = useLanguages()
+  const addLanguage = useAddLanguage()
+  const updateLanguage = useUpdateLanguage(editingCustomLanguage?.langCode)
 
   const langCodeList = useMemo(() => {
-    return translateLanguages.map((item) => item.langCode)
-  }, [translateLanguages])
+    return languages?.map((item) => item.langCode) ?? []
+  }, [languages])
 
   useEffect(() => {
     if (editingCustomLanguage) {
@@ -56,29 +57,24 @@ const CustomLanguageModal = ({ isOpen, editingCustomLanguage, onAdd, onEdit, onC
   }
 
   const handleSubmit = useCallback(
-    async (values: any) => {
+    async (values: { emoji: string; value: string; langCode: string }) => {
       const { emoji, value, langCode } = values
-
-      if (editingCustomLanguage) {
-        try {
-          await updateCustomLanguage(editingCustomLanguage, value, emoji, langCode)
-          onEdit({ ...editingCustomLanguage, emoji, value, langCode })
-          window.toast.success(t('settings.translate.custom.success.update'))
-        } catch (e) {
-          window.toast.error(t('settings.translate.custom.error.update') + ': ' + (e as Error).message)
+      try {
+        if (editingCustomLanguage) {
+          await updateLanguage({ value, emoji })
+        } else {
+          await addLanguage({ value, emoji, langCode: langCode.toLowerCase() })
         }
-      } else {
-        try {
-          const added = await addCustomLanguage(value, emoji, langCode)
-          onAdd(added)
-          window.toast.success(t('settings.translate.custom.success.add'))
-        } catch (e) {
-          window.toast.error(t('settings.translate.custom.error.add') + ': ' + (e as Error).message)
-        }
+        onCancel() // Only close the modal on success — failures keep the form state so the user can retry.
+      } catch (e) {
+        // Hooks already log + show error toast for their own failures; this
+        // catch exists to keep the modal open on any submit rejection. Log at
+        // debug so non-hook errors (e.g. antd form validator / Zod rejection)
+        // remain traceable instead of silently swallowed.
+        logger.debug('handleSubmit blocked', { error: e as Error })
       }
-      onCancel()
     },
-    [editingCustomLanguage, onCancel, t, onEdit, onAdd]
+    [addLanguage, updateLanguage, editingCustomLanguage, onCancel]
   )
 
   const footer = useMemo(() => {
@@ -120,7 +116,7 @@ const CustomLanguageModal = ({ isOpen, editingCustomLanguage, onAdd, onEdit, onC
             }
             arrow
             trigger="click">
-            <Button style={{ aspectRatio: '1/1' }} size="icon">
+            <Button type="button" style={{ aspectRatio: '1/1' }} size="icon">
               <Emoji emoji={emoji} />
             </Button>
           </Popover>
@@ -144,26 +140,26 @@ const CustomLanguageModal = ({ isOpen, editingCustomLanguage, onAdd, onEdit, onC
           rules={[
             { required: true, message: t('settings.translate.custom.error.langCode.empty') },
             {
-              pattern: /^[a-zA-Z]{2,3}(-[a-zA-Z]{2,3})?$/,
-              message: t('settings.translate.custom.error.langCode.invalid')
-            },
-            {
               validator: async (_, value: string) => {
-                logger.silly('validate langCode', { value, langCodeList, editingCustomLanguage })
-                if (editingCustomLanguage) {
-                  if (langCodeList.includes(value) && value !== editingCustomLanguage.langCode) {
-                    throw new Error(t('settings.translate.custom.error.langCode.exists'))
-                  }
-                } else {
-                  const langCode = value.toLowerCase()
-                  if (langCodeList.includes(langCode)) {
-                    throw new Error(t('settings.translate.custom.error.langCode.exists'))
-                  }
+                if (!value) return
+                const normalized = value.toLowerCase()
+                logger.silly('validate langCode', { value, normalized, langCodeList, editingCustomLanguage })
+                if (!PersistedLangCodeSchema.safeParse(normalized).success) {
+                  throw new Error(t('settings.translate.custom.error.langCode.invalid'))
+                }
+                const clashes = editingCustomLanguage
+                  ? langCodeList.includes(normalized) && normalized !== editingCustomLanguage.langCode
+                  : langCodeList.includes(normalized)
+                if (clashes) {
+                  throw new Error(t('settings.translate.custom.error.langCode.exists'))
                 }
               }
             }
           ]}>
-          <Input placeholder={t('settings.translate.custom.langCode.placeholder')} />
+          <Input
+            disabled={editingCustomLanguage !== undefined}
+            placeholder={t('settings.translate.custom.langCode.placeholder')}
+          />
         </Form.Item>
       </Form>
     </Modal>
@@ -183,4 +179,4 @@ const Emoji: FC<{ emoji: string; size?: number }> = ({ emoji, size = 18 }) => {
   return <div style={{ lineHeight: 0, fontSize: size }}>{emoji}</div>
 }
 
-export default CustomLanguageModal
+export default TranslateLanguagesModal
