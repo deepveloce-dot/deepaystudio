@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-24T03:37:05.271Z",
+  "lastUpdated": "2026-04-25T23:40:37.308Z",
   "versions": {
     "2.0.0": {
       "metadata": {
@@ -39,26 +39,7 @@
         "segmentType": "latest"
       }
     },
-    "1.8.1": {
-      "minCompatibleVersion": "1.0.0",
-      "description": "Gateway version - all users below v1.8.1 must upgrade to v1.8.1 first",
-      "channels": {
-        "latest": {
-          "version": "1.8.1",
-          "feedUrls": {
-            "github": "https://github.com/CherryHQ/cherry-studio/releases/download/v1.8.1",
-            "gitcode": "https://gitcode.com/CherryHQ/cherry-studio/releases/download/v1.8.1"
-          }
-        },
-        "rc": null,
-        "beta": null
-      },
-      "metadata": {
-        "segmentId": "gateway-v1.8.1",
-        "segmentType": "legacy"
-      }
-    },
-    "1.8.0": {
+    "1.9.2": {
       "metadata": {
         "segmentId": "legacy-v1",
         "segmentType": "legacy"
@@ -67,9 +48,9 @@
       "description": "Last stable v1.7.x release - required intermediate version for users below v1.7",
       "channels": {
         "latest": {
-          "version": "1.8.0",
+          "version": "1.9.2",
           "feedUrls": {
-            "github": "https://github.com/CherryHQ/cherry-studio/releases/download/v1.8.0",
+            "github": "https://github.com/CherryHQ/cherry-studio/releases/download/v1.9.2",
             "gitcode": "https://releases.cherry-ai.com"
           }
         },
@@ -87,6 +68,25 @@
             "gitcode": "https://github.com/CherryHQ/cherry-studio/releases/download/v1.7.0-beta.3"
           }
         }
+      }
+    },
+    "1.8.1": {
+      "minCompatibleVersion": "1.0.0",
+      "description": "Gateway version - all users below v1.8.1 must upgrade to v1.8.1 first",
+      "channels": {
+        "latest": {
+          "version": "1.8.1",
+          "feedUrls": {
+            "github": "https://github.com/CherryHQ/cherry-studio/releases/download/v1.8.1",
+            "gitcode": "https://gitcode.com/CherryHQ/cherry-studio/releases/download/v1.8.1"
+          }
+        },
+        "rc": null,
+        "beta": null
+      },
+      "metadata": {
+        "segmentId": "gateway-v1.8.1",
+        "segmentType": "legacy"
       }
     }
   }
