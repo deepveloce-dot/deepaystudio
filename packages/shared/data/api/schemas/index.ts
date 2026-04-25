@@ -13,6 +13,7 @@
  * import type { ApiSchemas, DataRequest } from '@shared/data/api'
  *
  * // Domain DTOs directly from schema files
+ * import type { Prompt, CreatePromptDto } from '@shared/data/api/schemas/prompts'
  * import type { Topic, CreateTopicDto } from '@shared/data/api/schemas/topics'
  * import type { Message, CreateMessageDto } from '@shared/data/api/schemas/messages'
  * import type { TranslateHistory, CreateTranslateHistoryDto } from '@shared/data/api/schemas/translate'
@@ -30,6 +31,7 @@ import type { MessageSchemas } from './messages'
 import type { MiniappSchemas } from './miniapps'
 import type { ModelSchemas } from './models'
 import type { PinSchemas } from './pins'
+import type { PromptSchemas } from './prompts'
 import type { ProviderSchemas } from './providers'
 import type { TagSchemas } from './tags'
 import type { TemporaryChatSchemas } from './temporaryChats'
@@ -52,6 +54,7 @@ import type { TranslateSchemas } from './translate'
 export type ApiSchemas = AssertValidSchemas<
   TopicSchemas &
     MessageSchemas &
+    PromptSchemas &
     TemporaryChatSchemas &
     ModelSchemas &
     ProviderSchemas &
