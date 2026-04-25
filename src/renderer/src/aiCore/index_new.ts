@@ -19,7 +19,7 @@ import type { StreamTextParams } from '@renderer/types/aiCoreTypes'
 import { SUPPORTED_IMAGE_ENDPOINT_LIST } from '@renderer/utils'
 import type { IdleTimeoutHandle } from '@renderer/utils/IdleTimeoutController'
 import { buildClaudeCodeSystemModelMessage } from '@shared/anthropic'
-import { gateway, type LanguageModel, type Provider as AiSdkProvider } from 'ai'
+import { createGateway, type LanguageModel, type Provider as AiSdkProvider } from 'ai'
 
 import AiSdkToChunkAdapter from './chunk/AiSdkToChunkAdapter'
 import LegacyAiProvider from './legacy/index'
@@ -522,7 +522,8 @@ export default class ModernAiProvider {
   // 代理其他方法到原有实现
   public async models() {
     if (this.actualProvider.id === SystemProviderIds.gateway) {
-      const gatewayModels = (await gateway.getAvailableModels()).models
+      const gatewayWithKey = createGateway({ apiKey: this.actualProvider.apiKey })
+      const gatewayModels = (await gatewayWithKey.getAvailableModels()).models
       return normalizeGatewayModels(this.actualProvider, gatewayModels)
     }
     const sdkModels = await this.legacyProvider.models()
