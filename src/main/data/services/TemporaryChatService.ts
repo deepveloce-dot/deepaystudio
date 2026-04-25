@@ -21,8 +21,10 @@ import type { CreateMessageDto } from '@shared/data/api/schemas/messages'
 import type { CreateTopicDto } from '@shared/data/api/schemas/topics'
 import type { Message, MessageRole, MessageStatus } from '@shared/data/types/message'
 import type { Topic } from '@shared/data/types/topic'
-import { eq } from 'drizzle-orm'
+import { eq, isNull } from 'drizzle-orm'
 import { v4 as uuidv4, v7 as uuidv7 } from 'uuid'
+
+import { insertWithOrderKey } from './utils/orderKey'
 
 const logger = loggerService.withContext('DataApi:TemporaryChatService')
 
@@ -78,9 +80,9 @@ export class TemporaryChatService {
       assistantId: dto.assistantId ?? null,
       activeNodeId: null,
       groupId: dto.groupId ?? null,
-      sortOrder: 0,
-      isPinned: false,
-      pinnedOrder: 0,
+      // In-memory store has no real ordering — temp topics are scoped per
+      // session and never reordered or paginated like persistent ones.
+      orderKey: '',
       createdAt: now,
       updatedAt: now
     }
@@ -131,6 +133,23 @@ export class TemporaryChatService {
     return rowToMessage(row)
   }
 
+  /**
+   * Main-process internal API — test whether a topicId is currently managed
+   * by this service. Routing helpers (e.g. TemporaryChatContextProvider)
+   * call this so post-`persist()` ids (which now live in SQLite under the
+   * same UUID v4) correctly fall through to the persistent path. There is
+   * no longer a textual marker on the id; ownership is purely state-based.
+   */
+  hasTopic(topicId: string): boolean {
+    return this.topics.has(topicId)
+  }
+
+  /** Main-process internal API — read-only topic accessor (returns ISO-timestamp Topic). */
+  getTopic(topicId: string): Topic | null {
+    const row = this.topics.get(topicId)
+    return row ? rowToTopic(row) : null
+  }
+
   async listMessages(topicId: string): Promise<Message[]> {
     if (!this.topics.has(topicId)) {
       throw DataApiErrorFactory.notFound('TemporaryTopic', topicId)
@@ -158,19 +177,26 @@ export class TemporaryChatService {
         // Drizzle's $defaultFn; we do not pass createdAt / updatedAt manually
         // because the TS-side ISO strings don't match the DB's integer column.
         //
-        // The `?? undefined` pattern used below (and in the message inserts)
-        // intentionally converts `null` to `undefined` so Drizzle omits the
-        // column entirely, letting the column's DB default (NULL or
-        // $defaultFn) apply. Passing `null` directly would write a SQL NULL;
-        // here both end-states are the same for nullable columns, but using
-        // `undefined` keeps the behavior identical to `topicService.create`
-        // which simply does not mention those fields.
-        await tx.insert(topicTable).values({
-          id: topic.id,
-          name: topic.name ?? undefined,
-          assistantId: topic.assistantId ?? undefined,
-          groupId: topic.groupId ?? undefined
-        })
+        // `orderKey` is computed via `insertWithOrderKey` so the new persisted
+        // topic lands at the tail of its `groupId` partition, matching what
+        // `topicService.create` does for normal topics. The `?? undefined`
+        // pattern used for the other fields converts `null` to `undefined`
+        // so Drizzle omits the column entirely, letting the DB default apply.
+        const groupIdForScope = topic.groupId ?? null
+        await insertWithOrderKey(
+          tx,
+          topicTable,
+          {
+            id: topic.id,
+            name: topic.name ?? undefined,
+            assistantId: topic.assistantId ?? undefined,
+            groupId: topic.groupId ?? undefined
+          },
+          {
+            pkColumn: topicTable.id,
+            scope: groupIdForScope === null ? isNull(topicTable.groupId) : eq(topicTable.groupId, groupIdForScope)
+          }
+        )
 
         // 3. Linearize: parentId[i] = msgs[i-1].id. First message's parent is null.
         let prevId: string | null = null

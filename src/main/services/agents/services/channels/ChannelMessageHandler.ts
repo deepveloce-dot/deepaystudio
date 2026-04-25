@@ -6,7 +6,9 @@ import { agentChannelService as channelService } from '@data/services/AgentChann
 import { agentService } from '@data/services/AgentService'
 import { agentSessionService as sessionService } from '@data/services/AgentSessionService'
 import { loggerService } from '@logger'
-import { sessionMessageOrchestrator } from '@main/services/agents/services/SessionMessageOrchestrator'
+import { buildAgentSessionTopicId, parseAgentSessionModel } from '@main/ai/provider/claudeCodeSettingsBuilder'
+import { ChannelAdapterListener, type StreamListener } from '@main/ai/stream-manager'
+import { application } from '@main/core/application'
 import type { GetAgentSessionResponse, PermissionMode } from '@types'
 
 import { sanitizeChannelOutput, wrapExternalContent } from '../security'
@@ -18,8 +20,6 @@ import type {
   ImageAttachment
 } from './ChannelAdapter'
 import { SLASH_COMMANDS } from './constants'
-import { sessionStreamBus } from './SessionStreamBus'
-import { broadcastSessionChanged } from './sessionStreamIpc'
 import { splitMessage } from './utils'
 
 const logger = loggerService.withContext('ChannelMessageHandler')
@@ -252,36 +252,6 @@ export class ChannelMessageHandler {
         channelType: adapter.channelType
       })
 
-      // Build display text: append filenames so the user can see them in the UI
-      let displayText = message.text
-      if (message.files && message.files.length > 0) {
-        const names = message.files.map((f) => `📎 ${f.filename}`).join('\n')
-        displayText = displayText ? `${displayText}\n${names}` : names
-      }
-
-      // Snapshot subscriber state ONCE — this single check drives:
-      // 1. Whether user-message is published to the renderer
-      // 2. The persist flag (renderer persistence vs headless persistence)
-      // 3. Whether stream chunks / complete events are forwarded
-      // Checking once eliminates the race where subscribe() IPC completes
-      // between the user-message publish and the persist decision.
-      const rendererIsWatching = sessionStreamBus.hasSubscribers(session.id)
-
-      if (rendererIsWatching) {
-        sessionStreamBus.publish(session.id, {
-          sessionId: session.id,
-          agentId: session.agentId,
-          type: 'user-message',
-          userMessage: {
-            chatId: message.chatId,
-            userId: message.userId,
-            userName: message.userName,
-            text: displayText,
-            images: message.images
-          }
-        })
-      }
-
       const abortController = new AbortController()
       this.activeAbortControllers.set(session.id, abortController)
 
@@ -298,10 +268,7 @@ export class ChannelMessageHandler {
           securedContent,
           abortController,
           adapter,
-          message.chatId,
-          message.text,
-          message.images,
-          rendererIsWatching
+          message.chatId
         )
 
         if (responseText) {
@@ -579,95 +546,62 @@ export class ChannelMessageHandler {
     content: string,
     abortController: AbortController,
     adapter: ChannelAdapter,
-    chatId: string,
-    displayContent?: string,
-    images?: ImageAttachment[],
-    rendererIsWatching: boolean = false
+    chatId: string
   ): Promise<string> {
-    // Use the pre-computed rendererIsWatching flag from processIncoming.
-    // When renderer is watching: persist=false (renderer handles rich block persistence),
-    //   stream chunks and events are forwarded to the renderer via the bus.
-    // When renderer is NOT watching: persist=true (main persists via persistHeadlessExchange),
-    //   stream events are NOT forwarded (no subscriber or subscriber arrived late).
-    const { stream, completion } = await sessionMessageOrchestrator.createSessionMessage(
-      session,
-      { content },
-      abortController,
-      { persist: !rendererIsWatching, displayContent, images }
-    )
+    const topicId = buildAgentSessionTopicId(session.id)
+    const uniqueModelId = parseAgentSessionModel(session.model)
 
-    const reader = stream.getReader()
-    let completedText = '' // text from finished blocks/turns
-    let currentBlockText = '' // cumulative text within the current block
+    // Build listeners
+    // Renderer subscribes via Ai_Stream_Attach IPC → WebContentsListener added by AiStreamManager.
+    // No manual bus push needed — all subscribers are equal topic listeners.
+    const listeners: StreamListener[] = [new ChannelAdapterListener(adapter, chatId)]
 
-    try {
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
+    // Completion sentinel: accumulates text and resolves when done
+    let resolveExecution!: (text: string) => void
+    let rejectExecution!: (err: unknown) => void
+    const executionDone = new Promise<string>((resolve, reject) => {
+      resolveExecution = resolve
+      rejectExecution = reject
+    })
+    let accumulatedText = ''
+    listeners.push({
+      id: `channel-completion:${chatId}`,
+      onChunk(chunk) {
+        const c = chunk as { type: string; text?: string }
+        if (c.type === 'text-delta' && c.text) accumulatedText += c.text
+      },
+      onDone() {
+        resolveExecution(accumulatedText.trim())
+      },
+      onPaused() {
+        resolveExecution(accumulatedText.trim())
+      },
+      onError(result) {
+        rejectExecution(new Error(result.error.message ?? 'Execution failed'))
+      },
+      isAlive: () => !abortController.signal.aborted
+    })
 
-        // Only forward chunks to renderer when it was confirmed watching at stream start.
-        // This prevents late-subscribing renderers from receiving partial chunks
-        // while main process is also persisting (which would cause duplicates).
-        if (rendererIsWatching) {
-          sessionStreamBus.publish(session.id, {
-            sessionId: session.id,
-            agentId: session.agentId,
-            type: 'chunk',
-            chunk: value
-          })
+    // Start execution via AiStreamManager
+    const aiStreamManager = application.get('AiStreamManager')
+    aiStreamManager.send({
+      topicId,
+      models: [
+        {
+          modelId: uniqueModelId,
+          request: {
+            chatId: topicId,
+            trigger: 'submit-message',
+            assistantId: session.agentId,
+            uniqueModelId,
+            messages: [{ id: crypto.randomUUID(), role: 'user', parts: [{ type: 'text', text: content }] }]
+          }
         }
+      ],
+      listeners
+    })
 
-        // Skip user message echoes — only accumulate assistant text for the channel reply
-        const rawType = (value as any).providerMetadata?.raw?.type
-        if (rawType === 'user') continue
-
-        switch (value.type) {
-          case 'text-delta':
-            // text-delta values are cumulative within a block
-            if (value.text) {
-              currentBlockText = value.text
-              // Notify adapter of text update — adapter owns its own throttle/flush
-              const fullText = completedText + currentBlockText
-              adapter.onTextUpdate(chatId, fullText).catch(() => {})
-            }
-            break
-          case 'text-end':
-            // Block finished — commit current block text and reset for next turn
-            if (currentBlockText) {
-              completedText += currentBlockText + '\n\n'
-              currentBlockText = ''
-            }
-            break
-        }
-      }
-
-      await completion
-
-      if (rendererIsWatching) {
-        // Notify renderer that stream is complete and data is persisted
-        sessionStreamBus.publish(session.id, {
-          sessionId: session.id,
-          agentId: session.agentId,
-          type: 'complete'
-        })
-      }
-      // headless=true means main process persisted; renderer should force-reload from DB.
-      // headless=false means renderer handled persistence; no reload needed.
-      broadcastSessionChanged(session.agentId, session.id, !rendererIsWatching)
-
-      // Trim trailing separator
-      return (completedText + currentBlockText).replace(/\n+$/, '')
-    } catch (error) {
-      if (rendererIsWatching) {
-        sessionStreamBus.publish(session.id, {
-          sessionId: session.id,
-          agentId: session.agentId,
-          type: 'error',
-          error: { message: error instanceof Error ? error.message : String(error) }
-        })
-      }
-      throw error
-    }
+    return executionDone
   }
 
   private async sendChunked(adapter: ChannelAdapter, chatId: string, text: string): Promise<void> {

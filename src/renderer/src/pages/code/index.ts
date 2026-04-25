@@ -9,7 +9,6 @@ import {
   OpenCode,
   QwenCode
 } from '@cherrystudio/ui/icons'
-import { getThinkingBudget } from '@renderer/aiCore/utils/reasoning'
 import {
   isReasoningModel,
   isSupportedReasoningEffortModel,
@@ -18,6 +17,7 @@ import {
 import { type EndpointType, type Model, type Provider } from '@renderer/types'
 import { formatApiHost } from '@renderer/utils/api'
 import { getFancyProviderName, sanitizeProviderName } from '@renderer/utils/naming'
+import { getThinkingBudget } from '@renderer/utils/reasoningBudget'
 import { codeCLI } from '@shared/config/constant'
 import { CLAUDE_SUPPORTED_PROVIDERS } from '@shared/config/providers'
 
@@ -38,6 +38,7 @@ export interface ToolEnvironmentConfig {
   }
 }
 
+// CLI 工具选项
 export const CLI_TOOLS = [
   { value: codeCLI.claudeCode, label: 'Claude Code', icon: ClaudeCode },
   { value: codeCLI.qwenCode, label: 'Qwen Code', icon: QwenCode },

@@ -7,19 +7,16 @@ import { useCache } from '@renderer/data/hooks/useCache'
 import { useUpdateSession } from '@renderer/hooks/agents/useUpdateSession'
 import { useInPlaceEdit } from '@renderer/hooks/useInPlaceEdit'
 import { useTimer } from '@renderer/hooks/useTimer'
-import { finishTopicRenaming, startTopicRenaming } from '@renderer/hooks/useTopic'
+import { useTopicStreamStatus } from '@renderer/hooks/useTopicStreamStatus'
 import { SessionSettingsPopup } from '@renderer/pages/settings/AgentSettings'
 import { SessionLabel } from '@renderer/pages/settings/AgentSettings/shared'
-import { useAppDispatch, useAppSelector } from '@renderer/store'
-import { newMessagesActions } from '@renderer/store/newMessage'
-import { loadTopicMessagesThunk, renameAgentSessionIfNeeded } from '@renderer/store/thunk/messageThunk'
 import type { AgentSessionEntity } from '@renderer/types'
 import { classNames } from '@renderer/utils'
 import { getChannelTypeIcon } from '@renderer/utils/agentSession'
 import { buildAgentSessionTopicId } from '@renderer/utils/agentSession'
 import type { MenuProps } from 'antd'
 import { Dropdown } from 'antd'
-import { MenuIcon, Sparkles, XIcon } from 'lucide-react'
+import { MenuIcon, XIcon } from 'lucide-react'
 import React, { memo, startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
@@ -44,7 +41,6 @@ const SessionItem = ({ session, agentId, channelType, onDelete, onPress }: Sessi
   const { setTimeoutTimer } = useTimer()
   const [_targetSession, setTargetSession] = useState<AgentSessionEntity>(session)
   const targetSession = useDeferredValue(_targetSession)
-  const dispatch = useAppDispatch()
 
   const { isEditing, isSaving, startEdit, inputProps } = useInPlaceEdit({
     onSave: async (value) => {
@@ -94,26 +90,24 @@ const SessionItem = ({ session, agentId, channelType, onDelete, onPress }: Sessi
   }
 
   const isActive = activeSessionId === session.id
-  const topicLoadingQuery = useAppSelector((state) => state.messages.loadingByTopic)
-  const topicFulfilledQuery = useAppSelector((state) => state.messages.fulfilledByTopic)
   const sessionTopicId = buildAgentSessionTopicId(session.id)
-  const isPending = useMemo(() => topicLoadingQuery[sessionTopicId], [sessionTopicId, topicLoadingQuery])
-  const isFulfilled = useMemo(() => topicFulfilledQuery[sessionTopicId], [sessionTopicId, topicFulfilledQuery])
+  // `pending` (request sent, waiting for provider) and `streaming` (chunks
+  // flowing) both mean "busy" from the sidebar's perspective. If a future
+  // design wants to distinguish them (spinner vs pulse), split here.
+  const { isPending, isFulfilled, markSeen } = useTopicStreamStatus(sessionTopicId)
   const [renamingTopics] = useCache('topic.renaming')
   const [newlyRenamedTopics] = useCache('topic.newly_renamed')
   const isRenaming = renamingTopics.includes(sessionTopicId)
   const isNewlyRenamed = newlyRenamedTopics.includes(sessionTopicId)
 
   useEffect(() => {
+    // Mark the fulfilled badge as consumed when the user opens the
+    // session — the shared stream status stays `done` globally, but each
+    // window tracks its own "already seen" flag.
     if (isFulfilled && activeSessionId === session.id) {
-      dispatch(
-        newMessagesActions.setTopicFulfilled({
-          topicId: sessionTopicId,
-          fulfilled: false
-        })
-      )
+      markSeen()
     }
-  }, [activeSessionId, dispatch, isFulfilled, session.id, sessionTopicId])
+  }, [activeSessionId, isFulfilled, markSeen, session.id])
 
   const channelIcon = getChannelTypeIcon(channelType)
 
@@ -131,24 +125,6 @@ const SessionItem = ({ session, agentId, channelType, onDelete, onPress }: Sessi
             agentId,
             sessionId: session.id
           })
-        }
-      },
-      {
-        label: t('chat.topics.auto_rename'),
-        key: 'auto-rename',
-        icon: <Sparkles size={14} />,
-        onClick: async () => {
-          const agentSession = {
-            agentId: agentId,
-            sessionId: targetSession.id
-          }
-          void dispatch(loadTopicMessagesThunk(sessionTopicId))
-          try {
-            startTopicRenaming(sessionTopicId)
-            await renameAgentSessionIfNeeded(agentSession, sessionTopicId)
-          } finally {
-            finishTopicRenaming(sessionTopicId)
-          }
         }
       },
       {
@@ -178,7 +154,7 @@ const SessionItem = ({ session, agentId, channelType, onDelete, onPress }: Sessi
         }
       }
     ],
-    [agentId, dispatch, onDelete, session.id, sessionTopicId, setTopicPosition, t, targetSession.id]
+    [agentId, onDelete, session.id, sessionTopicId, setTopicPosition, t, targetSession.id]
   )
 
   return (

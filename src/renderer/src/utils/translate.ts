@@ -3,15 +3,12 @@ import { isQwenMTModel } from '@renderer/config/models'
 import { builtinLanguages, LanguagesEnum, UNKNOWN } from '@renderer/config/translate'
 import db from '@renderer/databases'
 import i18n from '@renderer/i18n'
-import { fetchChatCompletion } from '@renderer/services/ApiService'
-import { getDefaultAssistant, getQuickModel } from '@renderer/services/AssistantService'
-import { hasModel } from '@renderer/services/ModelService'
+import { readQuickModel } from '@renderer/services/ModelService'
 import { estimateTextTokens } from '@renderer/services/TokenService'
 import { getAllCustomLanguages } from '@renderer/services/TranslateService'
-import type { Assistant, TranslateLanguage, TranslateLanguageCode } from '@renderer/types'
-import type { Chunk } from '@renderer/types/chunk'
-import { ChunkType } from '@renderer/types/chunk'
+import type { TranslateLanguage, TranslateLanguageCode } from '@renderer/types'
 import { LANG_DETECT_PROMPT } from '@shared/config/prompts'
+import { createUniqueModelId } from '@shared/data/types/model'
 import { franc } from 'franc-min'
 import type { RefObject } from 'react'
 import React from 'react'
@@ -62,41 +59,29 @@ export const detectLanguage = async (inputText: string): Promise<TranslateLangua
 
 const detectLanguageByLLM = async (inputText: string): Promise<TranslateLanguageCode> => {
   logger.info('Detect language by llm')
-  let detectedLang = ''
   const text = sliceByTokens(inputText, 0, 100)
 
   const translateLanguageOptions = await getTranslateOptions()
   const listLang = translateLanguageOptions.map((item) => item.langCode)
   const listLangText = JSON.stringify(listLang)
 
-  const model = getQuickModel()
-  if (!model || !hasModel(model)) {
+  const model = await readQuickModel()
+  if (!model) {
     throw new Error(i18n.t('error.model.not_exists'))
   }
 
   if (isQwenMTModel(model)) {
-    logger.info('QwenMT cannot be used for language detection.')
-    if (isQwenMTModel(model)) {
-      throw new Error(i18n.t('translate.error.detect.qwen_mt'))
-    }
+    throw new Error(i18n.t('translate.error.detect.qwen_mt'))
   }
 
-  const assistant: Assistant = getDefaultAssistant()
+  const prompt = LANG_DETECT_PROMPT.replace('{{list_lang}}', listLangText).replace('{{input}}', text)
 
-  assistant.model = model
-  assistant.settings = {
-    reasoning_effort: 'none'
-  }
-  assistant.prompt = LANG_DETECT_PROMPT.replace('{{list_lang}}', listLangText).replace('{{input}}', text)
+  const { text: detectedLang } = await window.api.ai.generateText({
+    uniqueModelId: createUniqueModelId(model.provider, model.id),
+    system: prompt,
+    prompt: 'follow system prompt'
+  })
 
-  const onChunk: (chunk: Chunk) => void = (chunk: Chunk) => {
-    // 你的意思是，虽然写的是delta类型，但其实是完整拼接后的结果？
-    if (chunk.type === ChunkType.TEXT_DELTA) {
-      detectedLang = chunk.text
-    }
-  }
-
-  await fetchChatCompletion({ prompt: 'follow system prompt', assistant, onChunkReceived: onChunk })
   return detectedLang.trim()
 }
 

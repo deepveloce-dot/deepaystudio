@@ -2,8 +2,6 @@ import { PlusOutlined } from '@ant-design/icons'
 import { RowFlex } from '@cherrystudio/ui'
 import { Button } from '@cherrystudio/ui'
 import { resolveProviderIcon } from '@cherrystudio/ui/icons'
-import { useCache } from '@data/hooks/useCache'
-import { AiProvider } from '@renderer/aiCore'
 import { Navbar, NavbarCenter, NavbarRight } from '@renderer/components/app/Navbar'
 import Scrollbar from '@renderer/components/Scrollbar'
 import { isMac } from '@renderer/config/constant'
@@ -15,7 +13,7 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { InputNumber, Radio, Select } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import type { FC } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
@@ -33,6 +31,7 @@ import {
   ZHIPU_PAINTING_MODELS
 } from './config/ZhipuConfig'
 import { checkProviderEnabled } from './utils'
+import { persistGeneratedImages } from './utils/persistGeneratedImages'
 
 const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
   const { zhipu_paintings, addPainting, removePainting, updatePainting } = usePaintings()
@@ -54,8 +53,7 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
-  const [abortController, setAbortController] = useState<AbortController | null>(null)
-  const [generating, setGenerating] = useCache('chat.generating')
+  const activeRequestIdRef = useRef<string | null>(null)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -102,14 +100,10 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
     }
 
     setIsLoading(true)
-    setGenerating(true)
-    const controller = new AbortController()
-    setAbortController(controller)
+    const requestId = uuid()
+    activeRequestIdRef.current = requestId
 
     try {
-      // 使用AiProvider调用智谱AI绘图API
-      const aiProvider = new AiProvider(zhipuProvider)
-
       // 准备API请求参数
       let actualImageSize = painting.imageSize
 
@@ -152,48 +146,35 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
         actualImageSize = `${customWidth}x${customHeight}`
       }
 
-      const request = {
-        model: painting.model,
-        prompt: painting.prompt,
-        negativePrompt: painting.negativePrompt,
-        imageSize: actualImageSize,
-        batchSize: painting.numImages,
-        quality: painting.quality,
-        signal: controller.signal
+      const result = await window.api.ai.generateImage({
+        requestId,
+        payload: {
+          uniqueModelId: `${zhipuProvider.id}::${painting.model}`,
+          prompt: painting.prompt,
+          negativePrompt: painting.negativePrompt || undefined,
+          size: actualImageSize,
+          n: painting.numImages,
+          quality: painting.quality
+        }
+      })
+
+      if (activeRequestIdRef.current !== requestId) {
+        return
       }
 
-      // NOTE: ai sdk内部已经处理成了base64
-      const images = await aiProvider.generateImage(request)
+      if (result.images.length > 0) {
+        const validFiles = await persistGeneratedImages(result.images)
 
-      // 下载图片到本地文件
-      if (images.length > 0) {
-        const downloadedFiles = await Promise.all(
-          images.map(async (image) => {
-            try {
-              return await window.api.file.saveBase64Image(image)
-            } catch (error) {
-              if (
-                error instanceof Error &&
-                (error.message.includes('Failed to parse URL') || error.message.includes('Invalid URL'))
-              ) {
-                window.toast.warning(t('message.empty_url'))
-              }
-              return null
-            }
-          })
-        )
-
-        const validFiles = downloadedFiles.filter((file): file is any => file !== null)
+        if (activeRequestIdRef.current !== requestId) {
+          return
+        }
 
         await FileManager.addFiles(validFiles)
 
-        // 处理响应结果
-        const newPainting = {
+        updatePaintingState({
           ...painting,
           files: validFiles
-        }
-
-        updatePaintingState(newPainting)
+        })
       }
     } catch (error) {
       if (error instanceof Error && error.name !== 'AbortError') {
@@ -203,16 +184,19 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
         })
       }
     } finally {
-      setIsLoading(false)
-      setGenerating(false)
-      setAbortController(null)
+      if (activeRequestIdRef.current === requestId) {
+        activeRequestIdRef.current = null
+        setIsLoading(false)
+      }
     }
   }
 
-  const onCancel = () => {
-    if (abortController) {
-      abortController.abort()
+  const onCancel = async () => {
+    if (activeRequestIdRef.current) {
+      await window.api.ai.abortImageGeneration({ requestId: activeRequestIdRef.current })
     }
+    activeRequestIdRef.current = null
+    setIsLoading(false)
   }
 
   const nextImage = () => {
@@ -246,7 +230,7 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
   }
 
   const onSelectPainting = (newPainting: any) => {
-    if (generating) return
+    if (isLoading) return
     setPainting(newPainting)
     setCurrentImageIndex(0)
   }
@@ -287,7 +271,7 @@ const ZhipuPage: FC<{ Options: string[] }> = ({ Options }) => {
   }
 
   const handleAddPainting = () => {
-    if (generating) return
+    if (isLoading) return
     const newPainting = getNewPainting()
     const addedPainting = addPainting('zhipu_paintings', newPainting)
     setPainting(addedPainting)

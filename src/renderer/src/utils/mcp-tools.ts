@@ -1,125 +1,30 @@
-import { loggerService } from '@logger'
-import { currentSpan } from '@renderer/services/SpanManagerService'
-import store from '@renderer/store'
-import { addMCPServer, hubMCPServer } from '@renderer/store/mcp'
-import type { MCPCallToolResponse, MCPServer, MCPTool, MCPToolResponse } from '@renderer/types'
-import { BuiltinMCPServerNames } from '@renderer/types'
-import { nanoid } from 'nanoid'
+import { hubMCPServer } from '@renderer/store/mcp'
+import type { MCPServer, MCPTool } from '@renderer/types'
 
-const logger = loggerService.withContext('Utils:MCPTools')
-
-export async function callBuiltInTool(toolResponse: MCPToolResponse): Promise<MCPCallToolResponse | undefined> {
-  logger.info(`[BuiltIn] Calling Built-in Tool: ${toolResponse.tool.name}`, toolResponse.tool)
-
-  if (
-    toolResponse.tool.name === 'think' &&
-    typeof toolResponse.arguments === 'object' &&
-    toolResponse.arguments !== null &&
-    !Array.isArray(toolResponse.arguments)
-  ) {
-    const thought = toolResponse.arguments?.thought
-    return {
-      isError: false,
-      content: [
-        {
-          type: 'text',
-          text: (thought as string) || ''
-        }
-      ]
-    }
-  }
-
-  return undefined
-}
-
-export async function callMCPTool(
-  toolResponse: MCPToolResponse,
-  topicId?: string,
-  modelName?: string
-): Promise<MCPCallToolResponse> {
-  logger.info(
-    `Calling Tool: ${toolResponse.id} ${toolResponse.tool.serverName} ${toolResponse.tool.name}`,
-    toolResponse.tool
-  )
-  try {
-    const server = getMcpServerByTool(toolResponse.tool)
-
-    if (!server) {
-      throw new Error(`Server not found: ${toolResponse.tool.serverName}`)
-    }
-
-    const resp = await window.api.mcp.callTool(
-      {
-        server,
-        name: toolResponse.tool.name,
-        args: toolResponse.arguments,
-        callId: toolResponse.id
-      },
-      topicId ? currentSpan(topicId, modelName)?.spanContext() : undefined
-    )
-    if (toolResponse.tool.serverName === BuiltinMCPServerNames.mcpAutoInstall) {
-      if (resp.data) {
-        const mcpServer: MCPServer = {
-          id: `f${nanoid()}`,
-          name: resp.data.name,
-          description: resp.data.description,
-          baseUrl: resp.data.baseUrl,
-          command: resp.data.command,
-          args: resp.data.args,
-          env: resp.data.env,
-          registryUrl: '',
-          isActive: false,
-          provider: 'CherryAI'
-        }
-        store.dispatch(addMCPServer(mcpServer))
-      }
-    }
-
-    logger.info(`Tool called: ${toolResponse.tool.serverName} ${toolResponse.tool.name}`, resp)
-    return resp
-  } catch (e) {
-    logger.error(`Error calling Tool: ${toolResponse.tool.serverName} ${toolResponse.tool.name}`, e as Error)
-    return Promise.resolve({
-      isError: true,
-      content: [
-        {
-          type: 'text',
-          text: `Error calling tool ${toolResponse.tool.name}: ${e instanceof Error ? e.stack || e.message || 'No error details available' : JSON.stringify(e)}`
-        }
-      ]
-    })
-  }
-}
-
-export function getMcpServerByTool(tool: MCPTool) {
-  const servers = store.getState().mcp.servers
+/**
+ * Pure lookup: find the MCP server a tool belongs to within an already-
+ * loaded server list. Falls back to the built-in hub constant for tools
+ * tagged `serverId: 'hub'` (the hub isn't stored in the DB).
+ */
+export function findMcpServerByTool(servers: MCPServer[], tool: MCPTool): MCPServer | undefined {
   const server = servers.find((s) => s.id === tool.serverId)
-  if (server) {
-    return server
-  }
-  // For hub server (auto mode), the server isn't in the store
-  // Return the hub server constant if the tool's serverId matches
-  if (tool.serverId === 'hub') {
-    return hubMCPServer
-  }
+  if (server) return server
+  if (tool.serverId === 'hub') return hubMCPServer
   return undefined
 }
 
+/**
+ * Pure predicate — callers that already hold the server (e.g. settings pages
+ * rendering a server's own tool list) use this form directly. Callers that
+ * only have a tool should use `useIsToolAutoApproved` so the server lookup
+ * goes through the DataApi SWR cache.
+ */
 export function isToolAutoApproved(tool: MCPTool, server?: MCPServer, allowedTools?: string[]): boolean {
-  if (tool.isBuiltIn) {
-    return true
-  }
-  // Check agent-level pre-authorization (allowed_tools from Agent Settings)
-  if (allowedTools?.includes(tool.id)) {
-    return true
-  }
-  // Fall back to server-level auto-approve setting
-  const effectiveServer = server ?? getMcpServerByTool(tool)
-  if (!effectiveServer) return false
+  if (tool.isBuiltIn) return true
+  if (allowedTools?.includes(tool.id)) return true
+  if (!server) return false
   // Hub meta-tools: read-only tools (list, inspect) are auto-approved;
   // execution tools (invoke, exec) require approval.
-  if (effectiveServer.id === 'hub') {
-    return tool.name === 'list' || tool.name === 'inspect'
-  }
-  return !effectiveServer.disabledAutoApproveTools?.includes(tool.name)
+  if (server.id === 'hub') return tool.name === 'list' || tool.name === 'inspect'
+  return !server.disabledAutoApproveTools?.includes(tool.name)
 }

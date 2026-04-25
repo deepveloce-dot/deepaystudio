@@ -1,10 +1,8 @@
 import { PlusOutlined } from '@ant-design/icons'
 import { Button } from '@cherrystudio/ui'
 import { resolveProviderIcon } from '@cherrystudio/ui/icons'
-import { useCache } from '@data/hooks/useCache'
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
-import { AiProvider } from '@renderer/aiCore'
 import IcImageUp from '@renderer/assets/images/paintings/ic_ImageUp.svg'
 import { Navbar, NavbarCenter, NavbarRight } from '@renderer/components/app/Navbar'
 import Scrollbar from '@renderer/components/Scrollbar'
@@ -29,6 +27,7 @@ import type { PaintingAction, PaintingsState } from '@renderer/types'
 import type { FileMetadata } from '@renderer/types'
 import { getErrorMessage, uuid } from '@renderer/utils'
 import { isNewApiProvider } from '@renderer/utils/provider'
+import { getRotatedProviderApiKey } from '@renderer/utils/providerAuth'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { Empty, InputNumber, Segmented, Select, Upload } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
@@ -74,7 +73,6 @@ const NewApiPage: FC<{ Options: string[] }> = ({ Options }) => {
   const routeName = location.pathname.split('/').pop() || 'new-api'
   const newApiProviders = providers.filter((p) => isNewApiProvider(p))
 
-  const [generating, setGenerating] = useCache('chat.generating')
   const navigate = useNavigate()
   const [autoTranslateWithSpace] = usePreference('chat.input.translate.auto_translate_with_space')
   const spaceClickTimer = useRef<NodeJS.Timeout>(null)
@@ -235,9 +233,9 @@ const NewApiPage: FC<{ Options: string[] }> = ({ Options }) => {
     const prompt = textareaRef.current?.resizableTextArea?.textArea?.value || ''
     updatePaintingState({ prompt })
 
-    const AI = new AiProvider(newApiProvider)
+    const apiKey = getRotatedProviderApiKey(newApiProvider)
 
-    if (!AI.getApiKey()) {
+    if (!apiKey) {
       window.modal.error({
         content: t('error.no_api_key'),
         centered: true
@@ -252,11 +250,10 @@ const NewApiPage: FC<{ Options: string[] }> = ({ Options }) => {
     const controller = new AbortController()
     setAbortController(controller)
     setIsLoading(true)
-    setGenerating(true)
 
     let body: string | FormData = ''
     const headers: Record<string, string> = {
-      Authorization: `Bearer ${AI.getApiKey()}`
+      Authorization: `Bearer ${apiKey}`
     }
     // NOTE: Cherry Studio当下 newapi只接受v1/images/xxx的请求
     // TODO: support gemini https://www.newapi.ai/zh/docs/api/ai-model/images/gemini/geminirelayv1beta-383837589
@@ -350,7 +347,6 @@ const NewApiPage: FC<{ Options: string[] }> = ({ Options }) => {
       handleError(error)
     } finally {
       setIsLoading(false)
-      setGenerating(false)
       setAbortController(null)
     }
   }
@@ -459,7 +455,7 @@ const NewApiPage: FC<{ Options: string[] }> = ({ Options }) => {
 
   // 渲染配置项的函数
   const onSelectPainting = (newPainting: PaintingAction) => {
-    if (generating) return
+    if (isLoading) return
     setPainting(newPainting)
     setCurrentImageIndex(0)
   }

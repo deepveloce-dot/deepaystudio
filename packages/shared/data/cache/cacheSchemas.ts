@@ -118,7 +118,6 @@ export type UseCacheSchema = {
   // Chat context
   'chat.multi_select_mode': boolean
   'chat.selected_message_ids': string[]
-  'chat.generating': boolean
   'chat.web_search.searching': boolean
 
   // Minapp management
@@ -131,6 +130,7 @@ export type UseCacheSchema = {
   'topic.active': CacheValueTypes.CacheTopic | null
   'topic.renaming': string[]
   'topic.newly_renamed': string[]
+  'topic.home.first_launch_temp_used': boolean
 
   // Agent management
   'agent.active_id': string | null
@@ -168,6 +168,17 @@ export type UseCacheSchema = {
   'message.streaming.content.${messageId}': any // Message (renderer format)
   'message.streaming.block.${blockId}': any // MessageBlock
   'message.streaming.siblings_counter.${topicId}': number
+  'message.streaming.chat_session.${topicId}': any // { chat: Chat<CherryUIMessage> } (renderer memory-only)
+  'message.ui.${messageId}': { foldSelected?: boolean; multiModelMessageStyle?: string; useful?: boolean }
+  /**
+   * Per-window "user has seen the terminal indicator" flag for a topic.
+   * Lives in the local cache because dismissal is per-window UX — one
+   * window seeing the fulfilled animation shouldn't hide it in another.
+   * Pairs with `topic.stream.status.*` in the shared cache: the shared
+   * entry is the authoritative status, this entry is each window's local
+   * "already animated" flag.
+   */
+  'topic.stream.seen.${topicId}': boolean
 }
 
 export const DefaultUseCache: UseCacheSchema = {
@@ -188,7 +199,6 @@ export const DefaultUseCache: UseCacheSchema = {
   // Chat context
   'chat.multi_select_mode': false,
   'chat.selected_message_ids': [],
-  'chat.generating': false,
   'chat.web_search.searching': false,
 
   // Minapp management
@@ -201,6 +211,7 @@ export const DefaultUseCache: UseCacheSchema = {
   'topic.active': null,
   'topic.renaming': [],
   'topic.newly_renamed': [],
+  'topic.home.first_launch_temp_used': false,
 
   // Agent management
   'agent.active_id': null,
@@ -228,7 +239,10 @@ export const DefaultUseCache: UseCacheSchema = {
   'message.streaming.topic_tasks.${topicId}': [],
   'message.streaming.content.${messageId}': null,
   'message.streaming.block.${blockId}': null,
-  'message.streaming.siblings_counter.${topicId}': 0
+  'message.streaming.siblings_counter.${topicId}': 0,
+  'message.streaming.chat_session.${topicId}': null,
+  'message.ui.${messageId}': {},
+  'topic.stream.seen.${topicId}': false
 }
 
 /**
@@ -236,6 +250,9 @@ export const DefaultUseCache: UseCacheSchema = {
  */
 export type SharedCacheSchema = {
   'chat.web_search.active_searches': CacheValueTypes.CacheActiveSearches
+  'topic.stream.statuses': CacheValueTypes.CacheTopicStreamStatuses
+  'topic.cache_version': number
+  'agent_session.cache_version': number
   // API key rotation state (cross-window, tracks last used key per provider)
   'web_search.provider.last_used_key.${providerId}': string
   'ocr.provider.last_used_key.${providerId}': string
@@ -243,6 +260,9 @@ export type SharedCacheSchema = {
 
 export const DefaultSharedCache: SharedCacheSchema = {
   'chat.web_search.active_searches': {},
+  'topic.stream.statuses': {},
+  'topic.cache_version': 0,
+  'agent_session.cache_version': 0,
   'web_search.provider.last_used_key.${providerId}': '',
   'ocr.provider.last_used_key.${providerId}': ''
 }

@@ -1,6 +1,7 @@
 //TODO Data Refactor
 // The code is messy, need to refactor all the backup related code
 
+import { cacheService } from '@data/CacheService'
 import { preferenceService } from '@data/PreferenceService'
 import { loggerService } from '@logger'
 import db from '@renderer/databases'
@@ -767,9 +768,14 @@ export async function startAutoSync(immediate = false, type?: BackupType) {
       return
     }
 
-    // Check if any topic is currently streaming/loading
-    const state = store.getState()
-    const anyTopicLoading = Object.values(state.messages.loadingByTopic).some((loading) => loading === true)
+    // Check if any topic is currently streaming. Main's `AiStreamManager`
+    // mirrors its runtime state into the shared `topic.stream.statuses`
+    // cache entry; reading it here is cheap and synchronous after the
+    // shared cache bootstraps.
+    const topicStatuses = cacheService.getShared('topic.stream.statuses') ?? {}
+    const anyTopicLoading = Object.values(topicStatuses).some(
+      ({ status }) => status === 'pending' || status === 'streaming'
+    )
 
     if (anyTopicLoading) {
       logger.info(`${logPrefix} Streaming in progress, deferring backup`)

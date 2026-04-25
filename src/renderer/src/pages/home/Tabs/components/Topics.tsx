@@ -1,7 +1,10 @@
+import { cacheService } from '@data/CacheService'
+import { dataApiService } from '@data/DataApiService'
 import { useCache } from '@data/hooks/useCache'
+import { useQuery } from '@data/hooks/useDataApi'
 import { useMultiplePreferences, usePreference } from '@data/hooks/usePreference'
+import { loggerService } from '@logger'
 import AddButton from '@renderer/components/AddButton'
-import AssistantAvatar from '@renderer/components/Avatar/AssistantAvatar'
 import type { DraggableVirtualListRef } from '@renderer/components/DraggableList'
 import { DraggableVirtualList } from '@renderer/components/DraggableList'
 import { CopyIcon, DeleteIcon, EditIcon } from '@renderer/components/Icons'
@@ -9,18 +12,15 @@ import ObsidianExportPopup from '@renderer/components/Popups/ObsidianExportPopup
 import PromptPopup from '@renderer/components/Popups/PromptPopup'
 import SaveToKnowledgePopup from '@renderer/components/Popups/SaveToKnowledgePopup'
 import { isMac } from '@renderer/config/constant'
-import { db } from '@renderer/databases'
-import { useAssistant, useAssistants } from '@renderer/hooks/useAssistant'
+import { prefetch } from '@renderer/data/hooks/useDataApi'
 import { useInPlaceEdit } from '@renderer/hooks/useInPlaceEdit'
-import { modelGenerating } from '@renderer/hooks/useModel'
 import { useNotesSettings } from '@renderer/hooks/useNotesSettings'
-import { finishTopicRenaming, startTopicRenaming, TopicManager } from '@renderer/hooks/useTopic'
+import { finishTopicRenaming, getTopicMessages, startTopicRenaming } from '@renderer/hooks/useTopic'
+import { mapApiTopicToRendererTopic, useAllTopics, useTopicMutations } from '@renderer/hooks/useTopicDataApi'
+import { useTopicStreamStatus } from '@renderer/hooks/useTopicStreamStatus'
 import { fetchMessagesSummary } from '@renderer/services/ApiService'
-import { getDefaultTopic } from '@renderer/services/AssistantService'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
-import type { RootState } from '@renderer/store'
-import { newMessagesActions } from '@renderer/store/newMessage'
-import type { Assistant, Topic } from '@renderer/types'
+import type { Topic } from '@renderer/types'
 import { classNames, removeSpecialCharactersForFileName } from '@renderer/utils'
 import { copyTopicAsMarkdown, copyTopicAsPlainText } from '@renderer/utils/copy'
 import {
@@ -32,6 +32,7 @@ import {
   exportTopicToNotion,
   topicToMarkdown
 } from '@renderer/utils/export'
+import type { OrderRequest } from '@shared/data/api/schemas/_endpointHelpers'
 import type { MenuProps } from 'antd'
 import { Dropdown, Tooltip } from 'antd'
 import type { ItemType, MenuItemType } from 'antd/es/menu/interface'
@@ -40,12 +41,9 @@ import { findIndex } from 'lodash'
 import {
   BrushCleaning,
   CheckSquare,
-  FolderOpen,
-  HelpCircle,
   ListChecks,
   MenuIcon,
   NotebookPen,
-  PackagePlus,
   PinIcon,
   PinOffIcon,
   Save,
@@ -56,33 +54,93 @@ import {
 } from 'lucide-react'
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
 import { TopicManagePanel, useTopicManageMode } from './TopicManageMode'
 
+const logger = loggerService.withContext('Topics')
+
 interface Props {
-  assistant: Assistant
   activeTopic: Topic
   setActiveTopic: (topic: Topic) => void
   position: 'left' | 'right'
 }
 
-export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, setActiveTopic, position }) => {
+export const Topics: React.FC<Props> = ({ activeTopic, setActiveTopic, position }) => {
   const { t } = useTranslation()
   const { notesPath } = useNotesSettings()
-  const { assistants } = useAssistants()
-  const { assistant, addTopic, removeTopic, moveTopic, updateTopic, updateTopics } = useAssistant(_assistant.id)
+  const { updateTopic: patchTopic, deleteTopic: deleteTopicById, refreshTopics } = useTopicMutations()
+  const removeTopic = useCallback((topic: Topic) => deleteTopicById(topic.id), [deleteTopicById])
+  const updateTopic = useCallback(
+    (topic: Topic) =>
+      patchTopic(topic.id, {
+        name: topic.name,
+        isNameManuallyEdited: topic.isNameManuallyEdited
+      }),
+    [patchTopic]
+  )
+
+  // Pin state lives on the polymorphic `pin` table now, not on the topic
+  // row — fetch it separately and overlay onto the topic list. Pin order
+  // (where pinned topics sit relative to each other) is independent from
+  // topic order; the server-side composed `/topics` view does the
+  // pinned-first ordering for us, so the renderer only needs to know which
+  // ids are pinned (for UI styling and the pin/unpin toggle).
+  const { data: pinList } = useQuery('/pins', { query: { entityType: 'topic' } })
+  const pinByTopicId = useMemo(() => new Map((pinList ?? []).map((p) => [p.entityId, p.id] as const)), [pinList])
+
+  const { topics: apiTopics } = useAllTopics({ loadAll: true })
+  const topics = useMemo(
+    () =>
+      apiTopics.map((t) => {
+        const r = mapApiTopicToRendererTopic(t)
+        return { ...r, pinned: pinByTopicId.has(t.id) }
+      }),
+    [apiTopics, pinByTopicId]
+  )
+
+  // Drag-reorder via the canonical fractional-indexing endpoint:
+  // `PATCH /topics/:id/order` with `{ before }` or `{ after }`. We compute the
+  // anchor from the new index in the dropped list — `position: 'first'` for
+  // index 0, otherwise `{ after: previousNeighbor.id }`. This replaces the
+  // legacy `batchUpdateTopics` that wrote `sortOrder` integers (the column is
+  // gone). Cross-section drags (pinning / unpinning by drag) are handled at
+  // pinPanel level via /pins POST/DELETE; same-section drags route here.
+  const updateTopics = useCallback(
+    async (reordered: Topic[]) => {
+      // Diff to find moved topics — the drag library hands back the full new
+      // ordering so we'd otherwise PATCH every row. Compute the minimal set
+      // by zipping against the current order and keeping only changed
+      // positions; one anchor PATCH per genuinely-moved topic.
+      const currentIds = topics.map((t) => t.id)
+      const reorderedIds = reordered.map((t) => t.id)
+      const moves: Array<{ id: string; anchor: OrderRequest }> = []
+      for (let i = 0; i < reorderedIds.length; i++) {
+        if (currentIds[i] === reorderedIds[i]) continue
+        const id = reorderedIds[i]
+        const anchor: OrderRequest = i === 0 ? { position: 'first' } : { after: reorderedIds[i - 1] }
+        moves.push({ id, anchor })
+      }
+      if (moves.length === 0) return
+      try {
+        if (moves.length === 1) {
+          await dataApiService.patch(`/topics/${moves[0].id}/order`, { body: moves[0].anchor })
+        } else {
+          await dataApiService.patch('/topics/order:batch', { body: { moves } })
+        }
+        await refreshTopics()
+      } catch (err) {
+        logger.error('Failed to reorder topics', { err })
+      }
+    },
+    [topics, refreshTopics]
+  )
 
   const [showTopicTime] = usePreference('topic.tab.show_time')
   const [pinTopicsToTop] = usePreference('topic.tab.pin_to_top')
   const [topicPosition, setTopicPosition] = usePreference('topic.position')
 
-  const [, setGenerating] = useCache('chat.generating')
-
   const [renamingTopics] = useCache('topic.renaming')
-  const topicLoadingQuery = useSelector((state: RootState) => state.messages.loadingByTopic)
-  const topicFulfilledQuery = useSelector((state: RootState) => state.messages.fulfilledByTopic)
   const [newlyRenamedTopics] = useCache('topic.newly_renamed')
 
   const borderRadius = showTopicTime ? 12 : 'var(--list-item-border-radius)'
@@ -98,10 +156,10 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
 
   const { startEdit, isEditing, inputProps } = useInPlaceEdit({
     onSave: (name: string) => {
-      const topic = assistant.topics.find((t) => t.id === editingTopicId)
+      const topic = topics.find((t) => t.id === editingTopicId)
       if (topic && name !== topic.name) {
         const updatedTopic = { ...topic, name, isNameManuallyEdited: true }
-        updateTopic(updatedTopic)
+        void updateTopic(updatedTopic)
         window.toast.success(t('common.saved'))
       }
       setEditingTopicId(null)
@@ -111,13 +169,15 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
     }
   })
 
-  const isPending = useCallback((topicId: string) => topicLoadingQuery[topicId], [topicLoadingQuery])
-  const isFulfilled = useCallback((topicId: string) => topicFulfilledQuery[topicId], [topicFulfilledQuery])
-  const dispatch = useDispatch()
-
   useEffect(() => {
-    dispatch(newMessagesActions.setTopicFulfilled({ topicId: activeTopic.id, fulfilled: false }))
-  }, [activeTopic.id, dispatch, topicFulfilledQuery])
+    // Mark the fulfilled badge as consumed when the user opens the
+    // topic. The shared stream status stays `done` globally; each
+    // window tracks its own "already seen" flag in the local cache.
+    const key = `topic.stream.seen.${activeTopic.id}` as const
+    if (cacheService.get(key) !== true) {
+      cacheService.set(key, true)
+    }
+  }, [activeTopic.id])
 
   const isRenaming = useCallback(
     (topicId: string) => {
@@ -145,99 +205,83 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
     deleteTimerRef.current = setTimeout(() => setDeletingTopicId(null), 2000)
   }, [])
 
-  const onClearMessages = useCallback(
-    (topic: Topic) => {
-      // window.keyv.set(EVENT_NAMES.CHAT_COMPLETION_PAUSED, true)
-      setGenerating(false)
-      void EventEmitter.emit(EVENT_NAMES.CLEAR_MESSAGES, topic)
-    },
-    [setGenerating]
-  )
+  const onClearMessages = useCallback((topic: Topic) => {
+    void EventEmitter.emit(EVENT_NAMES.CLEAR_MESSAGES, topic)
+  }, [])
 
   const handleConfirmDelete = useCallback(
     async (topic: Topic, e: React.MouseEvent) => {
       e.stopPropagation()
-      if (assistant.topics.length === 1) {
-        const newTopic = getDefaultTopic(assistant.id)
-        await db.topics.add({ id: newTopic.id, messages: [] })
-        addTopic(newTopic)
-        setActiveTopic(newTopic)
-      } else {
-        const index = findIndex(assistant.topics, (t) => t.id === topic.id)
-        if (topic.id === activeTopic.id) {
-          setActiveTopic(assistant.topics[index + 1 === assistant.topics.length ? index - 1 : index + 1])
-        }
+      try {
+        await removeTopic(topic)
+      } catch (err) {
+        logger.error('Failed to delete topic', { topicId: topic.id, err })
+        const message = err instanceof Error ? err.message : t('chat.topics.manage.delete.error')
+        window.toast.error(message)
+        setDeletingTopicId(null)
+        return
       }
-      await modelGenerating()
-      removeTopic(topic)
+      // Topics are no longer assistant-scoped — when the deleted row was the
+      // active one, hop to its neighbour. An empty list now shows an empty
+      // state instead of auto-seeding a fresh topic.
+      if (topic.id === activeTopic.id && topics.length > 1) {
+        const index = findIndex(topics, (t) => t.id === topic.id)
+        setActiveTopic(topics[index + 1 === topics.length ? index - 1 : index + 1])
+      }
       setDeletingTopicId(null)
     },
-    [activeTopic.id, addTopic, assistant.id, assistant.topics, removeTopic, setActiveTopic]
+    [activeTopic.id, topics, removeTopic, setActiveTopic, t]
   )
 
   const onPinTopic = useCallback(
-    (topic: Topic) => {
-      // 只有当 pinTopicsToTop 开启时才重新排序话题
-      if (pinTopicsToTop) {
-        let newIndex = 0
-
+    async (topic: Topic) => {
+      // Pin state moved to the polymorphic `pin` table — pin = POST /pins,
+      // unpin = DELETE /pins/:pinId. The server-composed `/topics` view
+      // re-orders pinned-first on revalidate, so we don't manually reshuffle
+      // the array anymore — the PATCHes that the legacy code did to write
+      // `sortOrder` integers are gone.
+      try {
         if (topic.pinned) {
-          // 取消固定：将话题移到未固定话题的顶部
-          const pinnedTopics = assistant.topics.filter((t) => t.pinned)
-          const unpinnedTopics = assistant.topics.filter((t) => !t.pinned)
-
-          const reorderedTopics = [...pinnedTopics.filter((t) => t.id !== topic.id), topic, ...unpinnedTopics]
-
-          newIndex = pinnedTopics.length - 1
-          updateTopics(reorderedTopics)
+          const pinId = pinByTopicId.get(topic.id)
+          if (pinId) {
+            await dataApiService.delete(`/pins/${pinId}`)
+          }
         } else {
-          // 固定话题：移到固定区域顶部
-          const pinnedTopics = assistant.topics.filter((t) => t.pinned)
-          const unpinnedTopics = assistant.topics.filter((t) => !t.pinned)
-
-          const reorderedTopics = [topic, ...pinnedTopics, ...unpinnedTopics.filter((t) => t.id !== topic.id)]
-
-          newIndex = 0
-          updateTopics(reorderedTopics)
+          await dataApiService.post('/pins', { body: { entityType: 'topic', entityId: topic.id } })
         }
-
-        // 延迟滚动到话题位置（等待渲染完成）
-        setTimeout(() => {
-          listRef.current?.scrollToIndex(newIndex, { align: 'auto' })
-        }, 50)
+        await refreshTopics()
+        if (pinTopicsToTop) {
+          // After revalidation, the just-toggled topic lands at the head of
+          // its new section — scroll there so the user sees the move.
+          setTimeout(() => listRef.current?.scrollToIndex(0, { align: 'auto' }), 50)
+        }
+      } catch (err) {
+        logger.error('Failed to toggle topic pin', { topicId: topic.id, err })
       }
-
-      const updatedTopic = { ...topic, pinned: !topic.pinned }
-      updateTopic(updatedTopic)
     },
-    [assistant.topics, updateTopic, updateTopics, pinTopicsToTop]
+    [pinByTopicId, refreshTopics, pinTopicsToTop]
   )
 
   const onDeleteTopic = useCallback(
     async (topic: Topic) => {
-      await modelGenerating()
-      if (topic.id === activeTopic?.id) {
-        const index = findIndex(assistant.topics, (t) => t.id === topic.id)
-        setActiveTopic(assistant.topics[index + 1 === assistant.topics.length ? index - 1 : index + 1])
+      try {
+        await removeTopic(topic)
+      } catch (err) {
+        logger.error('Failed to delete topic', { topicId: topic.id, err })
+        const message = err instanceof Error ? err.message : t('chat.topics.manage.delete.error')
+        window.toast.error(message)
+        return
       }
-      removeTopic(topic)
+      if (topic.id === activeTopic?.id) {
+        const index = findIndex(topics, (t) => t.id === topic.id)
+        setActiveTopic(topics[index + 1 === topics.length ? index - 1 : index + 1])
+      }
     },
-    [assistant.topics, removeTopic, setActiveTopic, activeTopic]
-  )
-
-  const onMoveTopic = useCallback(
-    async (topic: Topic, toAssistant: Assistant) => {
-      await modelGenerating()
-      const index = findIndex(assistant.topics, (t) => t.id === topic.id)
-      setActiveTopic(assistant.topics[index + 1 === assistant.topics.length ? 0 : index + 1])
-      moveTopic(topic, toAssistant)
-    },
-    [assistant.topics, moveTopic, setActiveTopic]
+    [topics, removeTopic, setActiveTopic, activeTopic, t]
   )
 
   const onSwitchTopic = useCallback(
-    async (topic: Topic) => {
-      // await modelGenerating()
+    (topic: Topic) => {
       setActiveTopic(topic)
     },
     [setActiveTopic]
@@ -270,14 +314,14 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
         icon: <Sparkles size={14} />,
         disabled: isRenaming(topic.id),
         async onClick() {
-          const messages = await TopicManager.getTopicMessages(topic.id)
+          const messages = await getTopicMessages(topic.id)
           if (messages.length >= 2) {
             startTopicRenaming(topic.id)
             try {
               const { text: summaryText, error } = await fetchMessagesSummary({ messages })
               if (summaryText) {
                 const updatedTopic = { ...topic, name: summaryText, isNameManuallyEdited: false }
-                updateTopic(updatedTopic)
+                void updateTopic(updatedTopic)
               } else if (error) {
                 window.toast?.error(`${t('message.error.fetchTopicName')}: ${error}`)
               }
@@ -303,36 +347,8 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
           })
           if (name && topic?.name !== name) {
             const updatedTopic = { ...topic, name, isNameManuallyEdited: true }
-            updateTopic(updatedTopic)
+            void updateTopic(updatedTopic)
           }
-        }
-      },
-      {
-        label: t('chat.topics.prompt.label'),
-        key: 'topic-prompt',
-        icon: <PackagePlus size={14} />,
-        extra: (
-          <Tooltip title={t('chat.topics.prompt.tips')}>
-            <HelpCircle size={14} />
-          </Tooltip>
-        ),
-        async onClick() {
-          const prompt = await PromptPopup.show({
-            title: t('chat.topics.prompt.edit.title'),
-            message: '',
-            defaultValue: topic?.prompt || '',
-            inputProps: {
-              rows: 8,
-              allowClear: true
-            }
-          })
-
-          prompt !== null &&
-            (() => {
-              const updatedTopic = { ...topic, prompt: prompt.trim() }
-              updateTopic(updatedTopic)
-              topic.id === activeTopic.id && setActiveTopic(updatedTopic)
-            })()
         }
       },
       {
@@ -471,7 +487,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
             label: t('chat.topics.export.joplin'),
             key: 'joplin',
             onClick: async () => {
-              const topicMessages = await TopicManager.getTopicMessages(topic.id)
+              const topicMessages = await getTopicMessages(topic.id)
               void exportMarkdownToJoplin(topic.name, topicMessages)
             }
           },
@@ -487,24 +503,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
       }
     ]
 
-    if (assistants.length > 1 && assistant.topics.length > 1) {
-      menus.push({
-        label: t('chat.topics.move_to'),
-        key: 'move',
-        icon: <FolderOpen size={14} />,
-        popupClassName: 'move-to-submenu',
-        children: assistants
-          .filter((a) => a.id !== assistant.id)
-          .map((a) => ({
-            label: a.name,
-            key: a.id,
-            icon: <AssistantAvatar assistant={a} size={18} />,
-            onClick: () => onMoveTopic(topic, a)
-          }))
-      })
-    }
-
-    if (assistant.topics.length > 1 && !topic.pinned) {
+    if (topics.length > 1 && !topic.pinned) {
       menus.push({ type: 'divider' })
       menus.push({
         label: t('common.delete'),
@@ -529,30 +528,27 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
     exportMenuOptions.obsidian,
     exportMenuOptions.joplin,
     exportMenuOptions.siyuan,
-    assistants,
     notesPath,
-    assistant,
     updateTopic,
     activeTopic.id,
     setActiveTopic,
     onPinTopic,
     onClearMessages,
     setTopicPosition,
-    onMoveTopic,
     onDeleteTopic
   ])
 
   // Sort topics based on pinned status if pinTopicsToTop is enabled
   const sortedTopics = useMemo(() => {
     if (pinTopicsToTop) {
-      return [...assistant.topics].sort((a, b) => {
+      return [...topics].sort((a, b) => {
         if (a.pinned && !b.pinned) return -1
         if (!a.pinned && b.pinned) return 1
         return 0
       })
     }
-    return assistant.topics
-  }, [assistant.topics, pinTopicsToTop])
+    return topics
+  }, [topics, pinTopicsToTop])
 
   // Filter topics based on search text (only in manage mode)
   // Supports: case-insensitive, space-separated keywords (all must match)
@@ -622,13 +618,18 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
                 toggleSelectTopic(topic.id)
               }
             } else {
-              void onSwitchTopic(topic)
+              onSwitchTopic(topic)
             }
           }
 
           return (
             <Dropdown menu={{ items: getTopicMenuItems }} trigger={['contextMenu']} disabled={isManageMode}>
               <TopicListItem
+                onMouseEnter={() =>
+                  prefetch(`/topics/${topic.id}/messages`, {
+                    query: { limit: 999, includeSiblings: true }
+                  })
+                }
                 onContextMenu={() => setTargetTopic(topic)}
                 className={classNames(
                   isActive && !isManageMode ? 'active' : '',
@@ -646,8 +647,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
                         ? 'not-allowed'
                         : 'pointer'
                 }}>
-                {isPending(topic.id) && !isActive && <PendingIndicator />}
-                {isFulfilled(topic.id) && !isActive && <FulfilledIndicator />}
+                {!isActive && <TopicStreamIndicator topicId={topic.id} />}
                 <TopicNameContainer>
                   {isManageMode && (
                     <SelectIcon className={!canSelect ? 'disabled' : ''}>
@@ -726,12 +726,10 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
 
       {/* 管理模式底部面板 */}
       <TopicManagePanel
-        assistant={assistant}
-        assistants={assistants}
+        topics={topics}
         activeTopic={activeTopic}
         setActiveTopic={setActiveTopic}
         updateTopics={updateTopics}
-        moveTopic={moveTopic}
         manageState={manageState}
         filteredTopics={filteredTopics}
       />
@@ -829,6 +827,19 @@ const TopicEditInput = styled.input`
   outline: none;
   padding: 0;
 `
+
+/**
+ * Reads the per-topic stream status reactively. Lives as a sub-component
+ * so each row's `useCache` hook subscribes only to its own key — changes
+ * to one topic don't re-render the siblings, and we avoid the old
+ * `streamActiveCount` tripwire.
+ */
+const TopicStreamIndicator = ({ topicId }: { topicId: string }) => {
+  const { isPending, isFulfilled } = useTopicStreamStatus(topicId)
+  if (isPending) return <PendingIndicator />
+  if (isFulfilled) return <FulfilledIndicator />
+  return null
+}
 
 const PendingIndicator = styled.div.attrs({
   className: 'animation-pulse'

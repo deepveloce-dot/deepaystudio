@@ -19,11 +19,14 @@ export * from './file'
 export * from './note'
 
 import type { TranslateLanguageCode } from '@shared/data/preference/preferenceTypes'
+import type {
+  Assistant as DataApiAssistant,
+  AssistantSettings as DataApiAssistantSettings,
+  McpMode as DataApiMcpMode
+} from '@shared/data/types/assistant'
 import type { MCPServer } from '@shared/data/types/mcpServer'
 import * as z from 'zod'
 
-import type { StreamTextParams } from './aiCoreTypes'
-import type { Chunk } from './chunk'
 import type { FileMetadata } from './file'
 import type { KnowledgeBase, KnowledgeReference } from './knowledge'
 import type { Message } from './newMessage'
@@ -41,21 +44,32 @@ export * from './provider'
 export * from './serialize'
 export * from './skill'
 
-export type McpMode = 'disabled' | 'auto' | 'manual'
+export type Assistant = DataApiAssistant
+export type AssistantSettings = DataApiAssistantSettings
+export type McpMode = DataApiMcpMode
 
-export type Assistant = {
+/**
+ * Legacy v1 Assistant shape — only used by `src/renderer/src/store/migrate.ts`
+ * to walk pre-v2 Redux-persisted state. New code MUST use {@link Assistant}.
+ * This type goes away once the Redux assistants slice + persisted-state
+ * migrations are deleted.
+ */
+export type LegacyAssistant = {
   id: string
   name: string
   prompt: string
   knowledge_bases?: KnowledgeBase[]
   topics: Topic[]
   type: string
+  group?: string[]
   emoji?: string
   description?: string
   model?: Model
   defaultModel?: Model
-  // This field should be considered as not Partial and not optional in v2
-  settings?: Partial<AssistantSettings>
+  settings?: Partial<AssistantSettings> & {
+    /** legacy: only present in v1 settings */
+    defaultModel?: Model
+  }
   messages?: AssistantMessage[]
   /** enableWebSearch 代表使用模型内置网络搜索功能 */
   enableWebSearch?: boolean
@@ -74,30 +88,18 @@ export type Assistant = {
   targetLanguage?: TranslateLanguage
 }
 
-/**
- * Get the effective MCP mode for an assistant with backward compatibility.
- * Legacy assistants without mcpMode default based on mcpServers presence.
- */
-export function getEffectiveMcpMode(assistant: Assistant): McpMode {
-  if (assistant.mcpMode) return assistant.mcpMode
-  return (assistant.mcpServers?.length ?? 0) > 0 ? 'manual' : 'disabled'
-}
-
-export type TranslateAssistant = Assistant & {
-  model: Model
-  content: string
-  targetLanguage: TranslateLanguage
-}
-
-export const isTranslateAssistant = (assistant: Assistant): assistant is TranslateAssistant => {
-  return (assistant.model && assistant.targetLanguage && typeof assistant.content === 'string') !== undefined
-}
-
-// export type AssistantsSortType = 'tags' | 'list'
-
 export type AssistantMessage = {
   role: 'user' | 'assistant'
   content: string
+}
+
+/**
+ * Get the effective MCP mode for an assistant with backward compatibility.
+ * v2 keeps `mcpMode` inside `settings` and supplies a default — this helper
+ * stays as a thin facade so existing callers don't have to change.
+ */
+export function getEffectiveMcpMode(assistant: Assistant): McpMode {
+  return assistant.settings?.mcpMode ?? 'disabled'
 }
 
 export type AssistantSettingCustomParameters = {
@@ -181,25 +183,7 @@ export const EFFORT_RATIO: EffortRatio = {
   auto: 2
 }
 
-export type AssistantSettings = {
-  maxTokens?: number
-  enableMaxTokens?: boolean
-  temperature: number
-  enableTemperature?: boolean
-  topP: number
-  enableTopP?: boolean
-  contextCount: number
-  streamOutput: boolean
-  defaultModel?: Model
-  customParameters?: AssistantSettingCustomParameters[]
-  reasoning_effort: ReasoningEffortOption
-  qwenThinkMode?: boolean
-  toolUseMode: 'function' | 'prompt'
-  maxToolCalls?: number
-  enableMaxToolCalls?: boolean
-}
-
-export type AssistantPreset = Omit<Assistant, 'model'> & {
+export type AssistantPreset = Assistant & {
   group?: string[]
 }
 
@@ -1172,36 +1156,6 @@ export type HexColor = string
 export const isHexColor = (value: string): value is HexColor => {
   return /^#([0-9A-F]{3}){1,2}$/i.test(value)
 }
-
-export type FetchChatCompletionRequestOptions = {
-  signal?: AbortSignal
-  timeout?: number
-  headers?: Record<string, string>
-}
-
-type BaseParams = {
-  assistant: Assistant
-  requestOptions?: FetchChatCompletionRequestOptions
-  onChunkReceived: (chunk: Chunk) => void
-  topicId?: string // 添加 topicId 参数
-  allowedTools?: string[]
-  uiMessages?: Message[]
-}
-
-type MessagesParams = BaseParams & {
-  messages: StreamTextParams['messages']
-  prompt?: never
-}
-
-type PromptParams = BaseParams & {
-  messages?: never
-  // prompt: Just use string for convinience. Native prompt type unite more types, including messages type.
-  // we craete a non-intersecting prompt type to discriminate them.
-  // see https://github.com/vercel/ai/issues/8363
-  prompt: string
-}
-
-export type FetchChatCompletionParams = MessagesParams | PromptParams
 
 // More specific than NonNullable
 export type NotUndefined<T> = Exclude<T, undefined>

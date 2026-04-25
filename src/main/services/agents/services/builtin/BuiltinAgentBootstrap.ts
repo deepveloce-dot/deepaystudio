@@ -10,14 +10,16 @@
  */
 import { agentService } from '@data/services/AgentService'
 import { agentSessionService as sessionService } from '@data/services/AgentSessionService'
+import { modelService } from '@data/services/ModelService'
+import { providerService } from '@data/services/ProviderService'
 import { loggerService } from '@logger'
-import { modelsService } from '@main/apiServer/services/models'
 import { resolveAccessiblePaths, validateAgentModels } from '@main/services/agents/agentUtils'
 import { AgentModelValidationError } from '@main/services/agents/errors'
 import { seedWorkspaceTemplates } from '@main/services/agents/services/cherryclaw/seedWorkspace'
 import { skillService } from '@main/services/agents/skills/SkillService'
 import { installBuiltinSkills } from '@main/utils/builtinSkills'
 import type { CreateAgentDto, UpdateAgentDto } from '@shared/data/api/schemas/agents'
+import { ENDPOINT_TYPE } from '@shared/data/types/model'
 
 import { schedulerService } from '../SchedulerService'
 import { CHERRY_ASSISTANT_AGENT_ID, CHERRY_CLAW_AGENT_ID } from './BuiltinAgentIds'
@@ -128,8 +130,9 @@ async function initDefaultCherryClawAgent(): Promise<BuiltinAgentInitResult> {
       return { agentId: id }
     }
 
-    const modelsRes = await modelsService.getModels({ providerType: 'anthropic', limit: 1 })
-    const firstModel = modelsRes.data?.[0]
+    const providers = await providerService.list({ endpointType: ENDPOINT_TYPE.ANTHROPIC_MESSAGES })
+    const modelArrays = await Promise.all(providers.map((p) => modelService.list({ providerId: p.id })))
+    const firstModel = modelArrays.flat()[0]
     if (!firstModel) {
       logger.info('No Anthropic-compatible models available yet — skipping default CherryClaw creation')
       return { agentId: null, skippedReason: 'no_model' }
@@ -236,8 +239,9 @@ async function initBuiltinAgent(opts: {
       return { agentId: id }
     }
 
-    const modelsRes = await modelsService.getModels({ providerType: 'anthropic', limit: 1 })
-    const firstModel = modelsRes.data?.[0]
+    const providers = await providerService.list({ endpointType: ENDPOINT_TYPE.ANTHROPIC_MESSAGES })
+    const modelArrays = await Promise.all(providers.map((p) => modelService.list({ providerId: p.id })))
+    const firstModel = modelArrays.flat()[0]
     if (!firstModel) {
       logger.info(`No Anthropic-compatible models available yet — skipping ${builtinRole} creation`)
       return { agentId: null, skippedReason: 'no_model' }

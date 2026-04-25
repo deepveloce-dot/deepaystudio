@@ -1,14 +1,42 @@
 import { useMutation, useQuery } from '@data/hooks/useDataApi'
+import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import type { CreateModelDto, CreateModelsDto, ListModelsQuery, UpdateModelDto } from '@shared/data/api/schemas/models'
-import type { Model } from '@shared/data/types/model'
+import type { Model, UniqueModelId } from '@shared/data/types/model'
 import { createUniqueModelId } from '@shared/data/types/model'
 import { isUndefined, omitBy } from 'lodash'
 import { useCallback } from 'react'
 
 const logger = loggerService.withContext('useModels')
 
-const EMPTY_MODELS: Model[] = []
+const EMPTY_MODELS: readonly Model[] = Object.freeze([])
+
+/**
+ * Reactive read of the user's default / quick / translate models. Each id
+ * lives in Preference; the Model record lives in DataApi. Quick / translate
+ * fall back to the default-model id when their dedicated preference is unset.
+ */
+export function useDefaultModel() {
+  const [defaultModelId, setDefaultModelId] = usePreference('chat.default_model_id')
+  const [quickModelId, setQuickModelId] = usePreference('feature.quick_assistant.model_id')
+  const [translateModelId, setTranslateModelId] = usePreference('feature.translate.model_id')
+
+  const { model: defaultModel } = useModelById(defaultModelId as UniqueModelId)
+  const { model: quickModel } = useModelById((quickModelId as UniqueModelId) ?? defaultModelId)
+  const { model: translateModel } = useModelById((translateModelId as UniqueModelId) ?? defaultModelId)
+
+  return {
+    defaultModel,
+    quickModel,
+    translateModel,
+    setDefaultModel: (next: { id: string; provider?: string; providerId?: string }) =>
+      setDefaultModelId(createUniqueModelId(next.provider ?? next.providerId ?? '', next.id)),
+    setQuickModel: (next: { id: string; provider?: string; providerId?: string }) =>
+      setQuickModelId(createUniqueModelId(next.provider ?? next.providerId ?? '', next.id)),
+    setTranslateModel: (next: { id: string; provider?: string; providerId?: string }) =>
+      setTranslateModelId(createUniqueModelId(next.provider ?? next.providerId ?? '', next.id))
+  }
+}
 
 // ─── Layer 1: List ────────────────────────────────────────────────────
 export function useModels(query?: ListModelsQuery, options?: { fetchEnabled?: boolean }) {
@@ -118,5 +146,26 @@ export function useModelMutations() {
     updateModel,
     isUpdating,
     updateError
+  }
+}
+
+// ─── Layer 3: Single-model lookups ────────────────────────────────────
+
+/**
+ * Single-model read backed by DataApi (`/models/:uniqueModelId*`). Returns
+ * the canonical v2 {@link Model} shape; consumers that need a bare modelId
+ * should use `parseUniqueModelId(model.id)`.
+ */
+export function useModelById(uniqueModelId: UniqueModelId) {
+  const { data, isLoading, error, refetch, mutate } = useQuery(`/models/${uniqueModelId}`, {
+    enabled: !!uniqueModelId
+  })
+
+  return {
+    model: data,
+    isLoading,
+    error,
+    refetch,
+    mutate
   }
 }

@@ -2,10 +2,8 @@ import { Tooltip } from '@cherrystudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import NavbarIcon from '@renderer/components/NavbarIcon'
 import SearchPopup from '@renderer/components/Popups/SearchPopup'
-import { modelGenerating } from '@renderer/hooks/useModel'
 import { useNavbarPosition } from '@renderer/hooks/useNavbar'
 import { useShowTopics } from '@renderer/hooks/useStore'
-import type { Assistant } from '@renderer/types'
 import { PanelLeftClose, PanelRightClose, Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { styled } from 'styled-components'
@@ -13,24 +11,23 @@ import { styled } from 'styled-components'
 import SettingsButton from './SettingsButton'
 
 interface ToolsProps {
-  assistant?: Assistant
+  assistantId: string
 }
 
-const Tools = ({ assistant }: ToolsProps) => {
+const Tools = ({ assistantId }: ToolsProps) => {
   const { t } = useTranslation()
   const { showTopics, toggleShowTopics } = useShowTopics()
   const { isTopNavbar } = useNavbarPosition()
   const [topicPosition] = usePreference('topic.position')
   const [narrowMode, setNarrowMode] = usePreference('chat.narrow_mode')
 
-  const handleNarrowModeToggle = async () => {
-    await modelGenerating()
+  const handleNarrowModeToggle = () => {
     void setNarrowMode(!narrowMode)
   }
 
   return (
     <div className="flex items-center gap-2">
-      <SettingsButton assistant={assistant} />
+      <SettingsButton assistantId={assistantId} />
       {isTopNavbar && (
         <Tooltip content={t('navbar.expand')} delay={800}>
           <NarrowIcon onClick={handleNarrowModeToggle}>
