@@ -6,6 +6,7 @@ import { agentSkillTable as agentSkillsTable } from '@data/db/schemas/agentSkill
 import { agentTaskTable as scheduledTasksTable } from '@data/db/schemas/agentTask'
 import { defaultHandlersFor, withSqliteErrors } from '@data/db/sqliteErrors'
 import type { DbOrTx } from '@data/db/types'
+import { resolveAgentModelFieldsInPlace } from '@data/services/utils/resolveUserModelId'
 import { nullsToUndefined, timestampToISO } from '@data/services/utils/rowMappers'
 import { loggerService } from '@logger'
 import { CHERRY_CLAW_AGENT_ID, isBuiltinAgentId } from '@main/services/agents/services/builtin/BuiltinAgentIds'
@@ -49,6 +50,8 @@ export class AgentService {
     // Compute workspace paths (pure — directory creation is the caller's responsibility).
     const resolvedPaths = computeWorkspacePaths(req.accessiblePaths, id)
 
+    const database = application.get('DbService').getDb()
+
     const insertData: InsertAgentRow = {
       id,
       type: req.type,
@@ -64,8 +67,10 @@ export class AgentService {
       accessiblePaths: resolvedPaths,
       sortOrder: 0
     }
+    // Normalize legacy `providerId:modelId` strings → `user_model.id` so the
+    // FK on agent.{model,planModel,smallModel} holds.
+    await resolveAgentModelFieldsInPlace(database, insertData)
 
-    const database = application.get('DbService').getDb()
     await withSqliteErrors(
       () =>
         database.transaction(async (tx) => {
@@ -174,6 +179,8 @@ export class AgentService {
     }
 
     const database = application.get('DbService').getDb()
+    // Same normalization as createAgent — see the comment there.
+    await resolveAgentModelFieldsInPlace(database, updateData)
 
     const rawRows = await database
       .select()

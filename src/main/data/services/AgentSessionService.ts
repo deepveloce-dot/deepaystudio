@@ -6,6 +6,7 @@ import {
   type InsertAgentSessionRow as InsertSessionRow
 } from '@data/db/schemas/agentSession'
 import { defaultHandlersFor, withSqliteErrors } from '@data/db/sqliteErrors'
+import { resolveAgentModelFieldsInPlace } from '@data/services/utils/resolveUserModelId'
 import { nullsToUndefined, timestampToISO } from '@data/services/utils/rowMappers'
 import { loggerService } from '@logger'
 import { DataApiErrorFactory } from '@shared/data/api'
@@ -23,7 +24,7 @@ const logger = loggerService.withContext('SessionService')
 
 function agentRowToSessionDefaults(row: Record<string, unknown>): {
   type: AgentType
-  model: string
+  model: string | undefined
   name: string
   accessiblePaths: string[]
   mcps?: string[]
@@ -39,7 +40,10 @@ function agentRowToSessionDefaults(row: Record<string, unknown>): {
     ...clean,
     type: (row.type === 'cherry-claw' ? 'claude-code' : row.type) as AgentType,
     name: (row.name as string) || '',
-    model: row.model as string,
+    // `model` may be undefined when the agent's user_model was deleted (FK
+    // ON DELETE SET NULL). Sessions inheriting from such an agent will also
+    // receive an undefined model; the read path / call sites handle it.
+    model: (row.model as string | null) ?? undefined,
     accessiblePaths: (row.accessiblePaths as string[] | null) ?? []
   }
 }
@@ -75,6 +79,13 @@ export class AgentSessionService {
       ...req
     }
 
+    const db = application.get('DbService').getDb()
+
+    // `sessionData.{model,planModel,smallModel}` may be in legacy
+    // `providerId:modelId` form (from the renderer) — normalize first, then
+    // fall back to the agent's already-FK-valid value.
+    await resolveAgentModelFieldsInPlace(db, sessionData)
+
     const insertData: InsertSessionRow = {
       id,
       agentId,
@@ -83,9 +94,9 @@ export class AgentSessionService {
       description: sessionData.description ?? null,
       accessiblePaths: sessionData.accessiblePaths ?? null,
       instructions: sessionData.instructions ?? null,
-      model: sessionData.model || agent.model,
-      planModel: sessionData.planModel ?? null,
-      smallModel: sessionData.smallModel ?? null,
+      model: sessionData.model ?? agent.model ?? null,
+      planModel: sessionData.planModel ?? agent.planModel ?? null,
+      smallModel: sessionData.smallModel ?? agent.smallModel ?? null,
       mcps: sessionData.mcps ?? null,
       allowedTools: sessionData.allowedTools ?? null,
       slashCommands: sessionData.slashCommands ?? null,
@@ -93,7 +104,6 @@ export class AgentSessionService {
       sortOrder: 0
     }
 
-    const db = application.get('DbService').getDb()
     await withSqliteErrors(
       () =>
         db.transaction(async (tx) => {
@@ -190,6 +200,9 @@ export class AgentSessionService {
     }
 
     const database = application.get('DbService').getDb()
+    // Same normalization as createSession — see the comment there.
+    await resolveAgentModelFieldsInPlace(database, updateData)
+
     await withSqliteErrors(
       () => database.update(sessionsTable).set(updateData).where(eq(sessionsTable.id, id)),
       defaultHandlersFor('Session', id)
