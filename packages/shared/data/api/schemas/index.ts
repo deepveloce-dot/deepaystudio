@@ -27,7 +27,7 @@ import type { GroupSchemas } from './groups'
 import type { KnowledgeSchemas } from './knowledges'
 import type { MCPServerSchemas } from './mcpServers'
 import type { MessageSchemas } from './messages'
-import type { MiniappSchemas } from './miniapps'
+import type { MiniAppSchemas } from './miniApps'
 import type { ModelSchemas } from './models'
 import type { PinSchemas } from './pins'
 import type { ProviderSchemas } from './providers'
@@ -59,7 +59,7 @@ export type ApiSchemas = AssertValidSchemas<
     FileProcessingSchemas &
     MCPServerSchemas &
     KnowledgeSchemas &
-    MiniappSchemas &
+    MiniAppSchemas &
     AssistantSchemas &
     TagSchemas &
     GroupSchemas &

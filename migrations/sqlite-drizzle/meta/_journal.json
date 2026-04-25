@@ -65,45 +65,52 @@
       "when": 1775137534101
     },
     {
+      "breakpoints": true,
       "idx": 9,
-      "version": "6",
-      "when": 1775543209395,
       "tag": "0009_medical_giant_girl",
-      "breakpoints": true
+      "version": "6",
+      "when": 1775543209395
     },
     {
+      "breakpoints": true,
       "idx": 10,
-      "version": "6",
-      "when": 1775820970055,
       "tag": "0010_pink_shaman",
-      "breakpoints": true
+      "version": "6",
+      "when": 1775820970055
     },
     {
+      "breakpoints": true,
       "idx": 11,
-      "version": "6",
-      "when": 1776180491685,
       "tag": "0011_outgoing_silver_sable",
-      "breakpoints": true
+      "version": "6",
+      "when": 1776180491685
     },
     {
+      "breakpoints": true,
       "idx": 12,
-      "version": "6",
-      "when": 1776684142338,
       "tag": "0012_goofy_tenebrous",
-      "breakpoints": true
+      "version": "6",
+      "when": 1776684142338
     },
     {
+      "breakpoints": true,
       "idx": 13,
-      "version": "6",
-      "when": 1776744800060,
       "tag": "0013_fantastic_joystick",
-      "breakpoints": true
+      "version": "6",
+      "when": 1776744800060
     },
     {
+      "breakpoints": true,
       "idx": 14,
-      "version": "6",
-      "when": 1776838196467,
       "tag": "0014_hot_ultron",
+      "version": "6",
+      "when": 1776838196467
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1777037989767,
+      "tag": "0015_fair_wild_child",
       "breakpoints": true
     }
   ],
