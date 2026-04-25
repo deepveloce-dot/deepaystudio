@@ -56,6 +56,7 @@ import { topicTable } from '@data/db/schemas/topic'
 import { userModelTable } from '@data/db/schemas/userModel'
 import { loggerService } from '@logger'
 import type { ExecuteResult, PrepareResult, ValidateResult, ValidationError } from '@shared/data/migration/v2/types'
+import { DEFAULT_ASSISTANT_ID } from '@shared/data/types/assistant'
 import { eq, sql } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -92,10 +93,14 @@ const TOPIC_BATCH_SIZE = 50
 const MESSAGE_INSERT_BATCH_SIZE = 100
 
 /**
- * Assistant data from Redux for assistant lookup
+ * Assistant data from Redux for assistant lookup. Both `assistants[]` and the
+ * standalone `defaultAssistant` slot can carry topics under `.topics[]` —
+ * iterating only `assistants[]` (the previous behavior) silently dropped every
+ * topic that lived under the v1 default assistant.
  */
 interface AssistantState {
   assistants: OldAssistant[]
+  defaultAssistant?: OldAssistant
 }
 
 /**
@@ -214,10 +219,17 @@ export class ChatMigrator extends BaseMigrator {
       }
 
       // Step 3: Load assistant data for model lookup
-      // Also extract topic metadata from assistants (Redux stores topic metadata in assistants.topics[])
+      // Also extract topic metadata from assistants (Redux stores topic metadata in assistants.topics[]).
+      // `state.defaultAssistant` is a sibling slot (not inside `assistants[]`) and
+      // can also carry topics — must be visited too, otherwise its topics show
+      // up post-migration as "Unnamed Topic" with no timestamp source.
       const assistantState = ctx.sources.reduxState.getCategory<AssistantState>('assistants')
-      if (assistantState?.assistants) {
-        for (const assistant of assistantState.assistants) {
+      const allAssistants: OldAssistant[] = []
+      if (assistantState?.assistants) allAssistants.push(...assistantState.assistants)
+      if (assistantState?.defaultAssistant) allAssistants.push(assistantState.defaultAssistant)
+
+      if (allAssistants.length > 0) {
+        for (const assistant of allAssistants) {
           this.assistantLookup.set(assistant.id, assistant)
 
           // Extract topic metadata from this assistant's topics array
@@ -313,11 +325,15 @@ export class ChatMigrator extends BaseMigrator {
       const db = ctx.db
       const topicReader = ctx.sources.dexieExport.createStreamReader('topics')
 
-      // Load valid assistant IDs for FK validation (set by AssistantMigrator)
-      this.validAssistantIds = (ctx.sharedData.get('assistantIds') as Set<string>) ?? null
-      if (!this.validAssistantIds) {
+      // Load valid assistant IDs for FK validation (set by AssistantMigrator).
+      // Always include DEFAULT_ASSISTANT_ID — the seeder guarantees that row
+      // exists post-migration, so it's a safe FK target for orphan-fallback.
+      const sharedAssistantIds = (ctx.sharedData.get('assistantIds') as Set<string>) ?? null
+      if (!sharedAssistantIds) {
         throw new Error('validAssistantIds not set in sharedData. AssistantMigrator must run before ChatMigrator.')
       }
+      this.validAssistantIds = new Set(sharedAssistantIds)
+      this.validAssistantIds.add(DEFAULT_ASSISTANT_ID)
       this.validModelIds = ctx.db?.select
         ? new Set((await ctx.db.select({ id: userModelTable.id }).from(userModelTable)).map((row) => row.id))
         : null
@@ -610,6 +626,16 @@ export class ChatMigrator extends BaseMigrator {
       return null
     }
 
+    // Skip topics with no messages. v1 surfaced an empty topic on first
+    // launch (and on every "new topic" click that the user then abandoned),
+    // so a freshly-migrated DB ends up dotted with empty conversations the
+    // user never typed into. They have no usable timestamp source anyway —
+    // their only outcome would be cluttering the topic list. Topics that
+    // matter to the user have at least one message.
+    if (!Array.isArray(oldTopic.messages) || oldTopic.messages.length === 0) {
+      return null
+    }
+
     // Merge topic metadata from Redux (name, pinned, etc.)
     // Dexie topics may have stale or missing metadata; Redux is authoritative for these fields
     const topicMeta = this.topicMetaLookup.get(oldTopic.id)
@@ -632,17 +658,48 @@ export class ChatMigrator extends BaseMigrator {
     // Fallback: If name is still empty after merge, use a default name
     // This handles cases where both Dexie and Redux have empty names (ancient version bug)
     if (!oldTopic.name) {
+      // TODO: i18n
       oldTopic.name = 'Unnamed Topic' // Default fallback for topics with no name
     }
 
-    // Get assistantId from Redux mapping (Dexie topics don't store assistantId)
-    // Fall back to oldTopic.assistantId in case Dexie did store it (defensive)
-    let resolvedAssistantId = this.topicAssistantLookup.get(oldTopic.id) || oldTopic.assistantId || ''
+    // Derive topic timestamps from messages when neither Dexie nor Redux supplied
+    // them. parseTimestamp() falls back to Date.now() on missing input, which
+    // would stamp every "no source timestamp" topic with the migration moment
+    // and flood the top of the topic list. Topic.updatedAt should be at least
+    // its latest message's createdAt, so use that.
+    if (!oldTopic.createdAt || !oldTopic.updatedAt) {
+      const messageMillis = (oldTopic.messages ?? [])
+        .map((m) => (m.createdAt ? Date.parse(m.createdAt) : NaN))
+        .filter((t) => Number.isFinite(t))
+      if (messageMillis.length > 0) {
+        if (!oldTopic.createdAt) {
+          oldTopic.createdAt = new Date(Math.min(...messageMillis)).toISOString()
+        }
+        if (!oldTopic.updatedAt) {
+          oldTopic.updatedAt = new Date(Math.max(...messageMillis)).toISOString()
+        }
+      }
+    }
 
-    // Validate assistantId FK — clear if orphaned (transformTopic coerces '' to null via || null)
-    if (resolvedAssistantId && this.validAssistantIds && !this.validAssistantIds.has(resolvedAssistantId)) {
-      logger.warn(`Topic ${oldTopic.id}: assistant ${resolvedAssistantId} not found in assistant table, clearing`)
-      resolvedAssistantId = ''
+    // Get assistantId from Redux mapping (Dexie topics don't store assistantId);
+    // fall back to the seeded default so renderer hooks like
+    // `useAssistant(topic.assistantId)` always have a valid id to PATCH against
+    // (a `null` / `''` here used to drive `PATCH /assistants/` infinite loops
+    // from `useReasoningEffortSync` on freshly migrated branches).
+    let resolvedAssistantId = this.topicAssistantLookup.get(oldTopic.id) || oldTopic.assistantId || DEFAULT_ASSISTANT_ID
+
+    // Validate assistantId FK — fall back to default if orphaned. validAssistantIds
+    // always includes DEFAULT_ASSISTANT_ID (added in execute()), so this branch
+    // never strands a topic without an FK target.
+    if (
+      resolvedAssistantId !== DEFAULT_ASSISTANT_ID &&
+      this.validAssistantIds &&
+      !this.validAssistantIds.has(resolvedAssistantId)
+    ) {
+      logger.warn(
+        `Topic ${oldTopic.id}: assistant ${resolvedAssistantId} not in assistant table, falling back to default`
+      )
+      resolvedAssistantId = DEFAULT_ASSISTANT_ID
       this.orphanedAssistantTopics++
     }
 
