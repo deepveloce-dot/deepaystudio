@@ -10,11 +10,11 @@ on:
       platform:
         description: "Build platform"
         required: true
-        default: "all"
+        default: "windows"
         type: choice
         options:
-          - all
           - windows
+          - all
           - mac
           - linux
       draft:
