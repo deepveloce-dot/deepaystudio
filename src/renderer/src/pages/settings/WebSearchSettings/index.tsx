@@ -1,26 +1,12 @@
-import BaiduLogo from '@renderer/assets/images/search/baidu.svg'
-import BingLogo from '@renderer/assets/images/search/bing.svg'
-import BochaLogo from '@renderer/assets/images/search/bocha.webp'
-import ExaLogo from '@renderer/assets/images/search/exa.png'
-import GoogleLogo from '@renderer/assets/images/search/google.svg'
-import SearxngLogo from '@renderer/assets/images/search/searxng.svg'
-import TavilyLogo from '@renderer/assets/images/search/tavily.png'
-import ZhipuLogo from '@renderer/assets/images/search/zhipu.png'
+import { Badge, MenuItem, MenuList } from '@modauistudio/ui'
 import DividerWithText from '@renderer/components/DividerWithText'
-import ListItem from '@renderer/components/ListItem'
 import Scrollbar from '@renderer/components/Scrollbar'
+import { getWebSearchProviderLogo } from '@renderer/config/webSearchProviders'
 import { useDefaultWebSearchProvider, useWebSearchProviders } from '@renderer/hooks/useWebSearchProviders'
-import type { WebSearchProviderId } from '@renderer/types'
-import { hasObjectKey } from '@renderer/utils'
-import { Flex, Tag } from 'antd'
+import { Outlet, useLocation, useNavigate } from '@tanstack/react-router'
 import { Search } from 'lucide-react'
 import type { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router'
-import styled from 'styled-components'
-
-import WebSearchGeneralSettings from './WebSearchGeneralSettings'
-import WebSearchProviderSettings from './WebSearchProviderSettings'
 
 const WebSearchSettings: FC = () => {
   const { t } = useTranslation()
@@ -49,147 +35,58 @@ const WebSearchSettings: FC = () => {
 
   const activeView = getActiveView()
 
-  // Filter providers that have API settings (apiKey or apiHost)
-  const apiProviders = providers.filter((p) => hasObjectKey(p, 'apiKey') || hasObjectKey(p, 'apiHost'))
-  const localProviders = providers.filter((p) => p.id.startsWith('local'))
-
-  // Provider logos map
-  const getProviderLogo = (providerId: WebSearchProviderId): string | undefined => {
-    switch (providerId) {
-      case 'zhipu':
-        return ZhipuLogo
-      case 'tavily':
-        return TavilyLogo
-      case 'searxng':
-        return SearxngLogo
-      case 'exa':
-      case 'exa-mcp':
-        return ExaLogo
-      case 'bocha':
-        return BochaLogo
-      case 'local-google':
-        return GoogleLogo
-      case 'local-bing':
-        return BingLogo
-      case 'local-baidu':
-        return BaiduLogo
-      default:
-        return undefined
-    }
-  }
-
   return (
-    <Container>
-      <MainContainer>
-        <MenuList>
-          <ListItem
-            title={t('settings.tool.websearch.title')}
-            active={activeView === 'general'}
-            onClick={() => navigate('/settings/websearch/general')}
-            icon={<Search size={18} />}
-            titleStyle={{ fontWeight: 500 }}
-          />
-          <DividerWithText text={t('settings.tool.websearch.api_providers')} style={{ margin: '10px 0 8px 0' }} />
-          {apiProviders.map((provider) => {
-            const logo = getProviderLogo(provider.id)
-            const isDefault = defaultProvider?.id === provider.id
-            return (
-              <ListItem
-                key={provider.id}
-                title={provider.name}
-                active={activeView === provider.id}
-                onClick={() => navigate(`/settings/websearch/provider/${provider.id}`)}
-                icon={
-                  logo ? (
-                    <img src={logo} alt={provider.name} className="h-5 w-5 rounded object-contain" />
-                  ) : (
-                    <div className="h-5 w-5 rounded bg-[var(--color-background-soft)]" />
-                  )
-                }
-                titleStyle={{ fontWeight: 500 }}
-                rightContent={
-                  isDefault ? (
-                    <Tag color="green" style={{ marginLeft: 'auto', marginRight: 0, borderRadius: 16 }}>
-                      {t('common.default')}
-                    </Tag>
-                  ) : undefined
-                }
-              />
-            )
-          })}
-          {localProviders.length > 0 && (
-            <>
-              <DividerWithText text={t('settings.tool.websearch.local_providers')} style={{ margin: '10px 0 8px 0' }} />
-              {localProviders.map((provider) => {
-                const logo = getProviderLogo(provider.id)
-                const isDefault = defaultProvider?.id === provider.id
-                return (
-                  <ListItem
-                    key={provider.id}
-                    title={provider.name}
-                    active={activeView === provider.id}
-                    onClick={() => navigate(`/settings/websearch/provider/${provider.id}`)}
-                    icon={
-                      logo ? (
-                        <img src={logo} alt={provider.name} className="h-5 w-5 rounded object-contain" />
-                      ) : (
-                        <div className="h-5 w-5 rounded bg-[var(--color-background-soft)]" />
-                      )
-                    }
-                    titleStyle={{ fontWeight: 500 }}
-                    rightContent={
-                      isDefault ? (
-                        <Tag color="green" style={{ marginLeft: 'auto', marginRight: 0, borderRadius: 16 }}>
-                          {t('common.default')}
-                        </Tag>
-                      ) : undefined
-                    }
-                  />
-                )
-              })}
-            </>
-          )}
-        </MenuList>
-        <RightContainer>
-          <Routes>
-            <Route index element={<Navigate to="general" replace />} />
-            <Route path="general" element={<WebSearchGeneralSettings />} />
-            <Route path="provider/:providerId" element={<WebSearchProviderSettings />} />
-          </Routes>
-        </RightContainer>
-      </MainContainer>
-    </Container>
+    <div className="flex flex-1">
+      <div className="flex h-[calc(100vh-var(--navbar-height)-6px)] w-full flex-1 flex-row overflow-hidden">
+        <Scrollbar
+          className="w-(--settings-width) border-(--color-border) border-r-[0.5px]"
+          style={{ height: 'calc(100vh - var(--navbar-height))' }}>
+          <MenuList className="box-border flex min-h-full flex-col p-3 pb-12">
+            <MenuItem
+              label={t('settings.tool.websearch.title')}
+              active={activeView === 'general'}
+              onClick={() => navigate({ to: '/settings/websearch/general' })}
+              icon={<Search size={18} />}
+              className="font-medium"
+            />
+            <DividerWithText text={t('settings.tool.websearch.api_providers')} style={{ margin: '10px 0 8px 0' }} />
+            {providers.map((provider) => {
+              const logo = getWebSearchProviderLogo(provider.id)
+              const isDefault = defaultProvider?.id === provider.id
+              return (
+                <MenuItem
+                  key={provider.id}
+                  label={provider.name}
+                  active={activeView === provider.id}
+                  onClick={() =>
+                    navigate({ to: '/settings/websearch/provider/$providerId', params: { providerId: provider.id } })
+                  }
+                  icon={
+                    logo ? (
+                      <logo.Avatar size={20} shape="rounded" />
+                    ) : (
+                      <div className="h-5 w-5 rounded bg-(--color-background-soft)" />
+                    )
+                  }
+                  className="font-medium"
+                  suffix={
+                    isDefault ? (
+                      <Badge className="mr-0 ml-auto rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 font-medium text-green-600 text-xs dark:text-green-400">
+                        {t('common.default')}
+                      </Badge>
+                    ) : undefined
+                  }
+                />
+              )
+            })}
+          </MenuList>
+        </Scrollbar>
+        <div className="relative flex flex-1">
+          <Outlet />
+        </div>
+      </div>
+    </div>
   )
 }
-
-const Container = styled(Flex)`
-  flex: 1;
-`
-
-const MainContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  width: 100%;
-  height: calc(100vh - var(--navbar-height) - 6px);
-  overflow: hidden;
-`
-
-const MenuList = styled(Scrollbar)`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: var(--settings-width);
-  padding: 12px;
-  padding-bottom: 48px;
-  border-right: 0.5px solid var(--color-border);
-  height: calc(100vh - var(--navbar-height));
-`
-
-const RightContainer = styled.div`
-  flex: 1;
-  position: relative;
-  display: flex;
-`
 
 export default WebSearchSettings

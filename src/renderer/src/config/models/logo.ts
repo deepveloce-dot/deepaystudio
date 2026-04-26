@@ -1,3 +1,5 @@
+import type { CompoundIcon } from '@modauistudio/ui'
+import { resolveIcon, resolveModelIcon } from '@modauistudio/ui/icons'
 import LongCatAppLogo from '@renderer/assets/images/apps/longcat.svg'
 import Ai360ModelLogo from '@renderer/assets/images/models/360.png'
 import Ai360ModelLogoDark from '@renderer/assets/images/models/360_dark.png'
@@ -58,6 +60,7 @@ import {
   default as ChatGPTo1ModelLogoDark
 } from '@renderer/assets/images/models/gpt_dark.png'
 import ChatGPTImageModelLogo from '@renderer/assets/images/models/gpt_image_1.png'
+import ChatGPTImage2ModelLogo from '@renderer/assets/images/models/gpt_image_2.png'
 import ChatGPTo1ModelLogo from '@renderer/assets/images/models/gpt_o1.png'
 import GPT51ModelLogo from '@renderer/assets/images/models/gpt-5.1.png'
 import GPT51ChatModelLogo from '@renderer/assets/images/models/gpt-5.1-chat.png'
@@ -163,10 +166,16 @@ import NomicLogo from '@renderer/assets/images/providers/nomic.png'
 import ZhipuProviderLogo from '@renderer/assets/images/providers/zhipu.png'
 import type { Model } from '@renderer/types'
 
-export function getModelLogoById(modelId: string): string | undefined {
-  // FIXME: This is always true. Either remove it or fetch it.
-  const isLight = true
+export type { CompoundIcon }
 
+export function getModelLogoById(modelId: string): CompoundIcon | undefined {
+  if (!modelId) {
+    return undefined
+  }
+  return resolveModelIcon(modelId)
+}
+
+export function getModelLogoPath(modelId: string, isLight?: boolean): string | undefined {
   if (!modelId) {
     return undefined
   }
@@ -182,6 +191,7 @@ export function getModelLogoById(modelId: string): string | undefined {
     o1: isLight ? ChatGPTo1ModelLogo : ChatGPTo1ModelLogoDark,
     o3: isLight ? ChatGPTo1ModelLogo : ChatGPTo1ModelLogoDark,
     o4: isLight ? ChatGPTo1ModelLogo : ChatGPTo1ModelLogoDark,
+    'gpt-image-2': ChatGPTImage2ModelLogo,
     'gpt-image': ChatGPTImageModelLogo,
     'gpt-3': isLight ? ChatGPT35ModelLogo : ChatGPT35ModelLogoDark,
     'gpt-4': isLight ? ChatGPT4ModelLogo : ChatGPT4ModelLogoDark,
@@ -317,6 +327,11 @@ export function getModelLogoById(modelId: string): string | undefined {
   return undefined
 }
 
-export function getModelLogo(model: Model | undefined | null): string | undefined {
-  return model ? (getModelLogoById(model.id) ?? getModelLogoById(model.name)) : undefined
+export function getModelLogo(model: Model | undefined | null, providerId?: string): CompoundIcon | undefined {
+  if (!model) return undefined
+  const pid = providerId ?? model.provider
+  if (pid) {
+    return resolveIcon(model.id, pid) ?? resolveIcon(model.name, pid)
+  }
+  return resolveModelIcon(model.id) ?? resolveModelIcon(model.name)
 }

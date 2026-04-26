@@ -10,8 +10,8 @@
  * Any non-critical changes will conflict with the ongoing work.
  *
  * 🔗 Context & Status:
- * - Contribution Hold: https://github.com/CherryHQ/cherry-studio/issues/10954
- * - v2 Refactor PR   : https://github.com/CherryHQ/cherry-studio/pull/10162
+ * - Contribution Hold: https://github.com/CherryHQ/modaui-studio/issues/10954
+ * - v2 Refactor PR   : https://github.com/CherryHQ/modaui-studio/pull/10162
  * --------------------------------------------------------------------------
  */
 import { loggerService } from '@logger'
@@ -43,8 +43,8 @@ const knowledgeSlice = createSlice({
       if (base) {
         state.bases = state.bases.filter((b) => b.id !== action.payload.baseId)
         const files = base.items.filter((item) => item.type === 'file')
-        FileManager.deleteFiles(files.map((item) => item.content) as FileMetadata[])
-        window.api.knowledgeBase.delete(action.payload.baseId)
+        void FileManager.deleteFiles(files.map((item) => item.content) as FileMetadata[])
+        void window.api.knowledgeBase.delete(action.payload.baseId)
       }
     },
 

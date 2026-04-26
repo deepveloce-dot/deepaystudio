@@ -1,3 +1,4 @@
+import { useCache } from '@data/hooks/useCache'
 import { allMinApps } from '@renderer/config/minapps'
 import type { RootState } from '@renderer/store'
 import { useAppDispatch, useAppSelector } from '@renderer/store'
@@ -76,6 +77,11 @@ export const useMinapps = () => {
   const detectedRegion = useAppSelector((state: RootState) => state.runtime.detectedRegion)
   const dispatch = useAppDispatch()
 
+  const [openedKeepAliveMinapps, setOpenedKeepAliveMinapps] = useCache('minapp.opened_keep_alive')
+  const [currentMinappId, setCurrentMinappId] = useCache('minapp.current_id')
+  const [minappShow, setMinappShow] = useCache('minapp.show')
+  const [openedOneOffMinapp, setOpenedOneOffMinapp] = useCache('minapp.opened_oneoff')
+
   // Track if this hook instance has initiated detection to avoid duplicate requests
   const hasInitiatedDetection = useRef(false)
 
@@ -94,7 +100,7 @@ export const useMinapps = () => {
       const detected = await detectUserRegion()
       dispatch(setDetectedRegion(detected))
     }
-    initRegion()
+    void initRegion()
   }, [minAppRegionSetting, detectedRegion, dispatch])
 
   const mapApps = useCallback(
@@ -170,24 +176,27 @@ export const useMinapps = () => {
     [dispatch, disabled, effectiveRegion, getHiddenApps]
   )
 
-  // WRITE: Update pinned apps, preserving hidden pinned apps
+  // WRITE: Update pinned apps directly (no preservedHidden needed —
+  // pinned apps are never region-filtered in the read path)
   const updatePinnedMinapps = useCallback(
-    (visiblePinnedApps: MinAppType[]) => {
-      const hiddenIds = getHiddenApps(effectiveRegion)
-      const preservedHidden = pinned.filter((app) => hiddenIds.has(app.id))
-
-      const visibleIds = new Set(visiblePinnedApps.map((app) => app.id))
-      const toAppend = preservedHidden.filter((app) => !visibleIds.has(app.id))
-
-      dispatch(setPinnedMinApps([...visiblePinnedApps, ...toAppend]))
+    (apps: MinAppType[]) => {
+      dispatch(setPinnedMinApps(apps))
     },
-    [dispatch, pinned, effectiveRegion, getHiddenApps]
+    [dispatch]
   )
 
   return {
     minapps,
     disabled: disabledApps,
     pinned: pinnedApps,
+    openedKeepAliveMinapps,
+    currentMinappId,
+    minappShow,
+    openedOneOffMinapp,
+    setOpenedKeepAliveMinapps,
+    setCurrentMinappId,
+    setMinappShow,
+    setOpenedOneOffMinapp,
     updateMinapps,
     updateDisabledMinapps,
     updatePinnedMinapps

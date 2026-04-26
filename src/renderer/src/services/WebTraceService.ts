@@ -6,7 +6,7 @@ import type { ReadableSpan } from '@opentelemetry/sdk-trace-base'
 
 const logger = loggerService.withContext('WebTraceService')
 
-const TRACER_NAME = 'CherryStudio'
+const TRACER_NAME = 'ModauiStudio'
 
 class WebTraceService {
   init() {
@@ -20,10 +20,10 @@ class WebTraceService {
     const processor = new FunctionSpanProcessor(
       exporter,
       (span: ReadableSpan) => {
-        window.api.trace.saveEntity(convertSpanToSpanEntity(span))
+        void window.api.trace.saveEntity(convertSpanToSpanEntity(span))
       },
       (span: ReadableSpan) => {
-        window.api.trace.saveEntity(convertSpanToSpanEntity(span))
+        void window.api.trace.saveEntity(convertSpanToSpanEntity(span))
       }
     )
     WebTracer.init(

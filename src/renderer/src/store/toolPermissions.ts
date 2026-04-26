@@ -10,8 +10,8 @@
  * Any non-critical changes will conflict with the ongoing work.
  *
  * 🔗 Context & Status:
- * - Contribution Hold: https://github.com/CherryHQ/cherry-studio/issues/10954
- * - v2 Refactor PR   : https://github.com/CherryHQ/cherry-studio/pull/10162
+ * - Contribution Hold: https://github.com/CherryHQ/modaui-studio/issues/10954
+ * - v2 Refactor PR   : https://github.com/CherryHQ/modaui-studio/pull/10162
  * --------------------------------------------------------------------------
  */
 import type { PermissionUpdate } from '@anthropic-ai/claude-agent-sdk'
@@ -109,6 +109,13 @@ const toolPermissionsSlice = createSlice({
     clearAll: (state) => {
       state.requests = {}
       state.resolvedInputs = {}
+    },
+    clearPending: (state) => {
+      for (const [key, entry] of Object.entries(state.requests)) {
+        if (entry.status === 'pending' || entry.status === 'submitting-allow' || entry.status === 'submitting-deny') {
+          delete state.requests[key]
+        }
+      }
     }
   }
 })

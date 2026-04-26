@@ -1,5 +1,20 @@
+/**
+ * @fileoverview Tool callbacks for handling MCP tool calls during streaming
+ *
+ * This module provides callbacks for processing tool calls:
+ * - Tool call pending: create tool block when tool is called
+ * - Tool call complete: update with result or error
+ *
+ * ARCHITECTURE NOTE:
+ * These callbacks now use StreamingService for state management instead of Redux dispatch.
+ * This is part of the v2 data refactoring to use CacheService + Data API.
+ *
+ * NOTE: toolPermissionsActions dispatch is still required for permission management
+ * as this is outside the scope of streaming state management.
+ */
+
 import { loggerService } from '@logger'
-import type { AppDispatch } from '@renderer/store'
+import { BUILTIN_WEB_SEARCH_TOOL_NAME } from '@renderer/aiCore/tools/WebSearchTool'
 import store from '@renderer/store'
 import { toolPermissionsActions } from '@renderer/store/toolPermissions'
 import type { MCPToolResponse, NormalToolResponse } from '@renderer/types'
@@ -15,14 +30,19 @@ const logger = loggerService.withContext('ToolCallbacks')
 
 type ToolResponse = MCPToolResponse | NormalToolResponse
 
+/**
+ * Dependencies required for tool callbacks
+ *
+ * NOTE: dispatch removed - toolPermissions uses store.dispatch directly
+ * since it's outside streaming state scope.
+ */
 interface ToolCallbacksDependencies {
   blockManager: BlockManager
   assistantMsgId: string
-  dispatch: AppDispatch
 }
 
 export const createToolCallbacks = (deps: ToolCallbacksDependencies) => {
-  const { blockManager, assistantMsgId, dispatch } = deps
+  const { blockManager, assistantMsgId } = deps
 
   // 内部维护的状态
   const toolCallIdToBlockIdMap = new Map<string, string>()
@@ -50,7 +70,7 @@ export const createToolCallbacks = (deps: ToolCallbacksDependencies) => {
           metadata: { rawMcpToolResponse: toolResponse }
         })
         toolBlockId = toolBlock.id
-        blockManager.handleBlockTransition(toolBlock, MessageBlockType.TOOL)
+        void blockManager.handleBlockTransition(toolBlock, MessageBlockType.TOOL)
         toolCallIdToBlockIdMap.set(toolResponse.id, toolBlock.id)
       } else {
         logger.warn(
@@ -83,7 +103,7 @@ export const createToolCallbacks = (deps: ToolCallbacksDependencies) => {
             metadata: { rawMcpToolResponse: toolResponse }
           })
           toolBlockId = toolBlock.id
-          blockManager.handleBlockTransition(toolBlock, MessageBlockType.TOOL)
+          void blockManager.handleBlockTransition(toolBlock, MessageBlockType.TOOL)
           toolCallIdToBlockIdMap.set(toolResponse.id, toolBlock.id)
           existingBlockId = toolBlock.id
         }
@@ -104,7 +124,8 @@ export const createToolCallbacks = (deps: ToolCallbacksDependencies) => {
       const resolvedInput = toolResponse?.id ? state.toolPermissions.resolvedInputs[toolResponse.id] : undefined
 
       if (toolResponse?.id) {
-        dispatch(toolPermissionsActions.removeByToolCallId({ toolCallId: toolResponse.id }))
+        // Use store.dispatch for permission cleanup (outside streaming state scope)
+        store.dispatch(toolPermissionsActions.removeByToolCallId({ toolCallId: toolResponse.id }))
       }
       const existingBlockId = toolCallIdToBlockIdMap.get(toolResponse.id)
       toolCallIdToBlockIdMap.delete(toolResponse.id)
@@ -136,7 +157,8 @@ export const createToolCallbacks = (deps: ToolCallbacksDependencies) => {
         const mergedToolResponse: MCPToolResponse | NormalToolResponse = {
           ...(existingResponse ?? toolResponse),
           ...toolResponse,
-          arguments: mergedArguments
+          arguments: mergedArguments,
+          partialArguments: undefined // Strip redundant streaming buffer to free memory
         }
 
         const changes: Partial<ToolMessageBlock> = {
@@ -155,7 +177,7 @@ export const createToolCallbacks = (deps: ToolCallbacksDependencies) => {
         }
         blockManager.smartBlockUpdate(existingBlockId, changes, MessageBlockType.TOOL, true)
         // Handle citation block creation for web search results
-        if (toolResponse.tool.name === 'builtin_web_search' && toolResponse.response) {
+        if (toolResponse.tool.name === BUILTIN_WEB_SEARCH_TOOL_NAME && toolResponse.response) {
           const citationBlock = createCitationBlock(
             assistantMsgId,
             {
@@ -166,7 +188,7 @@ export const createToolCallbacks = (deps: ToolCallbacksDependencies) => {
             }
           )
           citationBlockId = citationBlock.id
-          blockManager.handleBlockTransition(citationBlock, MessageBlockType.CITATION)
+          void blockManager.handleBlockTransition(citationBlock, MessageBlockType.CITATION)
         }
         if (toolResponse.tool.name === 'builtin_knowledge_search' && toolResponse.response) {
           const citationBlock = createCitationBlock(
@@ -177,7 +199,7 @@ export const createToolCallbacks = (deps: ToolCallbacksDependencies) => {
             }
           )
           citationBlockId = citationBlock.id
-          blockManager.handleBlockTransition(citationBlock, MessageBlockType.CITATION)
+          void blockManager.handleBlockTransition(citationBlock, MessageBlockType.CITATION)
         }
       } else {
         logger.warn(

@@ -1,3 +1,4 @@
+import { Button } from '@modauistudio/ui'
 import ContextMenu from '@renderer/components/ContextMenu'
 import Favicon from '@renderer/components/Icons/FallbackFavicon'
 import Scrollbar from '@renderer/components/Scrollbar'
@@ -6,7 +7,7 @@ import type { Citation } from '@renderer/types'
 import { fetchWebContent, fetchXOEmbed, isXPostUrl } from '@renderer/utils/fetch'
 import { cleanMarkdownContent } from '@renderer/utils/formats'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
-import { Button, message, Popover, Skeleton } from 'antd'
+import { Popover, Skeleton } from 'antd'
 import { Check, Copy, FileSearch } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -91,7 +92,7 @@ const CitationsList: React.FC<CitationsListProps> = ({ citations }) => {
             padding: '0 0 8px 0'
           }
         }}>
-        <OpenButton type="text">
+        <OpenButton variant="ghost">
           <PreviewIcons>
             {previewItems.map((c, i) => (
               <PreviewIcon key={i} style={{ zIndex: previewItems.length - i }}>
@@ -113,7 +114,7 @@ const CitationsList: React.FC<CitationsListProps> = ({ citations }) => {
 const handleLinkClick = (url: string, event: React.MouseEvent) => {
   event.preventDefault()
   if (url.startsWith('http')) window.open(url, '_blank', 'noopener,noreferrer')
-  else window.api.file.openPath(url)
+  else void window.api.file.openPath(url)
 }
 
 const CopyButton: React.FC<{ content: string }> = ({ content }) => {
@@ -129,7 +130,7 @@ const CopyButton: React.FC<{ content: string }> = ({ content }) => {
         window.toast.success(t('common.copied'))
       })
       .catch(() => {
-        message.error(t('message.copy.failed'))
+        window.toast.error(t('message.copy.failed'))
       })
   }
 
@@ -157,10 +158,21 @@ const WebSearchCitation: React.FC<{ citation: Citation }> = ({ citation }) => {
     select: (content) => truncateText(content, 100)
   })
 
+<<<<<<< HEAD
+  const { data: oembedData } = useQuery({
+    queryKey: ['xOembed', citation.url],
+    queryFn: () => fetchXOEmbed(citation.url),
+    enabled: isXPost && Boolean(citation.url),
+    staleTime: Infinity
+  })
+
+  const displayTitle = isXPost && oembedData?.author ? `@${oembedData.author}` : citation.title
+=======
   const displayTitle =
     isXPost && fetchedContent
       ? fetchedContent.split(':')[0] // show @author as title
       : citation.title
+>>>>>>> origin/DeJeune-add-codeowner-clean
 
   return (
     <ContextMenu>

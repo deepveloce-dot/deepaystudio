@@ -10,8 +10,8 @@
  * Any non-critical changes will conflict with the ongoing work.
  *
  * 🔗 Context & Status:
- * - Contribution Hold: https://github.com/CherryHQ/cherry-studio/issues/10954
- * - v2 Refactor PR   : https://github.com/CherryHQ/cherry-studio/pull/10162
+ * - Contribution Hold: https://github.com/CherryHQ/modaui-studio/issues/10954
+ * - v2 Refactor PR   : https://github.com/CherryHQ/modaui-studio/pull/10162
  * --------------------------------------------------------------------------
  */
 import { loggerService } from '@logger'
@@ -23,17 +23,10 @@ import {
   isMac
 } from '@renderer/config/constant'
 import { allMinApps } from '@renderer/config/minapps'
-import {
-  isFunctionCallingModel,
-  isNotSupportTextDeltaModel,
-  qwen3Next80BModel,
-  qwen38bModel,
-  SYSTEM_MODELS
-} from '@renderer/config/models'
+import { isFunctionCallingModel, isNotSupportTextDeltaModel, qwenModel, SYSTEM_MODELS } from '@renderer/config/models'
 import { BUILTIN_OCR_PROVIDERS, BUILTIN_OCR_PROVIDERS_MAP, DEFAULT_OCR_PROVIDER } from '@renderer/config/ocr'
-import { TRANSLATE_PROMPT } from '@renderer/config/prompts'
 import { SYSTEM_PROVIDERS } from '@renderer/config/providers'
-import { DEFAULT_SIDEBAR_ICONS } from '@renderer/config/sidebar'
+// import { DEFAULT_SIDEBAR_ICONS } from '@renderer/config/sidebar'
 import db from '@renderer/databases'
 import { getModel } from '@renderer/hooks/useModel'
 import i18n from '@renderer/i18n'
@@ -56,7 +49,10 @@ import {
   isSupportStreamOptionsProvider
 } from '@renderer/utils/provider'
 import { API_SERVER_DEFAULTS } from '@shared/config/constant'
-import { defaultByPassRules, UpgradeChannel } from '@shared/config/constant'
+import { defaultByPassRules } from '@shared/config/constant'
+import { TRANSLATE_PROMPT } from '@shared/config/prompts'
+import { DefaultPreferences } from '@shared/data/preference/preferenceSchemas'
+import { UpgradeChannel } from '@shared/data/preference/preferenceTypes'
 import { isEmpty } from 'lodash'
 import { createMigrate } from 'redux-persist'
 
@@ -65,11 +61,10 @@ import { DEFAULT_TOOL_ORDER, DEFAULT_TOOL_ORDER_BY_SCOPE } from './inputTools'
 import { initialState as llmInitialState, moveProvider } from './llm'
 import { mcpSlice } from './mcp'
 import { initialState as notesInitialState } from './note'
-import { defaultActionItems } from './selectionStore'
+// import { defaultActionItems } from './selectionStore'
 import { initialState as settingsInitialState } from './settings'
 import { initialState as shortcutsInitialState } from './shortcuts'
 import { defaultWebSearchProviders } from './websearch'
-
 const logger = loggerService.withContext('Migrate')
 
 // remove logo base64 data to reduce the size of the state
@@ -173,14 +168,15 @@ function updateWebSearchProvider(state: RootState, provider: Partial<WebSearchPr
 }
 
 function addSelectionAction(state: RootState, id: string) {
-  if (state.selectionStore && state.selectionStore.actionItems) {
-    if (!state.selectionStore.actionItems.some((item) => item.id === id)) {
-      const action = defaultActionItems.find((item) => item.id === id)
-      if (action) {
-        state.selectionStore.actionItems.push(action)
-      }
-    }
-  }
+  // if (state.selectionStore && state.selectionStore.actionItems) {
+  //   if (!state.selectionStore.actionItems.some((item) => item.id === id)) {
+  //     const action = defaultActionItems.find((item) => item.id === id)
+  //     if (action) {
+  //       state.selectionStore.actionItems.push(action)
+  //     }
+  //   }
+  // }
+  return [state, id]
 }
 
 /**
@@ -658,14 +654,14 @@ const migrateConfig = {
       state.assistants.assistants.forEach((assistant) => {
         assistant.topics.forEach((topic) => {
           topic.assistantId = assistant.id
-          runAsyncFunction(async () => {
+          void runAsyncFunction(async () => {
             const _topic = await db.topics.get(topic.id)
             if (_topic) {
               const messages = (_topic?.messages || []).map((message) => ({
                 ...message,
                 assistantId: assistant.id
               }))
-              db.topics.put({ ..._topic, messages }, topic.id)
+              void db.topics.put({ ..._topic, messages }, topic.id)
             }
           })
         })
@@ -868,7 +864,7 @@ const migrateConfig = {
         })
       }
       state.settings.sidebarIcons = {
-        visible: DEFAULT_SIDEBAR_ICONS,
+        visible: DefaultPreferences.default['ui.sidebar.icons.visible'],
         disabled: []
       }
       return state
@@ -880,7 +876,7 @@ const migrateConfig = {
     try {
       if (!state.settings.sidebarIcons) {
         state.settings.sidebarIcons = {
-          visible: DEFAULT_SIDEBAR_ICONS,
+          visible: DefaultPreferences.default['ui.sidebar.icons.visible'],
           disabled: []
         }
       }
@@ -2261,10 +2257,10 @@ const migrateConfig = {
   '136': (state: RootState) => {
     try {
       state.settings.sidebarIcons.visible = [...new Set(state.settings.sidebarIcons.visible)].filter((icon) =>
-        DEFAULT_SIDEBAR_ICONS.includes(icon)
+        DefaultPreferences.default['ui.sidebar.icons.visible'].includes(icon)
       )
       state.settings.sidebarIcons.disabled = [...new Set(state.settings.sidebarIcons.disabled)].filter((icon) =>
-        DEFAULT_SIDEBAR_ICONS.includes(icon)
+        DefaultPreferences.default['ui.sidebar.icons.visible'].includes(icon)
       )
       return state
     } catch (error) {
@@ -2296,8 +2292,8 @@ const migrateConfig = {
   },
   '139': (state: RootState) => {
     try {
-      addProvider(state, 'cherryin')
-      state.llm.providers = moveProvider(state.llm.providers, 'cherryin', 1)
+      addProvider(state, 'modauiin')
+      state.llm.providers = moveProvider(state.llm.providers, 'modauiin', 1)
 
       const zhipuProvider = state.llm.providers.find((p) => p.id === 'zhipu')
 
@@ -2570,45 +2566,45 @@ const migrateConfig = {
       addProvider(state, 'aionly')
       state.llm.providers = moveProvider(state.llm.providers, 'aionly', 10)
 
-      const cherryinProvider = state.llm.providers.find((provider) => provider.id === 'cherryin')
+      const modauiinProvider = state.llm.providers.find((provider) => provider.id === 'modauiin')
 
-      if (cherryinProvider) {
-        updateProvider(state, 'cherryin', {
-          apiHost: 'https://open.cherryin.ai',
+      if (modauiinProvider) {
+        updateProvider(state, 'modauiin', {
+          apiHost: 'https://open.modauiin.ai',
           models: []
         })
       }
 
-      if (state.llm.defaultModel?.provider === 'cherryin') {
-        state.llm.defaultModel.provider = 'cherryai'
+      if (state.llm.defaultModel?.provider === 'modauiin') {
+        state.llm.defaultModel.provider = 'modauiai'
       }
 
-      if (state.llm.quickModel?.provider === 'cherryin') {
-        state.llm.quickModel.provider = 'cherryai'
+      if (state.llm.quickModel?.provider === 'modauiin') {
+        state.llm.quickModel.provider = 'modauiai'
       }
 
-      if (state.llm.translateModel?.provider === 'cherryin') {
-        state.llm.translateModel.provider = 'cherryai'
+      if (state.llm.translateModel?.provider === 'modauiin') {
+        state.llm.translateModel.provider = 'modauiai'
       }
 
       state.assistants.assistants.forEach((assistant) => {
-        if (assistant.model?.provider === 'cherryin') {
-          assistant.model.provider = 'cherryai'
+        if (assistant.model?.provider === 'modauiin') {
+          assistant.model.provider = 'modauiai'
         }
-        if (assistant.defaultModel?.provider === 'cherryin') {
-          assistant.defaultModel.provider = 'cherryai'
+        if (assistant.defaultModel?.provider === 'modauiin') {
+          assistant.defaultModel.provider = 'modauiai'
         }
       })
 
       // @ts-ignore
       state.agents.agents.forEach((agent) => {
         // @ts-ignore model is not defined in Agent
-        if (agent.model?.provider === 'cherryin') {
+        if (agent.model?.provider === 'modauiin') {
           // @ts-ignore model is not defined in Agent
-          agent.model.provider = 'cherryai'
+          agent.model.provider = 'modauiai'
         }
-        if (agent.defaultModel?.provider === 'cherryin') {
-          agent.defaultModel.provider = 'cherryai'
+        if (agent.defaultModel?.provider === 'modauiin') {
+          agent.defaultModel.provider = 'modauiai'
         }
       })
       return state
@@ -2619,7 +2615,7 @@ const migrateConfig = {
   },
   '158': (state: RootState) => {
     try {
-      state.llm.providers = state.llm.providers.filter((provider) => provider.id !== 'cherryin')
+      state.llm.providers = state.llm.providers.filter((provider) => provider.id !== 'modauiin')
       addProvider(state, 'longcat')
       return state
     } catch (error) {
@@ -2642,8 +2638,8 @@ const migrateConfig = {
       removeMiniAppFromState(state, 'nm-search')
       removeMiniAppFromState(state, 'hika')
       removeMiniAppFromState(state, 'hugging-chat')
-      addProvider(state, 'cherryin')
-      state.llm.providers = moveProvider(state.llm.providers, 'cherryin', 1)
+      addProvider(state, 'modauiin')
+      state.llm.providers = moveProvider(state.llm.providers, 'modauiin', 1)
       return state
     } catch (error) {
       logger.error('migrate 161 error', error as Error)
@@ -2689,7 +2685,7 @@ const migrateConfig = {
     try {
       addProvider(state, 'sophnet')
       state.llm.providers = moveProvider(state.llm.providers, 'sophnet', 17)
-      state.settings.defaultPaintingProvider = 'cherryin'
+      state.settings.defaultPaintingProvider = 'modauiin'
       return state
     } catch (error) {
       logger.error('migrate 170 error', error as Error)
@@ -2797,8 +2793,8 @@ const migrateConfig = {
           case 'grok':
             provider.anthropicApiHost = 'https://api.x.ai'
             break
-          case 'cherryin':
-            provider.anthropicApiHost = 'https://open.cherryin.net'
+          case 'modauiin':
+            provider.anthropicApiHost = 'https://open.modauiin.net'
             break
           case 'longcat':
             provider.anthropicApiHost = 'https://api.longcat.chat/anthropic'
@@ -2967,9 +2963,9 @@ const migrateConfig = {
   '183': (state: RootState) => {
     try {
       state.llm.providers.forEach((provider) => {
-        if (provider.id === SystemProviderIds.cherryin) {
-          provider.apiHost = 'https://open.cherryin.cc'
-          provider.anthropicApiHost = 'https://open.cherryin.cc'
+        if (provider.id === SystemProviderIds.modauiin) {
+          provider.apiHost = 'https://open.modauiin.cc'
+          provider.anthropicApiHost = 'https://open.modauiin.cc'
         }
       })
       state.llm.providers = moveProvider(state.llm.providers, SystemProviderIds.poe, 10)
@@ -3084,7 +3080,7 @@ const migrateConfig = {
   // 1.7.7
   '189': (state: RootState) => {
     try {
-      window.api.memory.migrateMemoryDb()
+      // void window.api.memory.migrateMemoryDb()
       // @ts-ignore
       const memoryLlmApiClient = state?.memory?.memoryConfig?.llmApiClient
       // @ts-ignore
@@ -3168,21 +3164,21 @@ const migrateConfig = {
   '194': (state: RootState) => {
     try {
       const GLM_4_5_FLASH_MODEL = 'glm-4.5-flash'
-      if (state.llm.defaultModel?.provider === 'cherryai' && state.llm.defaultModel?.id === GLM_4_5_FLASH_MODEL) {
-        state.llm.defaultModel = qwen3Next80BModel
+      if (state.llm.defaultModel?.provider === 'modauiai' && state.llm.defaultModel?.id === GLM_4_5_FLASH_MODEL) {
+        state.llm.defaultModel = qwenModel
       }
-      if (state.llm.quickModel?.provider === 'cherryai' && state.llm.quickModel?.id === GLM_4_5_FLASH_MODEL) {
-        state.llm.quickModel = qwen38bModel
+      if (state.llm.quickModel?.provider === 'modauiai' && state.llm.quickModel?.id === GLM_4_5_FLASH_MODEL) {
+        state.llm.quickModel = qwenModel
       }
-      if (state.llm.translateModel?.provider === 'cherryai' && state.llm.translateModel?.id === GLM_4_5_FLASH_MODEL) {
-        state.llm.translateModel = qwen3Next80BModel
+      if (state.llm.translateModel?.provider === 'modauiai' && state.llm.translateModel?.id === GLM_4_5_FLASH_MODEL) {
+        state.llm.translateModel = qwenModel
       }
       state.assistants.assistants.forEach((assistant) => {
-        if (assistant.model?.provider === 'cherryai' && assistant.model?.id === GLM_4_5_FLASH_MODEL) {
-          assistant.model = qwen3Next80BModel
+        if (assistant.model?.provider === 'modauiai' && assistant.model?.id === GLM_4_5_FLASH_MODEL) {
+          assistant.model = qwenModel
         }
-        if (assistant.defaultModel?.provider === 'cherryai' && assistant.defaultModel?.id === GLM_4_5_FLASH_MODEL) {
-          assistant.defaultModel = qwen3Next80BModel
+        if (assistant.defaultModel?.provider === 'modauiai' && assistant.defaultModel?.id === GLM_4_5_FLASH_MODEL) {
+          assistant.defaultModel = qwenModel
         }
       })
       // Initialize mini app region filter setting
@@ -3216,6 +3212,7 @@ const migrateConfig = {
       if (state.paintings && !state.paintings.ppio_edit) {
         state.paintings.ppio_edit = []
       }
+      logger.info('migrate 196 success')
       return state
     } catch (error) {
       logger.error('migrate 196 error', error as Error)
@@ -3224,9 +3221,10 @@ const migrateConfig = {
   },
   '197': (state: RootState) => {
     try {
-      if (state.openclaw.gatewayPort === 18789) {
+      if (state.openclaw?.gatewayPort === 18789) {
         state.openclaw.gatewayPort = 18790
       }
+      logger.info('migrate 197 success')
       return state
     } catch (error) {
       logger.error('migrate 197 error', error as Error)
@@ -3259,20 +3257,177 @@ const migrateConfig = {
   '200': (state: RootState) => {
     try {
       state.llm.providers.forEach((provider) => {
+<<<<<<< HEAD
+        if (provider.type === 'ollama') {
+          provider.anthropicApiHost = provider.apiHost || 'http://localhost:11434'
+        }
+      })
+
+      // Migrate minimax app id to hailuo
+      if (state.minapps) {
+        const lists: Array<'enabled' | 'disabled' | 'pinned'> = ['enabled', 'disabled', 'pinned']
+        lists.forEach((list) => {
+          state.minapps[list] = state.minapps[list].map((app) =>
+            app.id === 'minimax' ? { ...app, id: 'hailuo' } : app
+          )
+        })
+      }
+      // Add new MiniMax Agent apps
+      addMiniApp(state, 'minimax-agent')
+      addMiniApp(state, 'minimax-agent-global')
+      addMiniApp(state, 'ima')
+      // Add new providers: minimax-global and zai
+      addProvider(state, 'minimax-global')
+      addProvider(state, 'zai')
+      // Update grok provider type to openai-response
+      state.llm.providers.forEach((provider) => {
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
         if (provider.id === SystemProviderIds.grok) {
           provider.type = 'openai-response'
         }
       })
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
       return state
     } catch (error) {
       logger.error('migrate 200 error', error as Error)
       return state
     }
+<<<<<<< HEAD
+  },
+  '201': (state: RootState) => {
+    try {
+      addWebSearchProvider(state, 'querit')
+      return state
+    } catch (error) {
+      logger.error('migrate 201 error', error as Error)
+      return state
+    }
+  },
+  '202': (state: RootState) => {
+    try {
+      const filesystemServer = state.mcp?.servers?.find((s: any) => s.name === '@cherry/filesystem')
+      if (filesystemServer && filesystemServer.disabledAutoApproveTools === undefined) {
+        filesystemServer.disabledAutoApproveTools = ['write', 'edit', 'delete']
+      }
+      return state
+    } catch (error) {
+      logger.error('migrate 202 error', error as Error)
+      return state
+    }
+  },
+  '203': (state: RootState) => {
+    try {
+      if (state.settings && state.settings.sidebarIcons) {
+        // Add 'agents' to visible icons if not already present
+        if (!state.settings.sidebarIcons.visible.includes('agents')) {
+          // Insert after 'assistants' if present, otherwise append
+          const assistantsIndex = state.settings.sidebarIcons.visible.indexOf('assistants')
+          if (assistantsIndex !== -1) {
+            state.settings.sidebarIcons.visible = [
+              ...state.settings.sidebarIcons.visible.slice(0, assistantsIndex + 1),
+              'agents',
+              ...state.settings.sidebarIcons.visible.slice(assistantsIndex + 1)
+            ]
+          } else {
+            state.settings.sidebarIcons.visible = [...state.settings.sidebarIcons.visible, 'agents']
+          }
+        }
+      }
+
+      // Add 'agents' tab if not already present
+      if (state.tabs && !state.tabs.tabs.some((tab: { id: string }) => tab.id === 'agents')) {
+        const homeIndex = state.tabs.tabs.findIndex((tab: { id: string }) => tab.id === 'home')
+        const insertIndex = homeIndex !== -1 ? homeIndex + 1 : state.tabs.tabs.length
+        state.tabs.tabs.splice(insertIndex, 0, { id: 'agents', path: '/agents' })
+      }
+
+      logger.info('migrate 203 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 203 error', error as Error)
+      return state
+    }
+  },
+  '204': (state: RootState) => {
+    try {
+      if (state.llm.defaultModel?.provider === 'modauiai') {
+        state.llm.defaultModel = qwenModel
+      }
+      if (state.llm.quickModel?.provider === 'modauiai') {
+        state.llm.quickModel = qwenModel
+      }
+      if (state.llm.translateModel?.provider === 'modauiai') {
+        state.llm.translateModel = qwenModel
+      }
+      state.assistants.assistants.forEach((assistant) => {
+        if (assistant.model?.provider === 'modauiai') {
+          assistant.model = qwenModel
+        }
+        if (assistant.defaultModel?.provider === 'modauiai') {
+          assistant.defaultModel = qwenModel
+        }
+      })
+      logger.info('migrate 204 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 204 error', error as Error)
+      return state
+    }
+  },
+  '205': (state: RootState) => {
+    try {
+      localStorage.setItem('onboarding-completed', 'true')
+
+      // Add anthropicApiHost to lmstudio and ollama providers for CodeTools compatibility
+      state.llm.providers.forEach((provider) => {
+        if (provider.id === 'lmstudio' && !provider.anthropicApiHost) {
+          provider.anthropicApiHost = 'http://localhost:1234'
+        }
+        if (provider.id === 'ollama' && !provider.anthropicApiHost) {
+          provider.anthropicApiHost = provider.apiHost || 'http://localhost:11434'
+        }
+      })
+
+      logger.info('migrate 205 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 205 error', error as Error)
+      return state
+    }
+  },
+  '206': (state: RootState) => {
+    try {
+      const { sessionToolOrder } = state.inputTools
+      const permissionModeKey = 'permission_mode'
+      if (
+        sessionToolOrder &&
+        !sessionToolOrder?.visible?.includes(permissionModeKey) &&
+        !sessionToolOrder?.hidden?.includes(permissionModeKey)
+      ) {
+        const createSessionIndex = sessionToolOrder.visible.indexOf('create_session')
+        if (createSessionIndex !== -1) {
+          sessionToolOrder.visible.splice(createSessionIndex + 1, 0, permissionModeKey)
+        } else {
+          sessionToolOrder.visible.unshift(permissionModeKey)
+        }
+      }
+      logger.info('migrate 206 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 206 error', error as Error)
+      return state
+    }
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
   }
 }
 
-// 注意：添加新迁移时，记得同时更新 persistReducer
-// file://./index.ts
+// // 注意：添加新迁移时，记得同时更新 persistReducer
+// // file://./index.ts
 
 const migrate = createMigrate(migrateConfig as any)
 

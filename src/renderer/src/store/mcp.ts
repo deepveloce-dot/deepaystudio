@@ -10,8 +10,8 @@
  * Any non-critical changes will conflict with the ongoing work.
  *
  * 🔗 Context & Status:
- * - Contribution Hold: https://github.com/CherryHQ/cherry-studio/issues/10954
- * - v2 Refactor PR   : https://github.com/CherryHQ/cherry-studio/pull/10162
+ * - Contribution Hold: https://github.com/CherryHQ/modaui-studio/issues/10954
+ * - v2 Refactor PR   : https://github.com/CherryHQ/modaui-studio/pull/10162
  * --------------------------------------------------------------------------
  */
 import { loggerService } from '@logger'
@@ -19,6 +19,7 @@ import { createSlice, nanoid, type PayloadAction } from '@reduxjs/toolkit'
 import { type BuiltinMCPServer, BuiltinMCPServerNames, type MCPConfig, type MCPServer } from '@renderer/types'
 
 const logger = loggerService.withContext('Store:MCP')
+const filesystemManualApprovalTools = ['write', 'edit', 'delete'] as const
 
 export const initialState: MCPConfig = {
   servers: [],
@@ -95,7 +96,7 @@ export const hubMCPServer: BuiltinMCPServer = {
   name: BuiltinMCPServerNames.hub,
   type: 'inMemory',
   isActive: true,
-  provider: 'CherryAI',
+  provider: 'ModauiAI',
   installSource: 'builtin',
   isTrusted: true
 }
@@ -111,13 +112,23 @@ export const hubMCPServer: BuiltinMCPServer = {
 export const builtinMCPServers: BuiltinMCPServer[] = [
   {
     id: nanoid(),
+    name: BuiltinMCPServerNames.flomo,
+    reference: 'https://flomoapp.com',
+    type: 'inMemory',
+    isActive: false,
+    provider: 'flomo',
+    installSource: 'builtin',
+    isTrusted: true
+  },
+  {
+    id: nanoid(),
     name: BuiltinMCPServerNames.mcpAutoInstall,
     reference: 'https://docs.cherry-ai.com/advanced-basic/mcp/auto-install',
     type: 'inMemory',
     command: 'npx',
     args: ['-y', '@mcpmarket/mcp-auto-install', 'connect', '--json'],
     isActive: false,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -131,7 +142,7 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
       MEMORY_FILE_PATH: 'YOUR_MEMORY_FILE_PATH'
     },
     shouldConfig: true,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -140,7 +151,7 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
     name: BuiltinMCPServerNames.sequentialThinking,
     type: 'inMemory',
     isActive: true,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -153,7 +164,7 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
       BRAVE_API_KEY: 'YOUR_API_KEY'
     },
     shouldConfig: true,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -162,7 +173,7 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
     name: BuiltinMCPServerNames.fetch,
     type: 'inMemory',
     isActive: true,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -170,10 +181,11 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
     id: nanoid(),
     name: BuiltinMCPServerNames.filesystem,
     type: 'inMemory',
-    args: ['/Users/username/Desktop', '/path/to/other/allowed/dir'],
+    args: ['/Users/username/Desktop'],
+    disabledAutoApproveTools: [...filesystemManualApprovalTools],
     shouldConfig: true,
     isActive: false,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -186,7 +198,7 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
       DIFY_KEY: 'YOUR_DIFY_KEY'
     },
     shouldConfig: true,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -195,7 +207,7 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
     name: BuiltinMCPServerNames.python,
     type: 'inMemory',
     isActive: false,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -209,7 +221,7 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
       DIDI_API_KEY: 'YOUR_DIDI_API_KEY'
     },
     shouldConfig: true,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },
@@ -218,7 +230,7 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
     name: BuiltinMCPServerNames.browser,
     type: 'inMemory',
     isActive: false,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },

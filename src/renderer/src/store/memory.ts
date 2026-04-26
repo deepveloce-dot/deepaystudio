@@ -10,12 +10,11 @@
  * Any non-critical changes will conflict with the ongoing work.
  *
  * 🔗 Context & Status:
- * - Contribution Hold: https://github.com/CherryHQ/cherry-studio/issues/10954
- * - v2 Refactor PR   : https://github.com/CherryHQ/cherry-studio/pull/10162
+ * - Contribution Hold: https://github.com/CherryHQ/modaui-studio/issues/10954
+ * - v2 Refactor PR   : https://github.com/CherryHQ/modaui-studio/pull/10162
  * --------------------------------------------------------------------------
  */
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { factExtractionPrompt, updateMemorySystemPrompt } from '@renderer/utils/memory-prompts'
 import type { MemoryConfig } from '@types'
 
 /**
@@ -35,8 +34,8 @@ export interface MemoryState {
 const defaultMemoryConfig: MemoryConfig = {
   embeddingDimensions: undefined,
   isAutoDimensions: true,
-  customFactExtractionPrompt: factExtractionPrompt,
-  customUpdateMemoryPrompt: updateMemorySystemPrompt
+  customFactExtractionPrompt: '',
+  customUpdateMemoryPrompt: ''
 }
 
 /**

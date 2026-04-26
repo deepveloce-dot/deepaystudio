@@ -1,11 +1,11 @@
+import { Button, Flex, RowFlex, Switch, Tooltip, WarnTooltip } from '@modauistudio/ui'
+import { HelpTooltip } from '@modauistudio/ui'
 import { adaptProvider } from '@renderer/aiCore/provider/providerConfig'
 import OpenAIAlert from '@renderer/components/Alert/OpenAIAlert'
-import { ErrorDetailModal } from '@renderer/components/ErrorDetailModal'
+import { showErrorDetailPopup } from '@renderer/components/ErrorDetailModal'
 import { LoadingIcon } from '@renderer/components/Icons'
-import { HStack } from '@renderer/components/Layout'
 import { ApiKeyListPopup } from '@renderer/components/Popups/ApiKeyListPopup'
 import Selector from '@renderer/components/Selector'
-import { HelpTooltip } from '@renderer/components/TooltipIcons'
 import { isRerankModel } from '@renderer/config/models'
 import { PROVIDER_URLS } from '@renderer/config/providers'
 import { useTheme } from '@renderer/context/ThemeProvider'
@@ -35,12 +35,12 @@ import {
   isSupportAnthropicPromptCacheProvider,
   isVertexProvider
 } from '@renderer/utils/provider'
-import { Button, Divider, Flex, Input, Select, Space, Switch, Tooltip } from 'antd'
+import { Divider, Input, Select, Space } from 'antd'
 import Link from 'antd/es/typography/Link'
 import { debounce, isEmpty } from 'lodash'
-import { Bolt, Check, Settings2, SquareArrowOutUpRight, TriangleAlert } from 'lucide-react'
+import { Bolt, Check, Settings2, SquareArrowOutUpRight } from 'lucide-react'
 import type { FC } from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
@@ -54,8 +54,8 @@ import {
 } from '..'
 import ApiOptionsSettingsPopup from './ApiOptionsSettings/ApiOptionsSettingsPopup'
 import AwsBedrockSettings from './AwsBedrockSettings'
-import CherryINOAuth from './CherryINOAuth'
-import CherryINSettings from './CherryINSettings'
+import ModauiINOAuth from './ModauiINOAuth'
+import ModauiINSettings from './ModauiINSettings'
 import CustomHeaderPopup from './CustomHeaderPopup'
 import DMXAPISettings from './DMXAPISettings'
 import GithubCopilotSettings from './GithubCopilotSettings'
@@ -68,6 +68,8 @@ import VertexAISettings from './VertexAISettings'
 
 interface Props {
   providerId: string
+  /** Whether in onboarding mode for new users */
+  isOnboarding?: boolean
 }
 
 const ANTHROPIC_COMPATIBLE_PROVIDER_IDS = [
@@ -78,7 +80,7 @@ const ANTHROPIC_COMPATIBLE_PROVIDER_IDS = [
   SystemProviderIds.modelscope,
   SystemProviderIds.aihubmix,
   SystemProviderIds.grok,
-  SystemProviderIds.cherryin,
+  SystemProviderIds.modauiin,
   SystemProviderIds.longcat,
   SystemProviderIds.minimax,
   SystemProviderIds.silicon,
@@ -86,7 +88,8 @@ const ANTHROPIC_COMPATIBLE_PROVIDER_IDS = [
   SystemProviderIds.dmxapi,
   SystemProviderIds.mimo,
   SystemProviderIds.openrouter,
-  SystemProviderIds.tokenflux
+  SystemProviderIds.tokenflux,
+  SystemProviderIds.ollama
 ] as const
 type AnthropicCompatibleProviderId = (typeof ANTHROPIC_COMPATIBLE_PROVIDER_IDS)[number]
 
@@ -97,7 +100,7 @@ const isAnthropicCompatibleProviderId = (id: string): id is AnthropicCompatibleP
 
 type HostField = 'apiHost' | 'anthropicApiHost'
 
-const ProviderSetting: FC<Props> = ({ providerId }) => {
+const ProviderSetting: FC<Props> = ({ providerId, isOnboarding = false }) => {
   const { provider, updateProvider, models } = useProvider(providerId)
   const allProviders = useAllProviders()
   const { updateProviders } = useProviders()
@@ -112,7 +115,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
 
   const isAzureOpenAI = isAzureOpenAIProvider(provider)
   const isDmxapi = provider.id === 'dmxapi'
-  const isCherryIN = provider.id === 'cherryin'
+  const isModauiIN = provider.id === 'modauiin'
   const isChineseUser = i18n.language.startsWith('zh')
   const noAPIInputProviders = ['aws-bedrock'] as const satisfies SystemProviderId[]
   const hideApiInput = noAPIInputProviders.some((id) => id === provider.id)
@@ -131,7 +134,6 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
     status: HealthStatus.NOT_CHECKED,
     checking: false
   })
-  const [showErrorModal, setShowErrorModal] = useState(false)
 
   const updateWebSearchProviderKey = useCallback(
     ({ apiKey }: { apiKey: string }) => {
@@ -140,31 +142,56 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
     [dispatch, provider.id]
   )
 
+  // Store callbacks in ref to avoid recreating debounce function when dependencies change
+  const callbacks = { updateProvider, updateWebSearchProviderKey, isOnboarding, providerEnabled: provider.enabled }
+  const callbacksRef = useRef(callbacks)
+  callbacksRef.current = callbacks
+
   const debouncedUpdateApiKey = useMemo(
     () =>
       debounce((value: string) => {
-        updateProvider({ apiKey: formatApiKeys(value) })
-        updateWebSearchProviderKey({ apiKey: formatApiKeys(value) })
+        const { updateProvider, updateWebSearchProviderKey, isOnboarding, providerEnabled } = callbacksRef.current
+        const formattedKey = formatApiKeys(value)
+        updateProvider({ apiKey: formattedKey })
+        updateWebSearchProviderKey({ apiKey: formattedKey })
+        // Auto-enable provider when apiKey is updated in onboarding mode
+        if (isOnboarding && formattedKey && !providerEnabled) {
+          updateProvider({ enabled: true })
+        }
       }, 150),
-    [updateProvider, updateWebSearchProviderKey]
+    []
   )
 
-  // 同步 provider.apiKey 到 localApiKey
-  // 重置连通性检查状态
+  // Track whether update comes from external source to avoid loops
+  const isExternalUpdateRef = useRef(false)
+
+  // Sync provider.apiKey to localApiKey and reset connectivity status
   useEffect(() => {
+    // Cancel any pending debounce calls to prevent old values from overwriting new ones
+    debouncedUpdateApiKey.cancel()
+    isExternalUpdateRef.current = true
     setLocalApiKey(provider.apiKey)
     setApiKeyConnectivity({ status: HealthStatus.NOT_CHECKED })
-  }, [provider.apiKey])
+  }, [provider.apiKey, debouncedUpdateApiKey])
 
-  // 同步 localApiKey 到 provider.apiKey（防抖）
+  // Sync localApiKey to provider.apiKey (debounced)
+  // Only trigger on user input, not on external updates
   useEffect(() => {
+    if (isExternalUpdateRef.current) {
+      isExternalUpdateRef.current = false
+      return
+    }
     if (localApiKey !== provider.apiKey) {
       debouncedUpdateApiKey(localApiKey)
     }
-
-    // 卸载时取消任何待执行的更新
-    return () => debouncedUpdateApiKey.cancel()
   }, [localApiKey, provider.apiKey, debouncedUpdateApiKey])
+
+  // Flush pending updates on unmount to prevent data loss
+  useEffect(() => {
+    return () => {
+      debouncedUpdateApiKey.flush()
+    }
+  }, [debouncedUpdateApiKey])
 
   const isApiKeyConnectable = useMemo(() => {
     return apiKeyConnectivity.status === 'success'
@@ -192,7 +219,13 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
       return
     }
     if (isVertexProvider(provider) || apiHost.trim()) {
-      updateProvider({ apiHost })
+      // For new-api provider, keep apiHost and anthropicApiHost in sync
+      if (isNewApiProvider(provider)) {
+        updateProvider({ apiHost, anthropicApiHost: apiHost })
+        setAnthropicHost(apiHost)
+      } else {
+        updateProvider({ apiHost })
+      }
     } else {
       setApiHost(provider.apiHost)
     }
@@ -226,6 +259,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
 
   const onCheckApi = async () => {
     const formattedLocalKey = formatApiKeys(localApiKey)
+
     // 如果存在多个密钥，直接打开管理窗口
     if (formattedLocalKey.includes(',')) {
       await openApiKeyList()
@@ -259,6 +293,12 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
       })
 
       setApiKeyConnectivity((prev) => ({ ...prev, status: HealthStatus.SUCCESS }))
+
+      // Auto-enable provider when API check succeeds in onboarding mode
+      if (isOnboarding && !provider.enabled) {
+        updateProvider({ enabled: true })
+      }
+
       setTimeoutTimer(
         'onCheckApi',
         () => {
@@ -335,18 +375,12 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
 
     return (
       <>
-        <Tooltip title={apiKeyConnectivity.error?.message || t('settings.models.check.failed')}>
-          <TriangleAlert
-            size={16}
-            color="var(--color-status-warning)"
-            style={{ cursor: 'pointer' }}
-            onClick={() => setShowErrorModal(true)}
-          />
-        </Tooltip>
-        <ErrorDetailModal
-          open={showErrorModal}
-          onClose={() => setShowErrorModal(false)}
-          error={apiKeyConnectivity.error}
+        <WarnTooltip
+          content={
+            <ErrorOverlay>{apiKeyConnectivity.error?.message || t('settings.models.check.failed')}</ErrorOverlay>
+          }
+          iconProps={{ size: 16, color: 'var(--color-status-warning)' }}
+          onClick={() => showErrorDetailPopup({ error: apiKeyConnectivity.error })}
         />
       </>
     )
@@ -364,7 +398,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
   }, [provider.anthropicApiHost])
 
   const canConfigureAnthropicHost = useMemo(() => {
-    if (isCherryIN) {
+    if (isModauiIN) {
       return false
     }
     if (isNewApiProvider(provider)) {
@@ -373,7 +407,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
     return (
       provider.type !== 'anthropic' && isSystemProviderId(provider.id) && isAnthropicCompatibleProviderId(provider.id)
     )
-  }, [isCherryIN, provider])
+  }, [isModauiIN, provider])
 
   const anthropicHostPreview = useMemo(() => {
     const rawHost = anthropicApiHost ?? provider.anthropicApiHost
@@ -411,28 +445,30 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
   return (
     <SettingContainer theme={theme} style={{ background: 'var(--color-background)' }}>
       <SettingTitle>
-        <Flex align="center" gap={8}>
+        <Flex className="items-center gap-2">
           <ProviderName>{fancyProviderName}</ProviderName>
           {officialWebsite && (
             <Link target="_blank" href={providerConfig.websites.official} style={{ display: 'flex' }}>
-              <Button type="text" size="small" icon={<SquareArrowOutUpRight size={14} />} />
+              <Button variant="ghost" size="sm">
+                <SquareArrowOutUpRight size={14} />
+              </Button>
             </Link>
           )}
           {(!isSystemProvider(provider) || isSupportAnthropicPromptCacheProvider(provider)) && (
-            <Tooltip title={t('settings.provider.api.options.label')}>
+            <Tooltip content={t('settings.provider.api.options.label')}>
               <Button
-                type="text"
-                icon={<Bolt size={14} />}
-                size="small"
-                onClick={() => ApiOptionsSettingsPopup.show({ providerId: provider.id })}
-              />
+                variant="ghost"
+                size="sm"
+                onClick={() => ApiOptionsSettingsPopup.show({ providerId: provider.id })}>
+                <Bolt size={14} />
+              </Button>
             </Tooltip>
           )}
         </Flex>
         <Switch
-          value={provider.enabled}
+          checked={provider.enabled}
           key={provider.id}
-          onChange={(enabled) => {
+          onCheckedChange={(enabled) => {
             updateProvider({ apiHost, enabled })
             if (enabled) {
               moveProviderToTop(provider.id)
@@ -442,7 +478,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
       </SettingTitle>
       <Divider style={{ width: '100%', margin: '10px 0' }} />
       {isProviderSupportAuth(provider) && <ProviderOAuth providerId={provider.id} />}
-      {isCherryIN && <CherryINOAuth providerId={provider.id} />}
+      {isModauiIN && <ModauiINOAuth providerId={provider.id} />}
       {provider.id === 'openai' && <OpenAIAlert />}
       {provider.id === 'ovms' && <OVMSSettings />}
       {isDmxapi && <DMXAPISettings providerId={provider.id} />}
@@ -474,8 +510,10 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
                 }}>
                 {t('settings.provider.api_key.label')}
                 {provider.id !== 'copilot' && (
-                  <Tooltip title={t('settings.provider.api.key.list.open')} mouseEnterDelay={0.5}>
-                    <Button type="text" onClick={openApiKeyList} icon={<Settings2 size={16} />} />
+                  <Tooltip title={t('settings.provider.api.key.list.open')} delay={500}>
+                    <Button variant="ghost" onClick={openApiKeyList} size="icon">
+                      <Settings2 size={16} />
+                    </Button>
                   </Tooltip>
                 )}
               </SettingSubtitle>
@@ -490,13 +528,12 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
                   suffix={renderStatusIndicator()}
                 />
                 <Button
-                  type={isApiKeyConnectable ? 'primary' : 'default'}
-                  ghost={isApiKeyConnectable}
+                  variant={isApiKeyConnectable ? 'ghost' : undefined}
                   onClick={onCheckApi}
                   disabled={!apiHost || apiKeyConnectivity.checking}>
                   {apiKeyConnectivity.checking ? (
                     <LoadingIcon />
-                  ) : apiKeyConnectivity.status === 'success' ? (
+                  ) : apiKeyConnectivity.status === HealthStatus.SUCCESS ? (
                     <Check size={16} className="lucide-custom" />
                   ) : (
                     t('settings.provider.check')
@@ -504,13 +541,13 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
                 </Button>
               </Space.Compact>
               <SettingHelpTextRow style={{ justifyContent: 'space-between' }}>
-                <HStack>
+                <RowFlex>
                   {apiKeyWebsite && !isDmxapi && (
                     <SettingHelpLink target="_blank" href={apiKeyWebsite}>
                       {t('settings.provider.get_api_key')}
                     </SettingHelpLink>
                   )}
-                </HStack>
+                </RowFlex>
                 <SettingHelpText>{t('settings.provider.api_key.tip')}</SettingHelpText>
               </SettingHelpTextRow>
             </>
@@ -519,12 +556,12 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
             <>
               <SettingSubtitle style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div className="flex items-center gap-1">
-                  <Tooltip title={hostSelectorTooltip} mouseEnterDelay={0.3}>
+                  <Tooltip title={hostSelectorTooltip} delay={300}>
                     <div>
                       <Selector
                         size={14}
                         value={activeHostField}
-                        onChange={(value) => setActiveHostField(value as HostField)}
+                        onChange={(value) => setActiveHostField(value)}
                         options={hostSelectorOptions}
                         style={{ paddingLeft: 1, fontWeight: 'bold' }}
                         placement="bottomLeft"
@@ -533,18 +570,14 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
                   </Tooltip>
                   <HelpTooltip title={t('settings.provider.api.url.tip')}></HelpTooltip>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Button
-                    type="text"
-                    onClick={() => CustomHeaderPopup.show({ provider })}
-                    icon={<Settings2 size={16} />}
-                  />
-                </div>
+                <Button variant="ghost" onClick={() => CustomHeaderPopup.show({ provider })} size="icon">
+                  <Settings2 size={16} />
+                </Button>
               </SettingSubtitle>
               {activeHostField === 'apiHost' && (
                 <>
-                  {isCherryIN && isChineseUser ? (
-                    <CherryINSettings providerId={provider.id} apiHost={apiHost} setApiHost={setApiHost} />
+                  {isModauiIN && isChineseUser ? (
+                    <ModauiINSettings providerId={provider.id} apiHost={apiHost} setApiHost={setApiHost} />
                   ) : (
                     <Space.Compact style={{ width: '100%', marginTop: 5 }}>
                       <Input
@@ -554,7 +587,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
                         onBlur={onUpdateApiHost}
                       />
                       {isApiHostResettable && (
-                        <Button danger onClick={onReset}>
+                        <Button variant="destructive" onClick={onReset}>
                           {t('settings.provider.api.url.reset')}
                         </Button>
                       )}
@@ -635,6 +668,14 @@ const ProviderName = styled.span`
   font-size: 14px;
   font-weight: 500;
   margin-right: -2px;
+`
+
+const ErrorOverlay = styled.div`
+  max-height: 200px;
+  overflow-y: auto;
+  max-width: 300px;
+  word-wrap: break-word;
+  user-select: text;
 `
 
 export default ProviderSetting

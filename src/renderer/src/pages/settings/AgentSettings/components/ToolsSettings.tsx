@@ -1,9 +1,11 @@
+import { Switch } from '@modauistudio/ui'
 import CollapsibleSearchBar from '@renderer/components/CollapsibleSearchBar'
 import { permissionModeCards } from '@renderer/config/agent'
 import { useMCPServers } from '@renderer/hooks/useMCPServers'
 import type { UpdateAgentBaseForm } from '@renderer/types'
+import { GLOBALLY_DISALLOWED_TOOLS, SOUL_MODE_DISALLOWED_TOOLS } from '@shared/agents/claudecode/constants'
 import type { CardProps } from 'antd'
-import { Card, Switch, Tag, Tooltip } from 'antd'
+import { Card, Tag, Tooltip } from 'antd'
 import { uniq } from 'lodash'
 import { Wrench } from 'lucide-react'
 import type { FC } from 'react'
@@ -14,6 +16,7 @@ import {
   type AgentOrSessionSettingsProps,
   computeModeDefaults,
   defaultConfiguration,
+  isSoulModeEnabled,
   SettingsContainer,
   SettingsItem,
   SettingsTitle
@@ -72,27 +75,31 @@ export const ToolsSettings: FC<AgentOrSessionSettingsProps> = ({ agentBase, upda
   const availableTools = useMemo(() => agentBase?.tools ?? [], [agentBase?.tools])
   const autoToolIds = useMemo(() => computeModeDefaults(selectedMode, availableTools), [availableTools, selectedMode])
   const approvedToolIds = useMemo(() => {
-    const allowed = agentBase?.allowed_tools ?? []
+    const allowed = agentBase?.allowedTools ?? []
     const sanitized = allowed.filter((id) => availableTools.some((tool) => tool.id === id))
     const merged = uniq([...sanitized, ...autoToolIds])
     return merged
-  }, [agentBase?.allowed_tools, autoToolIds, availableTools])
+  }, [agentBase?.allowedTools, autoToolIds, availableTools])
   const selectedMcpIds = useMemo(() => agentBase?.mcps ?? [], [agentBase?.mcps])
-
-  const availableServers = useMemo(() => allServers ?? [], [allServers])
+  const isSoulEnabled = isSoulModeEnabled(agentBase?.configuration)
 
   const filteredTools = useMemo(() => {
+    const hiddenTools = [
+      ...(GLOBALLY_DISALLOWED_TOOLS as readonly string[]),
+      ...(isSoulEnabled ? (SOUL_MODE_DISALLOWED_TOOLS as readonly string[]) : [])
+    ]
+    const visible = availableTools.filter((tool) => !hiddenTools.includes(tool.id))
     if (!searchTerm.trim()) {
-      return availableTools
+      return visible
     }
     const term = searchTerm.trim().toLowerCase()
-    return availableTools.filter((tool) => {
+    return visible.filter((tool) => {
       return (
         tool.name.toLowerCase().includes(term) ||
         (tool.description ? tool.description.toLowerCase().includes(term) : false)
       )
     })
-  }, [availableTools, searchTerm])
+  }, [availableTools, searchTerm, isSoulEnabled])
 
   const handleToggleTool = useCallback(
     async (toolId: string, isApproved: boolean) => {
@@ -108,7 +115,7 @@ export const ToolsSettings: FC<AgentOrSessionSettingsProps> = ({ agentBase, upda
       const next = isApproved ? [...approvedToolIds, toolId] : approvedToolIds.filter((id) => id !== toolId)
       const sanitized = uniq(next.filter((id) => availableTools.some((tool) => tool.id === id)).concat(autoToolIds))
       try {
-        await update({ id: agentBase.id, allowed_tools: sanitized } satisfies UpdateAgentBaseForm)
+        await update({ id: agentBase.id, allowedTools: sanitized } satisfies UpdateAgentBaseForm)
       } finally {
         setIsUpdatingTools(false)
       }
@@ -215,8 +222,8 @@ export const ToolsSettings: FC<AgentOrSessionSettingsProps> = ({ agentBase, upda
                           })}
                           checked={isApproved}
                           disabled={isAuto || isUpdatingTools}
-                          size="small"
-                          onChange={(checked) => handleToggleTool(tool.id, checked)}
+                          size="sm"
+                          onCheckedChange={(checked) => handleToggleTool(tool.id, checked)}
                         />
                       </Tooltip>
                     </div>
@@ -238,13 +245,13 @@ export const ToolsSettings: FC<AgentOrSessionSettingsProps> = ({ agentBase, upda
               'Connect MCP servers to unlock additional tools you can approve above.'
             )}
           </span>
-          {availableServers.length === 0 ? (
+          {allServers.length === 0 ? (
             <div className="rounded-medium border border-default-200 border-dashed px-4 py-6 text-center text-foreground-500 text-sm">
               {t('agent.settings.tooling.mcp.empty', 'No MCP servers detected. Add one from the MCP settings page.')}
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              {availableServers.map((server) => {
+              {allServers.map((server) => {
                 const isSelected = selectedMcpIds.includes(server.id)
                 return (
                   <Card
@@ -278,9 +285,9 @@ export const ToolsSettings: FC<AgentOrSessionSettingsProps> = ({ agentBase, upda
                               name: server.name
                             })}
                             checked={isSelected}
-                            size="small"
+                            size="sm"
                             disabled={!server.isActive || isUpdatingMcp}
-                            onChange={(checked) => handleToggleMcp(server.id, checked)}
+                            onCheckedChange={(checked) => handleToggleMcp(server.id, checked)}
                           />
                         </Tooltip>
                       </div>

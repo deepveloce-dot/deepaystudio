@@ -1,6 +1,8 @@
+import { Flex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import type { ModelCapability, ModelType } from '@renderer/types'
 import { getDifference, uniqueObjectArray } from '@renderer/utils'
-import { Button, Checkbox, Flex } from 'antd'
+import { Checkbox } from 'antd'
 import type { FC } from 'react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -53,7 +55,7 @@ const ModelTypeSelector: FC<ModelTypeSelectorProps> = ({
             }
             return t
           })
-          onCapabilitiesChange(uniqueObjectArray(updatedModelCapabilities as ModelCapability[]))
+          onCapabilitiesChange(uniqueObjectArray(updatedModelCapabilities))
         } else {
           const updatedModelCapabilities = modelCapabilities?.map((t) => {
             if (
@@ -70,7 +72,7 @@ const ModelTypeSelector: FC<ModelTypeSelectorProps> = ({
             return t
           })
           updatedModelCapabilities.push(newCapability as any)
-          onCapabilitiesChange(uniqueObjectArray(updatedModelCapabilities as ModelCapability[]))
+          onCapabilitiesChange(uniqueObjectArray(updatedModelCapabilities))
         }
       },
       onCancel: () => {},
@@ -107,7 +109,7 @@ const ModelTypeSelector: FC<ModelTypeSelectorProps> = ({
           }
           return t
         })
-        onCapabilitiesChange(uniqueObjectArray(updatedTypes as ModelCapability[]))
+        onCapabilitiesChange(uniqueObjectArray(updatedTypes))
       } else {
         const updatedModelCapabilities = modelCapabilities?.map((t) => {
           if (
@@ -119,7 +121,7 @@ const ModelTypeSelector: FC<ModelTypeSelectorProps> = ({
           return t
         })
         updatedModelCapabilities.push({ type: disabledTypes[0] as ModelType, isUserSelected: false })
-        onCapabilitiesChange(uniqueObjectArray(updatedModelCapabilities as ModelCapability[]))
+        onCapabilitiesChange(uniqueObjectArray(updatedModelCapabilities))
       }
       changedTypesRef.current.length = 0
     }
@@ -133,7 +135,7 @@ const ModelTypeSelector: FC<ModelTypeSelectorProps> = ({
 
   return (
     <div>
-      <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
+      <Flex className="mb-2 items-center justify-between">
         <Checkbox.Group
           value={selectedTypes}
           onChange={handleTypeChange}
@@ -171,7 +173,7 @@ const ModelTypeSelector: FC<ModelTypeSelectorProps> = ({
           ]}
         />
         {hasUserModified && (
-          <Button size="small" onClick={handleResetTypes}>
+          <Button size="sm" onClick={handleResetTypes}>
             {t('common.reset')}
           </Button>
         )}

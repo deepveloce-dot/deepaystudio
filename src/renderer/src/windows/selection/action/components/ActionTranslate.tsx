@@ -1,21 +1,23 @@
 import { LoadingOutlined } from '@ant-design/icons'
+import { Tooltip } from '@modauistudio/ui'
+import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import CopyButton from '@renderer/components/CopyButton'
 import LanguageSelect from '@renderer/components/LanguageSelect'
 import { LanguagesEnum, UNKNOWN } from '@renderer/config/translate'
 import db from '@renderer/databases'
 import { useTopicMessages } from '@renderer/hooks/useMessageOperations'
-import { useSettings } from '@renderer/hooks/useSettings'
 import useTranslate from '@renderer/hooks/useTranslate'
 import MessageContent from '@renderer/pages/home/Messages/MessageContent'
 import { getDefaultTopic, getDefaultTranslateAssistant } from '@renderer/services/AssistantService'
 import { pauseTrace } from '@renderer/services/SpanManagerService'
 import type { Assistant, Topic, TranslateLanguage, TranslateLanguageCode } from '@renderer/types'
 import { AssistantMessageStatus } from '@renderer/types/newMessage'
-import type { ActionItem } from '@renderer/types/selectionTypes'
 import { abortCompletion } from '@renderer/utils/abortController'
 import { detectLanguage } from '@renderer/utils/translate'
-import { Dropdown, Tooltip } from 'antd'
+import { defaultLanguage } from '@shared/config/constant'
+import type { SelectionActionItem } from '@shared/data/preference/preferenceTypes'
+import { Dropdown } from 'antd'
 import { ArrowRight, ChevronDown, CircleHelp, Settings2 } from 'lucide-react'
 import type { FC } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -25,7 +27,7 @@ import styled, { createGlobalStyle } from 'styled-components'
 import { processMessages } from './ActionUtils'
 import WindowFooter from './WindowFooter'
 interface Props {
-  action: ActionItem
+  action: SelectionActionItem
   scrollToBottom: () => void
 }
 
@@ -33,11 +35,12 @@ const logger = loggerService.withContext('ActionTranslate')
 
 const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
   const { t } = useTranslation()
-  const { language } = useSettings()
+
+  const [language] = usePreference('app.language')
   const { getLanguageByLangcode, isLoaded: isLanguagesLoaded } = useTranslate()
 
   const [targetLanguage, setTargetLanguage] = useState<TranslateLanguage>(() => {
-    const lang = getLanguageByLangcode(language)
+    const lang = getLanguageByLangcode(language || navigator.language || defaultLanguage)
     if (lang !== UNKNOWN) {
       return lang
     } else {
@@ -113,7 +116,7 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
     logger.silly('[initialize] UpdateLanguagePair completed.')
 
     // Initialize assistant
-    const currentAssistant = getDefaultTranslateAssistant(targetLangRef.current, action.selectedText)
+    const currentAssistant = await getDefaultTranslateAssistant(targetLangRef.current, action.selectedText)
 
     assistantRef.current = currentAssistant
 
@@ -127,7 +130,7 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
   // 2. isLanguagesLoaded change (only initialize when languages loaded)
   // 3. updateLanguagePair change (depend on translateLanguages and isLanguagesLoaded)
   useEffect(() => {
-    initialize()
+    void initialize()
   }, [initialize])
 
   const fetchResult = useCallback(async () => {
@@ -180,14 +183,14 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
     // Set actual target language for UI display
     setActualTargetLanguage(translateLang)
 
-    const assistant = getDefaultTranslateAssistant(translateLang, action.selectedText)
+    const assistant = await getDefaultTranslateAssistant(translateLang, action.selectedText)
     assistantRef.current = assistant
     logger.debug('process once')
-    processMessages(assistant, topicRef.current, assistant.content, setAskId, onStream, onFinish, onError)
+    void processMessages(assistant, topicRef.current, assistant.content, setAskId, onStream, onFinish, onError)
   }, [action, targetLanguage, alterLanguage, scrollToBottom, initialized, getLanguageByLangcode])
 
   useEffect(() => {
-    fetchResult()
+    void fetchResult()
   }, [fetchResult])
 
   const allMessages = useTopicMessages(topicRef.current?.id || '')
@@ -232,7 +235,7 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
       targetLangRef.current = newTargetLanguage
       setAlterLanguage(newAlterLanguage)
 
-      db.settings.put({
+      void db.settings.put({
         id: 'translate:bidirectional:pair',
         value: [newTargetLanguage.langCode, newAlterLanguage.langCode]
       })
@@ -253,7 +256,7 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
         // New language is different from both, update target
         setTargetLanguage(newLang)
         targetLangRef.current = newLang
-        db.settings.put({ id: 'translate:bidirectional:pair', value: [newLang.langCode, alterLanguage.langCode] })
+        void db.settings.put({ id: 'translate:bidirectional:pair', value: [newLang.langCode, alterLanguage.langCode] })
       }
     },
     [initialized, getLanguageByLangcode, targetLanguage.langCode, alterLanguage.langCode]
@@ -313,13 +316,13 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
       abortCompletion(askId.current)
     }
     if (topicRef.current?.id) {
-      pauseTrace(topicRef.current.id)
+      void pauseTrace(topicRef.current.id)
     }
   }
 
   const handleRegenerate = () => {
     setContentToCopy('')
-    fetchResult()
+    void fetchResult()
   }
 
   return (
@@ -364,14 +367,14 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
               placement="bottomRight"
               open={settingsOpen}
               onOpenChange={setSettingsOpen}>
-              <Tooltip title={t('translate.language_settings')} placement="bottom">
+              <Tooltip content={t('translate.language_settings')} placement="bottom">
                 <SettingsButton>
                   <Settings2 size={14} />
                 </SettingsButton>
               </Tooltip>
             </Dropdown>
 
-            <Tooltip title={t('selection.action.translate.smart_translate_tips')} placement="bottom">
+            <Tooltip content={t('selection.action.translate.smart_translate_tips')} placement="bottom">
               <HelpIcon size={14} />
             </Tooltip>
           </LeftGroup>

@@ -1,0 +1,301 @@
+name: Auto Full-Stack Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. 2.1.0). Leave empty to use package.json version."
+        required: false
+        default: ""
+      platform:
+        description: "Build platform"
+        required: true
+        default: "windows"
+        type: choice
+        options:
+          - windows
+          - all
+          - mac
+          - linux
+      draft:
+        description: "Publish as draft release"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+
+permissions:
+  contents: write
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Job 1 – validate (lint + test)
+# ─────────────────────────────────────────────────────────────────────────────
+jobs:
+  validate:
+    name: Validate (lint + test)
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".node-version"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Cache pnpm store
+        uses: actions/cache@v5
+        with:
+          path: $(pnpm store path --silent)
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint
+        run: pnpm test:lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Job 2 – resolve the version that will be stamped into every build
+  # ───────────────────────────────────────────────────────────────────────────
+  resolve-version:
+    name: Resolve release version
+    runs-on: ubuntu-latest
+    needs: validate
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+      tag: ${{ steps.ver.outputs.tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Determine version
+        id: ver
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Triggered by a version tag push  →  strip the leading "v"
+            TAG="${GITHUB_REF#refs/tags/}"
+            VERSION="${TAG#v}"
+          elif [ -n "${{ github.event.inputs.version }}" ]; then
+            # Manual dispatch with an explicit version
+            VERSION="${{ github.event.inputs.version }}"
+            TAG="v${VERSION}"
+          else
+            # Manual dispatch without version  →  fall back to package.json
+            VERSION=$(node -p "require('./package.json').version")
+            TAG="v${VERSION}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}"         >> "$GITHUB_OUTPUT"
+          echo "📦  Resolved version: ${VERSION} (tag: ${TAG})"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Job 3 – platform builds (matrix, parallel)
+  # ───────────────────────────────────────────────────────────────────────────
+  build:
+    name: Build – ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: resolve-version
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(
+          github.event_name == 'push' && '["macos-latest","windows-latest","ubuntu-latest"]' ||
+          github.event.inputs.platform == 'all'     && '["macos-latest","windows-latest","ubuntu-latest"]' ||
+          github.event.inputs.platform == 'mac'     && '["macos-latest"]' ||
+          github.event.inputs.platform == 'windows' && '["windows-latest"]' ||
+          github.event.inputs.platform == 'linux'   && '["ubuntu-latest"]' ||
+          '["macos-latest","windows-latest","ubuntu-latest"]'
+          ) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Stamp version into package.json
+        shell: bash
+        run: |
+          npm version "${{ needs.resolve-version.outputs.version }}" \
+            --no-git-tag-version --allow-same-version
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".node-version"
+
+      - name: macOS system dependencies
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install python-setuptools
+          sudo -H pip install setuptools
+
+      - name: Linux system dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get install -y \
+            rpm libevdev-dev libxtst-dev libx11-dev libxfixes-dev libwayland-dev
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+
+      - name: Cache pnpm store
+        id: pnpm-cache
+        uses: actions/cache@v5
+        with:
+          path: $(pnpm store path --silent)
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # ── platform-specific builds ──────────────────────────────────────────
+
+      - name: Build – Windows
+        if: matrix.os == 'windows-latest'
+        run: pnpm build:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_OPTIONS: --max-old-space-size=8192
+          MAIN_VITE_CHERRYAI_CLIENT_SECRET: ${{ secrets.MAIN_VITE_CHERRYAI_CLIENT_SECRET }}
+          MAIN_VITE_MINERU_API_KEY: ${{ secrets.MAIN_VITE_MINERU_API_KEY }}
+          RENDERER_VITE_AIHUBMIX_SECRET: ${{ secrets.RENDERER_VITE_AIHUBMIX_SECRET }}
+          RENDERER_VITE_PPIO_APP_SECRET: ${{ secrets.RENDERER_VITE_PPIO_APP_SECRET }}
+
+      - name: Build – macOS
+        if: matrix.os == 'macos-latest'
+        run: pnpm build:mac
+        env:
+          CSC_FOR_PULL_REQUEST: true
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_OPTIONS: --max-old-space-size=8192
+          MAIN_VITE_CHERRYAI_CLIENT_SECRET: ${{ secrets.MAIN_VITE_CHERRYAI_CLIENT_SECRET }}
+          MAIN_VITE_MINERU_API_KEY: ${{ secrets.MAIN_VITE_MINERU_API_KEY }}
+          RENDERER_VITE_AIHUBMIX_SECRET: ${{ secrets.RENDERER_VITE_AIHUBMIX_SECRET }}
+          RENDERER_VITE_PPIO_APP_SECRET: ${{ secrets.RENDERER_VITE_PPIO_APP_SECRET }}
+
+      - name: Build – Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: pnpm build:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_OPTIONS: --max-old-space-size=8192
+          MAIN_VITE_CHERRYAI_CLIENT_SECRET: ${{ secrets.MAIN_VITE_CHERRYAI_CLIENT_SECRET }}
+          MAIN_VITE_MINERU_API_KEY: ${{ secrets.MAIN_VITE_MINERU_API_KEY }}
+          RENDERER_VITE_AIHUBMIX_SECRET: ${{ secrets.RENDERER_VITE_AIHUBMIX_SECRET }}
+          RENDERER_VITE_PPIO_APP_SECRET: ${{ secrets.RENDERER_VITE_PPIO_APP_SECRET }}
+
+      # ── upload per-platform artifacts ─────────────────────────────────────
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist-${{ matrix.os }}
+          retention-days: 7
+          path: |
+            dist/*.exe
+            dist/*.zip
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.deb
+            dist/*.rpm
+            dist/*.tar.gz
+            dist/latest*.yml
+            dist/beta*.yml
+            dist/rc*.yml
+            dist/*.blockmap
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Job 4 – collect artifacts and publish GitHub Release
+  # ───────────────────────────────────────────────────────────────────────────
+  release:
+    name: Publish GitHub Release
+    runs-on: ubuntu-latest
+    needs: [resolve-version, build]
+
+    steps:
+      - name: Checkout (for release notes)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: release-artifacts
+          merge-multiple: true
+
+      - name: List release artifacts
+        run: |
+          echo "### Release artifacts"
+          find release-artifacts -type f | sort
+
+      - name: Generate SHA-256 checksums
+        run: |
+          cd release-artifacts
+          sha256sum * 2>/dev/null | tee SHA256SUMS.txt || true
+
+      - name: Publish release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.resolve-version.outputs.tag }}
+          name: "Cherry Studio ${{ needs.resolve-version.outputs.tag }}"
+          draft: ${{ github.event.inputs.draft != 'false' }}
+          allowUpdates: true
+          makeLatest: ${{ github.event_name == 'push' }}
+          artifacts: "release-artifacts/*"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Job 5 – deployment summary
+  # ───────────────────────────────────────────────────────────────────────────
+  summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [resolve-version, build, release]
+    if: always()
+
+    steps:
+      - name: Write summary
+        run: |
+          echo "## 🚀 Auto Full-Stack Deploy" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Field | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Version | \`${{ needs.resolve-version.outputs.version }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Tag     | \`${{ needs.resolve-version.outputs.tag }}\`     |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Trigger | \`${{ github.event_name }}\`                     |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Validate | ${{ needs.validate.result == 'success' && '✅' || '❌' }} \`${{ needs.validate.result }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Build    | ${{ needs.build.result   == 'success' && '✅' || '❌' }} \`${{ needs.build.result }}\`    |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Release  | ${{ needs.release.result == 'success' && '✅' || '❌' }} \`${{ needs.release.result }}\` |" >> "$GITHUB_STEP_SUMMARY"

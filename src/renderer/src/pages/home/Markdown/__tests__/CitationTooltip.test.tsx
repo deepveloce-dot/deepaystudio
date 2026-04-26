@@ -1,5 +1,7 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import CitationTooltip from '../CitationTooltip'
@@ -7,24 +9,26 @@ import CitationTooltip from '../CitationTooltip'
 // Mock dependencies
 const mockWindowOpen = vi.fn()
 
+vi.mock('@renderer/utils/fetch', () => ({
+  fetchXOEmbed: vi.fn().mockResolvedValue(null),
+  isXPostUrl: vi.fn().mockReturnValue(false)
+}))
+
 vi.mock('@renderer/components/Icons/FallbackFavicon', () => ({
   __esModule: true,
   default: (props: any) => <div data-testid="mock-favicon" {...props} />
 }))
 
-vi.mock('antd', () => ({
-  Tooltip: ({ children, overlay, title, placement, color, styles, ...props }: any) => (
-    <div
-      data-testid="tooltip-wrapper"
-      data-placement={placement}
-      data-color={color}
-      data-styles={JSON.stringify(styles)}
-      {...props}>
+const uiMocks = vi.hoisted(() => ({
+  Tooltip: vi.fn(({ children, title, content, placement, ...props }: any) => (
+    <div data-testid="tooltip-wrapper" data-placement={placement} {...props}>
       {children}
-      <div data-testid="tooltip-content">{overlay || title}</div>
+      <div data-testid="tooltip-content">{content || title}</div>
     </div>
-  )
+  ))
 }))
+
+vi.mock('@modauistudio/ui', () => uiMocks)
 
 const originalWindowOpen = window.open
 
@@ -50,8 +54,17 @@ describe('CitationTooltip', () => {
     ...overrides
   })
 
+  const createWrapper = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } }
+    })
+    return ({ children }: { children: ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    )
+  }
+
   const renderCitationTooltip = (citation: any, children = <span>Trigger</span>) => {
-    return render(<CitationTooltip citation={citation}>{children}</CitationTooltip>)
+    return render(<CitationTooltip citation={citation}>{children}</CitationTooltip>, { wrapper: createWrapper() })
   }
 
   const expectWindowOpenCalled = (url: string) => {
@@ -87,28 +100,13 @@ describe('CitationTooltip', () => {
       expect(favicon).toHaveAttribute('alt', 'Example Title')
     })
 
-    it('should pass correct props to Tooltip component', () => {
-      const citation = createCitationData()
-      renderCitationTooltip(citation)
-
-      const tooltip = screen.getByTestId('tooltip-wrapper')
-      expect(tooltip).toHaveAttribute('data-placement', 'top')
-      expect(tooltip).toHaveAttribute('data-color', 'var(--color-background)')
-
-      const styles = JSON.parse(tooltip.getAttribute('data-styles') || '{}')
-      expect(styles.body).toEqual({
-        border: '1px solid var(--color-border)',
-        padding: '12px',
-        borderRadius: '8px'
-      })
-    })
-
     it('should match snapshot', () => {
       const citation = createCitationData()
       const { container } = render(
         <CitationTooltip citation={citation}>
           <span>Test content</span>
-        </CitationTooltip>
+        </CitationTooltip>,
+        { wrapper: createWrapper() }
       )
       expect(container.firstChild).toMatchSnapshot()
     })
@@ -327,7 +325,7 @@ describe('CitationTooltip', () => {
       const citation = createCitationData()
 
       expect(() => {
-        render(<CitationTooltip citation={citation}>{null}</CitationTooltip>)
+        render(<CitationTooltip citation={citation}>{null}</CitationTooltip>, { wrapper: createWrapper() })
       }).not.toThrow()
     })
 

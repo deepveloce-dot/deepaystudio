@@ -1,7 +1,7 @@
+import { loggerService } from '@logger'
 import type { Express } from 'express'
 import swaggerUi from 'swagger-ui-express'
 
-import { loggerService } from '../../services/LoggerService'
 import openapiSpec from '../generated/openapi-spec.json'
 
 const logger = loggerService.withContext('OpenAPIMiddleware')
@@ -23,7 +23,7 @@ export function setupOpenAPIDocumentation(app: Express) {
         .swagger-ui .topbar { display: none; }
         .swagger-ui .info .title { color: #1890ff; }
       `,
-        customSiteTitle: 'Cherry Studio API Documentation'
+        customSiteTitle: 'Modaui Studio API Documentation'
       })
     )
 

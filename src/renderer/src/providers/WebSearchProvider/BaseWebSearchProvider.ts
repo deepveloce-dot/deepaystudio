@@ -1,5 +1,5 @@
-import type { WebSearchState } from '@renderer/store/websearch'
-import type { WebSearchProvider, WebSearchProviderResponse } from '@renderer/types'
+import { cacheService } from '@data/CacheService'
+import type { WebSearchProvider, WebSearchProviderResponse, WebSearchState } from '@renderer/types'
 
 export default abstract class BaseWebSearchProvider {
   // @ts-ignore this
@@ -26,28 +26,28 @@ export default abstract class BaseWebSearchProvider {
   public defaultHeaders() {
     return {
       'HTTP-Referer': 'https://cherry-ai.com',
-      'X-Title': 'Cherry Studio'
+      'X-Title': 'Modaui Studio'
     }
   }
 
   public getApiKey() {
     const keys = this.provider.apiKey?.split(',').map((key) => key.trim()) || []
-    const keyName = `web-search-provider:${this.provider.id}:last_used_key`
+    const keyName = `web_search.provider.last_used_key.${this.provider.id}` as const
 
     if (keys.length === 1) {
       return keys[0]
     }
 
-    const lastUsedKey = window.keyv.get(keyName)
-    if (!lastUsedKey) {
-      window.keyv.set(keyName, keys[0])
+    const lastUsedKey = cacheService.getShared(keyName)
+    if (lastUsedKey === undefined) {
+      cacheService.setShared(keyName, keys[0])
       return keys[0]
     }
 
     const currentIndex = keys.indexOf(lastUsedKey)
     const nextIndex = (currentIndex + 1) % keys.length
     const nextKey = keys[nextIndex]
-    window.keyv.set(keyName, nextKey)
+    cacheService.setShared(keyName, nextKey)
 
     return nextKey
   }

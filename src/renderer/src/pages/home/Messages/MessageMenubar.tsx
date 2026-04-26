@@ -1,10 +1,13 @@
 // import { InfoCircleOutlined } from '@ant-design/icons'
+import { Tooltip } from '@modauistudio/ui'
+import { usePreference } from '@data/hooks/usePreference'
+import { useMultiplePreferences } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import { CopyIcon, DeleteIcon, EditIcon, RefreshIcon } from '@renderer/components/Icons'
 import InspectMessagePopup from '@renderer/components/Popups/InspectMessagePopup'
 import ObsidianExportPopup from '@renderer/components/Popups/ObsidianExportPopup'
 import SaveToKnowledgePopup from '@renderer/components/Popups/SaveToKnowledgePopup'
-import { SelectModelPopup } from '@renderer/components/Popups/SelectModelPopup'
+import { SelectChatModelPopup } from '@renderer/components/Popups/SelectModelPopup'
 import { isEmbeddingModel, isRerankModel, isVisionModel } from '@renderer/config/models'
 import type { MessageMenubarButtonId, MessageMenubarScope } from '@renderer/config/registry/messageMenubar'
 import { DEFAULT_MESSAGE_MENUBAR_SCOPE, getMessageMenubarConfig } from '@renderer/config/registry/messageMenubar'
@@ -12,13 +15,11 @@ import { useMessageEditing } from '@renderer/context/MessageEditingContext'
 import { useChatContext } from '@renderer/hooks/useChatContext'
 import { useMessageOperations } from '@renderer/hooks/useMessageOperations'
 import { useNotesSettings } from '@renderer/hooks/useNotesSettings'
-import { useEnableDeveloperMode, useMessageStyle, useSettings } from '@renderer/hooks/useSettings'
 import { useTemporaryValue } from '@renderer/hooks/useTemporaryValue'
 import useTranslate from '@renderer/hooks/useTranslate'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
 import { getMessageTitle } from '@renderer/services/MessagesService'
 import { translateText } from '@renderer/services/TranslateService'
-import type { RootState } from '@renderer/store'
 import store, { useAppDispatch } from '@renderer/store'
 import { messageBlocksSelectors } from '@renderer/store/messageBlock'
 import { selectMessagesForTopic } from '@renderer/store/newMessage'
@@ -48,7 +49,7 @@ import {
   getMainTextContent
 } from '@renderer/utils/messageUtils/find'
 import type { MenuProps } from 'antd'
-import { Dropdown, Popconfirm, Tooltip } from 'antd'
+import { Dropdown, Popconfirm } from 'antd'
 import dayjs from 'dayjs'
 import type { TFunction } from 'i18next'
 import {
@@ -165,15 +166,30 @@ const MessageMenubar: FC<Props> = (props) => {
     removeMessageBlock
   } = useMessageOperations(topic)
 
-  const { isBubbleStyle } = useMessageStyle()
-  const { enableDeveloperMode } = useEnableDeveloperMode()
-  const { confirmDeleteMessage, confirmRegenerateMessage } = useSettings()
+  const [messageStyle] = usePreference('chat.message.style')
+  const [enableDeveloperMode] = usePreference('app.developer_mode.enabled')
+  const [confirmDeleteMessage] = usePreference('chat.message.confirm_delete')
+  const [confirmRegenerateMessage] = usePreference('chat.message.confirm_regenerate')
+
+  const isBubbleStyle = messageStyle === 'bubble'
 
   // const loading = useTopicLoading(topic)
 
   const isUserMessage = message.role === 'user'
 
-  const exportMenuOptions = useSelector((state: RootState) => state.settings.exportMenuOptions)
+  const [exportMenuOptions] = useMultiplePreferences({
+    image: 'data.export.menus.image',
+    markdown: 'data.export.menus.markdown',
+    markdown_reason: 'data.export.menus.markdown_reason',
+    notion: 'data.export.menus.notion',
+    yuque: 'data.export.menus.yuque',
+    joplin: 'data.export.menus.joplin',
+    obsidian: 'data.export.menus.obsidian',
+    siyuan: 'data.export.menus.siyuan',
+    docx: 'data.export.menus.docx',
+    plain_text: 'data.export.menus.plain_text'
+  })
+
   const dispatch = useAppDispatch()
   // const processedMessage = useMemo(() => {
   //   if (message.role === 'assistant' && message.model && isReasoningModel(message.model)) {
@@ -199,12 +215,12 @@ const MessageMenubar: FC<Props> = (props) => {
 
       let contentToCopy = ''
       if (latestMessageEntity) {
-        contentToCopy = getMainTextContent(latestMessageEntity as Message)
+        contentToCopy = getMainTextContent(latestMessageEntity)
       } else {
         contentToCopy = getMainTextContent(message)
       }
 
-      navigator.clipboard.writeText(removeTrailingDoubleSpaces(contentToCopy.trimStart()))
+      void navigator.clipboard.writeText(removeTrailingDoubleSpaces(contentToCopy.trimStart()))
 
       window.toast.success(t('message.copied'))
       setCopied(true)
@@ -213,7 +229,7 @@ const MessageMenubar: FC<Props> = (props) => {
   )
 
   const onNewBranch = useCallback(async () => {
-    EventEmitter.emit(EVENT_NAMES.NEW_BRANCH, index)
+    void EventEmitter.emit(EVENT_NAMES.NEW_BRANCH, index)
     window.toast.success(t('chat.message.new.branch.created'))
   }, [index, t])
 
@@ -262,7 +278,7 @@ const MessageMenubar: FC<Props> = (props) => {
           const block = translationBlocks[0]
           logger.silly(`block`, block)
           if (!block.content) {
-            dispatch(removeBlocksThunk(message.topicId, message.id, [block.id]))
+            void dispatch(removeBlocksThunk(message.topicId, message.id, [block.id]))
           }
         }
       }
@@ -281,7 +297,7 @@ const MessageMenubar: FC<Props> = (props) => {
 
   const handleTraceUserMessage = useCallback(async () => {
     if (message.traceId) {
-      window.api.trace.openWindow(
+      void window.api.trace.openWindow(
         message.topicId,
         message.traceId,
         true,
@@ -333,14 +349,14 @@ const MessageMenubar: FC<Props> = (props) => {
             key: 'file',
             onClick: () => {
               const fileName = dayjs(message.createdAt).format('YYYYMMDDHHmm') + '.md'
-              window.api.file.save(fileName, mainTextContent)
+              void window.api.file.save(fileName, mainTextContent)
             }
           },
           {
             label: t('chat.save.knowledge.title'),
             key: 'knowledge',
             onClick: () => {
-              SaveToKnowledgePopup.showForMessage(message)
+              void SaveToKnowledgePopup.showForMessage(message)
             }
           }
         ]
@@ -392,9 +408,9 @@ const MessageMenubar: FC<Props> = (props) => {
             label: t('chat.topics.export.word'),
             key: 'word',
             onClick: async () => {
-              const markdown = messageToMarkdown(message)
+              const markdown = await messageToMarkdown(message)
               const title = await getMessageTitle(message)
-              window.api.export.toWord(markdown, title)
+              void window.api.export.toWord(markdown, title)
             }
           },
           exportMenuOptions.notion && {
@@ -402,8 +418,8 @@ const MessageMenubar: FC<Props> = (props) => {
             key: 'notion',
             onClick: async () => {
               const title = await getMessageTitle(message)
-              const markdown = messageToMarkdown(message)
-              exportMessageToNotion(title, markdown, message)
+              const markdown = await messageToMarkdown(message)
+              void exportMessageToNotion(title, markdown, message)
             }
           },
           exportMenuOptions.yuque && {
@@ -411,8 +427,8 @@ const MessageMenubar: FC<Props> = (props) => {
             key: 'yuque',
             onClick: async () => {
               const title = await getMessageTitle(message)
-              const markdown = messageToMarkdown(message)
-              exportMarkdownToYuque(title, markdown)
+              const markdown = await messageToMarkdown(message)
+              void exportMarkdownToYuque(title, markdown)
             }
           },
           exportMenuOptions.obsidian && {
@@ -428,7 +444,7 @@ const MessageMenubar: FC<Props> = (props) => {
             key: 'joplin',
             onClick: async () => {
               const title = await getMessageTitle(message)
-              exportMarkdownToJoplin(title, message)
+              void exportMarkdownToJoplin(title, message)
             }
           },
           exportMenuOptions.siyuan && {
@@ -436,8 +452,8 @@ const MessageMenubar: FC<Props> = (props) => {
             key: 'siyuan',
             onClick: async () => {
               const title = await getMessageTitle(message)
-              const markdown = messageToMarkdown(message)
-              exportMarkdownToSiyuan(title, markdown)
+              const markdown = await messageToMarkdown(message)
+              void exportMarkdownToSiyuan(title, markdown)
             }
           }
         ].filter(Boolean)
@@ -492,7 +508,7 @@ const MessageMenubar: FC<Props> = (props) => {
     // editMessage(message.id, { ..._message }) // REMOVED
 
     // Call the function from the hook
-    regenerateAssistantMessage(message, assistant)
+    void regenerateAssistantMessage(message, assistant)
   }
 
   // 按条件筛选能够提及的模型，该函数仅在isAssistantMessage时会用到
@@ -531,9 +547,9 @@ const MessageMenubar: FC<Props> = (props) => {
   const onMentionModel = useCallback(
     async (e: React.MouseEvent) => {
       e.stopPropagation()
-      const selectedModel = await SelectModelPopup.show({ model, filter: mentionModelFilter })
+      const selectedModel = await SelectChatModelPopup.show({ model, filter: mentionModelFilter })
       if (!selectedModel) return
-      appendAssistantResponse(message, selectedModel, { ...assistant, model: selectedModel })
+      void appendAssistantResponse(message, selectedModel, { ...assistant, model: selectedModel })
     },
     [appendAssistantResponse, assistant, mentionModelFilter, message, model]
   )
@@ -673,7 +689,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
           okButtonProps={{ danger: true }}
           onConfirm={() => handleResendUserMessage()}
           onOpenChange={(open) => open && setShowDeleteTooltip(false)}>
-          <Tooltip title={t('common.regenerate')} mouseEnterDelay={0.8}>
+          <Tooltip content={t('common.regenerate')} delay={800}>
             <ActionButton
               className="message-action-button"
               onClick={(e) => e.stopPropagation()}
@@ -686,7 +702,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     }
 
     return (
-      <Tooltip title={t('common.regenerate')} mouseEnterDelay={0.8}>
+      <Tooltip content={t('common.regenerate')} delay={800}>
         <ActionButton
           className="message-action-button"
           onClick={() => handleResendUserMessage()}
@@ -702,7 +718,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     }
 
     return (
-      <Tooltip title={t('common.edit')} mouseEnterDelay={0.8}>
+      <Tooltip content={t('common.edit')} delay={800}>
         <ActionButton className="message-action-button" onClick={onEdit} $softHoverBg={softHoverBg}>
           <EditIcon size={15} />
         </ActionButton>
@@ -710,7 +726,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     )
   },
   copy: ({ onCopy, softHoverBg, copied, t }) => (
-    <Tooltip title={t('common.copy')} mouseEnterDelay={0.8}>
+    <Tooltip content={t('common.copy')} delay={800}>
       <ActionButton className="message-action-button" onClick={onCopy} $softHoverBg={softHoverBg}>
         {!copied && <CopyIcon size={15} />}
         {copied && <Check size={15} color="var(--color-primary)" />}
@@ -736,7 +752,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
           okButtonProps={{ danger: true }}
           onConfirm={() => onRegenerate()}
           onOpenChange={(open) => open && setShowDeleteTooltip(false)}>
-          <Tooltip title={t('common.regenerate')} mouseEnterDelay={0.8}>
+          <Tooltip content={t('common.regenerate')} delay={800}>
             <ActionButton
               className="message-action-button"
               onClick={(e) => e.stopPropagation()}
@@ -749,7 +765,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     }
 
     return (
-      <Tooltip title={t('common.regenerate')} mouseEnterDelay={0.8}>
+      <Tooltip content={t('common.regenerate')} delay={800}>
         <ActionButton className="message-action-button" onClick={onRegenerate} $softHoverBg={softHoverBg}>
           <RefreshIcon size={15} />
         </ActionButton>
@@ -762,7 +778,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     }
 
     return (
-      <Tooltip title={t('message.mention.title')} mouseEnterDelay={0.8}>
+      <Tooltip content={t('message.mention.title')} delay={800}>
         <ActionButton className="message-action-button" onClick={onMentionModel} $softHoverBg={softHoverBg}>
           <AtSign size={15} />
         </ActionButton>
@@ -787,7 +803,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
 
     if (isTranslating) {
       return (
-        <Tooltip title={t('translate.stop')} mouseEnterDelay={0.8}>
+        <Tooltip title={t('translate.stop')}>
           <ActionButton
             className="message-action-button"
             onClick={(e) => {
@@ -825,7 +841,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
                     .trim()
 
                   if (translationContent) {
-                    navigator.clipboard.writeText(translationContent)
+                    void navigator.clipboard.writeText(translationContent)
                     window.toast.success(t('translate.copied'))
                   } else {
                     window.toast.warning(t('translate.empty'))
@@ -845,7 +861,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
                 if (translationBlocks.length > 0) {
                   translationBlocks.forEach((blockId) => {
                     if (blockId) {
-                      removeMessageBlock(message.id, blockId)
+                      void removeMessageBlock(message.id, blockId)
                     }
                   })
                   window.toast.success(t('translate.closed'))
@@ -870,7 +886,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
         trigger={['click']}
         placement="top"
         arrow>
-        <Tooltip title={t('chat.translate')} mouseEnterDelay={1.2}>
+        <Tooltip content={t('chat.translate')} delay={1200}>
           <ActionButton
             className="message-action-button"
             onClick={(e) => e.stopPropagation()}
@@ -887,7 +903,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     }
 
     return (
-      <Tooltip title={t('chat.message.useful.label')} mouseEnterDelay={0.8}>
+      <Tooltip content={t('chat.message.useful.label')} delay={800}>
         <ActionButton className="message-action-button" onClick={onUseful} $softHoverBg={softHoverBg}>
           {message.useful ? (
             <ThumbsUp size={17.5} fill="var(--color-primary)" strokeWidth={0} />
@@ -904,14 +920,14 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     }
 
     return (
-      <Tooltip title={t('notes.save')} mouseEnterDelay={0.8}>
+      <Tooltip content={t('notes.save')} delay={800}>
         <ActionButton
           className="message-action-button"
           onClick={async (e) => {
             e.stopPropagation()
             const title = await getMessageTitle(message)
-            const markdown = messageToMarkdown(message)
-            exportMessageToNotes(title, markdown, notesPath)
+            const markdown = await messageToMarkdown(message)
+            void exportMessageToNotes(title, markdown, notesPath)
           }}
           $softHoverBg={softHoverBg}>
           <NotebookPen size={15} />
@@ -929,11 +945,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     t
   }) => {
     const deleteTooltip = (
-      <Tooltip
-        title={t('common.delete')}
-        mouseEnterDelay={1}
-        open={showDeleteTooltip}
-        onOpenChange={setShowDeleteTooltip}>
+      <Tooltip content={t('common.delete')} delay={1000} isOpen={showDeleteTooltip} onOpenChange={setShowDeleteTooltip}>
         <DeleteIcon size={15} />
       </Tooltip>
     )
@@ -978,7 +990,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     }
 
     return (
-      <Tooltip title={t('trace.label')} mouseEnterDelay={0.8}>
+      <Tooltip content={t('trace.label')} delay={800}>
         <ActionButton className="message-action-button" onClick={() => handleTraceUserMessage()}>
           <TraceIcon size={16} className={'lucide lucide-trash'} />
         </ActionButton>
@@ -993,7 +1005,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     const handleInspect = (e: React.MouseEvent) => {
       e.stopPropagation()
       const blocks = message.blocks.map((blockId) => blockEntities[blockId]).filter(Boolean)
-      InspectMessagePopup.show({
+      void InspectMessagePopup.show({
         title: `Message: ${message.id}`,
         message,
         blocks
@@ -1001,7 +1013,7 @@ const buttonRenderers: Record<MessageMenubarButtonId, MessageMenubarButtonRender
     }
 
     return (
-      <Tooltip title="Inspect Data (Dev)" mouseEnterDelay={0.8}>
+      <Tooltip content="Inspect Data (Dev)" delay={800}>
         <ActionButton className="message-action-button" onClick={handleInspect}>
           <Bug size={15} />
         </ActionButton>

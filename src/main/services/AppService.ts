@@ -1,3 +1,4 @@
+import { application } from '@application'
 import { loggerService } from '@logger'
 import { isDev, isLinux, isMac, isWin } from '@main/constant'
 import { app } from 'electron'
@@ -8,19 +9,6 @@ import path from 'path'
 const logger = loggerService.withContext('AppService')
 
 export class AppService {
-  private static instance: AppService
-
-  private constructor() {
-    // Private constructor to prevent direct instantiation
-  }
-
-  public static getInstance(): AppService {
-    if (!AppService.instance) {
-      AppService.instance = new AppService()
-    }
-    return AppService.instance
-  }
-
   public async setAppLaunchOnBoot(isLaunchOnBoot: boolean): Promise<void> {
     // Set login item settings for windows and mac
     // linux is not supported because it requires more file operations
@@ -29,7 +17,7 @@ export class AppService {
     } else if (isLinux) {
       try {
         const autostartDir = path.join(os.homedir(), '.config', 'autostart')
-        const desktopFile = path.join(autostartDir, isDev ? 'cherry-studio-dev.desktop' : 'cherry-studio.desktop')
+        const desktopFile = path.join(autostartDir, isDev ? 'modaui-studio-dev.desktop' : 'modaui-studio.desktop')
 
         if (isLaunchOnBoot) {
           // Ensure autostart directory exists
@@ -40,7 +28,7 @@ export class AppService {
           }
 
           // Get executable path
-          let executablePath = app.getPath('exe')
+          let executablePath = application.getPath('app.exe_file')
           if (process.env.APPIMAGE) {
             // For AppImage packaged apps, use APPIMAGE environment variable
             executablePath = process.env.APPIMAGE
@@ -49,10 +37,10 @@ export class AppService {
           // Create desktop file content
           const desktopContent = `[Desktop Entry]
   Type=Application
-  Name=Cherry Studio
+  Name=Modaui Studio
   Comment=A powerful AI assistant for producer.
   Exec=${executablePath}
-  Icon=cherrystudio
+  Icon=modauistudio
   Terminal=false
   StartupNotify=false
   Categories=Development;Utility;
@@ -79,5 +67,4 @@ export class AppService {
   }
 }
 
-// Default export as singleton instance
-export default AppService.getInstance()
+export const appService = new AppService()

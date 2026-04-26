@@ -230,7 +230,7 @@ export default class PaddleocrPreprocessProvider extends BasePreprocessProvider 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Client-Platform': 'cherry-studio',
+          'Client-Platform': 'modaui-studio',
           Authorization: `token ${this.provider.apiKey}`
         },
         body: JSON.stringify(payload)

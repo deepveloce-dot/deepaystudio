@@ -18,28 +18,28 @@ interface Props {
 export const FreeTrialModelTag: FC<Props> = ({ model, showLabel = true }) => {
   const { t } = useTranslation()
 
-  if (model.provider !== 'cherryai') {
+  if (model.provider !== 'modauiai') {
     return null
   }
 
   let providerId
 
   if (model.id === 'Qwen/Qwen3-8B') {
-    providerId = 'cherryin'
+    providerId = 'modauiin'
   }
 
   if (model.id === 'Qwen/Qwen3-Next-80B-A3B-Instruct') {
-    providerId = 'cherryin'
+    providerId = 'modauiin'
   }
 
   const onSelectProvider = () => {
-    NavigationService.navigate!(`/settings/provider?id=${providerId}`)
+    void NavigationService.navigate!({ to: `/settings/provider`, search: { id: providerId } })
   }
 
   const onNavigateProvider = (e: MouseEvent) => {
     e.stopPropagation()
     SelectModelPopup.hide()
-    NavigationService.navigate!(`/settings/provider?id=${providerId}`)
+    void NavigationService.navigate?.({ to: '/settings/provider', search: { id: providerId } })
   }
 
   if (!showLabel) {

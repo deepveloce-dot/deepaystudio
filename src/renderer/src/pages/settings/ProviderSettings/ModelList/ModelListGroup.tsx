@@ -1,8 +1,8 @@
+import { Button, Flex, Tooltip } from '@modauistudio/ui'
 import CustomCollapse from '@renderer/components/CustomCollapse'
 import { DynamicVirtualList, type DynamicVirtualListRef } from '@renderer/components/VirtualList'
 import type { Model } from '@renderer/types'
 import type { ModelWithStatus } from '@renderer/types/healthCheck'
-import { Button, Flex, Tooltip } from 'antd'
 import { Minus } from 'lucide-react'
 import React, { memo, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +15,7 @@ const MAX_SCROLLER_HEIGHT = 390
 interface ModelListGroupProps {
   groupName: string
   models: Model[]
+  duplicateModelNames: Set<string>
   /** 使用 Map 实现 O(1) 查找，替代原来的数组线性搜索 */
   modelStatusMap: Map<string, ModelWithStatus>
   defaultOpen: boolean
@@ -27,6 +28,7 @@ interface ModelListGroupProps {
 const ModelListGroup: React.FC<ModelListGroupProps> = ({
   groupName,
   models,
+  duplicateModelNames,
   modelStatusMap,
   defaultOpen,
   disabled,
@@ -51,22 +53,22 @@ const ModelListGroup: React.FC<ModelListGroupProps> = ({
         defaultActiveKey={defaultOpen ? ['1'] : []}
         onChange={handleCollapseChange}
         label={
-          <Flex align="center" gap={10}>
+          <Flex className="items-center gap-[10px]">
             <span style={{ fontWeight: 'bold' }}>{groupName}</span>
           </Flex>
         }
         extra={
-          <Tooltip title={t('settings.models.manage.remove_whole_group')} mouseLeaveDelay={0}>
+          <Tooltip content={t('settings.models.manage.remove_whole_group')}>
             <Button
-              type="text"
+              variant="ghost"
               className="toolbar-item"
-              icon={<Minus size={14} />}
               onClick={(e) => {
                 e.stopPropagation()
                 onRemoveGroup()
               }}
-              disabled={disabled}
-            />
+              disabled={disabled}>
+              <Minus size={14} />
+            </Button>
           </Tooltip>
         }
         styles={{
@@ -91,6 +93,7 @@ const ModelListGroup: React.FC<ModelListGroupProps> = ({
             <ModelListItem
               model={model}
               modelStatus={modelStatusMap.get(model.id)}
+              showIdentifier={duplicateModelNames.has(model.name)}
               onEdit={onEditModel}
               onRemove={onRemoveModel}
               disabled={disabled}
@@ -117,6 +120,7 @@ const CustomCollapseWrapper = styled.div`
   .ant-collapse-content-box {
     padding: 0 !important;
   }
+
 `
 
 export default memo(ModelListGroup)

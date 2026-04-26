@@ -18,9 +18,9 @@ export const AccessibleDirsSetting = ({ base, update }: AccessibleDirsSettingPro
   const { t } = useTranslation()
 
   const updateAccessiblePaths = useCallback(
-    (accessible_paths: UpdateAgentBaseForm['accessible_paths']) => {
+    (accessiblePaths: UpdateAgentBaseForm['accessiblePaths']) => {
       if (!base) return
-      update({ id: base.id, accessible_paths })
+      void update({ id: base.id, accessiblePaths })
     },
     [base, update]
   )
@@ -34,12 +34,12 @@ export const AccessibleDirsSetting = ({ base, update }: AccessibleDirsSettingPro
         return
       }
 
-      if (base.accessible_paths.includes(selected)) {
+      if (base.accessiblePaths.includes(selected)) {
         window.toast.warning(t('agent.session.accessible_paths.duplicate'))
         return
       }
 
-      updateAccessiblePaths([...base.accessible_paths, selected])
+      updateAccessiblePaths([...base.accessiblePaths, selected])
     } catch (error) {
       logger.error('Failed to select accessible path:', error as Error)
       window.toast.error(t('agent.session.accessible_paths.select_failed'))
@@ -49,7 +49,7 @@ export const AccessibleDirsSetting = ({ base, update }: AccessibleDirsSettingPro
   const removeAccessiblePath = useCallback(
     (path: string) => {
       if (!base) return
-      const newPaths = base.accessible_paths.filter((p) => p !== path)
+      const newPaths = base.accessiblePaths.filter((p) => p !== path)
       updateAccessiblePaths(newPaths)
     },
     [base, updateAccessiblePaths]
@@ -68,16 +68,26 @@ export const AccessibleDirsSetting = ({ base, update }: AccessibleDirsSettingPro
         {t('agent.session.accessible_paths.label')}
       </SettingsTitle>
       <ul className="flex flex-col">
-        {base.accessible_paths.map((path) => (
+        {base.accessiblePaths.map((path) => (
           <li key={path} className="flex items-center justify-between gap-2 py-1">
             <span
               className="w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--color-text-2)] text-sm"
               title={path}>
               {path}
             </span>
-            <Button size="small" type="text" danger onClick={() => removeAccessiblePath(path)}>
-              {t('common.delete')}
-            </Button>
+            <Tooltip
+              title={
+                base.accessiblePaths.length <= 1 ? t('agent.session.accessible_paths.error.at_least_one') : undefined
+              }>
+              <Button
+                size="small"
+                type="text"
+                danger
+                disabled={base.accessiblePaths.length <= 1}
+                onClick={() => removeAccessiblePath(path)}>
+                {t('common.delete')}
+              </Button>
+            </Tooltip>
           </li>
         ))}
       </ul>

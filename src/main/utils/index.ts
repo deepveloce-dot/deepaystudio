@@ -4,16 +4,27 @@ import path from 'node:path'
 
 import { app } from 'electron'
 
-export function getResourcePath() {
-  return path.join(app.getAppPath(), 'resources')
-}
-
-export function getDataPath() {
-  const dataPath = path.join(app.getPath('userData'), 'Data')
-  if (!fs.existsSync(dataPath)) {
-    fs.mkdirSync(dataPath, { recursive: true })
+export function toAsarUnpackedPath(filePath: string): string {
+  if (!app.isPackaged) {
+    return filePath
   }
-  return dataPath
+
+  const appPath = app.getAppPath()
+  if (!appPath.endsWith('.asar')) {
+    return filePath
+  }
+
+  const unpackedAppPath = appPath.replace(/\.asar$/, '.asar.unpacked')
+  if (filePath === appPath) {
+    return unpackedAppPath
+  }
+
+  const appPathPrefix = `${appPath}${path.sep}`
+  if (!filePath.startsWith(appPathPrefix)) {
+    return filePath
+  }
+
+  return path.join(unpackedAppPath, path.relative(appPath, filePath))
 }
 
 export function getInstanceName(baseURL: string) {
@@ -38,14 +49,14 @@ export function debounce(func: (...args: any[]) => void, wait: number, immediate
 
 // NOTE: It's an unused function. localStorage should not be accessed in main process.
 // export function dumpPersistState() {
-//   const persistState = JSON.parse(localStorage.getItem('persist:cherry-studio') || '{}')
+//   const persistState = JSON.parse(localStorage.getItem('persist:modaui-studio') || '{}')
 //   for (const key in persistState) {
 //     persistState[key] = JSON.parse(persistState[key])
 //   }
 //   return JSON.stringify(persistState)
 // }
 
-export const runAsyncFunction = async (fn: () => void) => {
+export const runAsyncFunction = async (fn: () => Promise<void>) => {
   await fn()
 }
 

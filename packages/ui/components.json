@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "aliases": {
+    "components": "@modauistudio/ui/components",
+    "hooks": "@modauistudio/ui/hooks",
+    "lib": "@modauistudio/ui/lib",
+    "ui": "@modauistudio/ui/components/primitives",
+    "utils": "@modauistudio/ui/lib/utils"
+  },
+  "iconLibrary": "lucide",
+  "rsc": false,
+  "style": "new-york",
+  "tailwind": {
+    "baseColor": "zinc",
+    "config": "",
+    "css": "src/styles/theme.css",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "tsx": true
+}

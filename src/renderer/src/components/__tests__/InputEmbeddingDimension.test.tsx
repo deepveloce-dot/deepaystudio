@@ -65,29 +65,40 @@ vi.mock('antd', () => {
     </button>
   )
 
-  const MockTooltip: React.FC<React.PropsWithChildren<{ title: string }>> = ({ children, title }) => (
+  return {
+    Button: MockButton,
+    InputNumber: MockInputNumber,
+    Space: { Compact: MockSpaceCompact }
+  }
+})
+
+vi.mock('@modauistudio/ui', () => ({
+  Button: ({ children, onPress, disabled, isDisabled, startContent, ...props }: any) => (
+    <button type="button" data-testid="button" onClick={onPress} disabled={disabled || isDisabled} {...props}>
+      {startContent}
+      {children}
+    </button>
+  ),
+  Tooltip: ({ children, title }: { children: React.ReactNode; title: React.ReactNode }) => (
     <div data-testid="tooltip" data-title={title}>
       {children}
     </div>
   )
-
-  return {
-    Button: MockButton,
-    InputNumber: MockInputNumber,
-    Space: { Compact: MockSpaceCompact },
-    Tooltip: MockTooltip
-  }
-})
+}))
 
 // Mock dependencies
-vi.mock('@renderer/aiCore/index_new', () => ({
-  default: vi.fn().mockImplementation(() => ({
+vi.mock('@renderer/aiCore', () => ({
+  AiProvider: vi.fn().mockImplementation(() => ({
     getEmbeddingDimensions: mocks.aiCore.getEmbeddingDimensions
   }))
 }))
 
 vi.mock('@renderer/hooks/useProvider', () => ({
-  useProvider: () => ({ provider: { id: 'test-provider', name: 'Test Provider' } })
+  useProvider: () => ({ provider: { id: 'test-provider', name: 'Test Provider', apiKey: 'test-key' } })
+}))
+
+vi.mock('@renderer/services/ApiService', () => ({
+  getRotatedApiKey: (provider: any) => provider.apiKey || ''
 }))
 
 // mock i18n

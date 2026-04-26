@@ -5,8 +5,8 @@ import * as z from 'zod'
 
 /**
  * 渲染器侧参数类型（不包含 model 和 messages，因为它们会单独处理）
- * 注意：这与 @cherrystudio/ai-core 导出的完整参数类型不同
- * - @cherrystudio/ai-core 的 StreamTextParams: 完整的 AI SDK 参数（用于插件系统）
+ * 注意：这与 @modauistudio/ai-core 导出的完整参数类型不同
+ * - @modauistudio/ai-core 的 StreamTextParams: 完整的 AI SDK 参数（用于插件系统）
  * - 此处的 StreamTextParams: 去除 model/messages 的参数（用于渲染器参数构建）
  */
 export type StreamTextParams = Omit<Parameters<typeof streamText>[0], 'model' | 'messages'> &
@@ -23,7 +23,7 @@ export type StreamTextParams = Omit<Parameters<typeof streamText>[0], 'model' | 
 
 /**
  * 渲染器侧参数类型（不包含 model 和 messages）
- * 注意：这与 @cherrystudio/ai-core 导出的完整参数类型不同
+ * 注意：这与 @modauistudio/ai-core 导出的完整参数类型不同
  */
 export type GenerateTextParams = Omit<Parameters<typeof generateText>[0], 'model' | 'messages'> &
   (
@@ -47,8 +47,7 @@ export type GenerateTextParams = Omit<Parameters<typeof generateText>[0], 'model
 export type OpenAIVerbosity = OpenAI.Responses.ResponseTextConfig['verbosity']
 export type ValidOpenAIVerbosity = NotUndefined<OpenAIVerbosity>
 
-export type OpenAIReasoningEffort = OpenAI.ReasoningEffort
-
+export type OpenAIReasoningEffort = NonNullable<OpenAI.ReasoningEffort> | 'auto'
 /**
  * A summary of the reasoning performed by the model. This can be useful for debugging and understanding the model's reasoning process.
  *

@@ -1,6 +1,5 @@
 import { loggerService } from '@logger'
-import { configManager } from '@main/services/ConfigManager'
-import { locales } from '@main/utils/locales'
+import { getAppLanguage, locales } from '@main/utils/language'
 import type EventEmitter from 'events'
 import http from 'http'
 import { URL } from 'url'
@@ -10,7 +9,7 @@ import type { OAuthCallbackServerOptions } from './types'
 const logger = loggerService.withContext('MCP:OAuthCallbackServer')
 
 function getTranslation(key: string): string {
-  const language = configManager.getLanguage()
+  const language = getAppLanguage()
   const localeData = locales[language]
 
   if (!localeData) {
@@ -18,7 +17,7 @@ function getTranslation(key: string): string {
     return key
   }
 
-  const translations = localeData.translation as any
+  const translations = localeData.translation
   if (!translations) {
     logger.warn(`No translations found for language: ${language}`)
     return key
@@ -124,7 +123,7 @@ export class CallBackServer {
 
     // Handle server errors
     server.on('error', (error) => {
-      logger.error('OAuth callback server error:', error as Error)
+      logger.error('OAuth callback server error:', error)
     })
 
     return new Promise<http.Server>((resolve, reject) => {

@@ -2,11 +2,13 @@ import { type AzureOpenAIProvider, type Provider, SystemProviderIds } from '@ren
 import { describe, expect, it, vi } from 'vitest'
 
 import {
+  getAnthropicSupportedProviders,
   getClaudeSupportedProviders,
   isAIGatewayProvider,
   isAnthropicProvider,
+  isAnthropicSupportedProvider,
   isAzureOpenAIProvider,
-  isCherryAIProvider,
+  isModauiAIProvider,
   isGeminiProvider,
   isGeminiWebSearchProvider,
   isNewApiProvider,
@@ -65,6 +67,26 @@ describe('provider utils', () => {
     ]
 
     expect(getClaudeSupportedProviders(providers)).toEqual(providers.slice(0, 3))
+  })
+
+  it('filters Anthropic supported providers', () => {
+    const providers = [
+      createProvider({ id: 'anthropic-official', type: 'anthropic' }),
+      createProvider({ id: 'custom-host', anthropicApiHost: 'https://anthropic.local' }),
+      createProvider({ id: 'aihubmix' }),
+      createProvider({ id: 'other' })
+    ]
+
+    expect(getAnthropicSupportedProviders(providers)).toEqual(providers.slice(0, 2))
+  })
+
+  it('checks Anthropic supported provider', () => {
+    expect(isAnthropicSupportedProvider(createProvider({ id: 'anthropic-official', type: 'anthropic' }))).toBe(true)
+    expect(
+      isAnthropicSupportedProvider(createProvider({ id: 'custom-host', anthropicApiHost: 'https://anthropic.local' }))
+    ).toBe(true)
+    expect(isAnthropicSupportedProvider(createProvider({ id: 'aihubmix' }))).toBe(false)
+    expect(isAnthropicSupportedProvider(createProvider({ id: 'other' }))).toBe(false)
   })
 
   it('evaluates message array content support', () => {
@@ -138,7 +160,7 @@ describe('provider utils', () => {
     expect(isSupportUrlContextProvider(createProvider({ type: 'gemini' }))).toBe(true)
     expect(
       isSupportUrlContextProvider(
-        createSystemProvider({ id: SystemProviderIds.cherryin, type: 'openai', isSystem: true })
+        createSystemProvider({ id: SystemProviderIds.modauiin, type: 'openai', isSystem: true })
       )
     ).toBe(true)
     expect(isSupportUrlContextProvider(createProvider())).toBe(false)
@@ -154,14 +176,14 @@ describe('provider utils', () => {
 
   it('detects New API providers by id or type', () => {
     expect(isNewApiProvider(createProvider({ id: SystemProviderIds['new-api'] }))).toBe(true)
-    expect(isNewApiProvider(createProvider({ id: SystemProviderIds.cherryin }))).toBe(true)
+    expect(isNewApiProvider(createProvider({ id: SystemProviderIds.modauiin }))).toBe(true)
     expect(isNewApiProvider(createProvider({ type: 'new-api' }))).toBe(true)
     expect(isNewApiProvider(createProvider())).toBe(false)
   })
 
   it('detects specific provider ids', () => {
-    expect(isCherryAIProvider(createProvider({ id: 'cherryai' }))).toBe(true)
-    expect(isCherryAIProvider(createProvider())).toBe(false)
+    expect(isModauiAIProvider(createProvider({ id: 'modauiai' }))).toBe(true)
+    expect(isModauiAIProvider(createProvider())).toBe(false)
 
     expect(isPerplexityProvider(createProvider({ id: SystemProviderIds.perplexity }))).toBe(true)
     expect(isPerplexityProvider(createProvider())).toBe(false)

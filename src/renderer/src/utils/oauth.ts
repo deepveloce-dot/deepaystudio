@@ -26,7 +26,7 @@ export const oauthWithSiliconFlow = async (setKey) => {
 }
 
 export const oauthWithAihubmix = async (setKey) => {
-  const authUrl = ` https://console.aihubmix.com/token?client_id=cherry_studio_oauth&lang=${getLanguageCode()}&aff=SJyh`
+  const authUrl = ` https://console.aihubmix.com/token?client_id=modaui_studio_oauth&lang=${getLanguageCode()}&aff=SJyh`
 
   const popup = window.open(
     authUrl,
@@ -37,7 +37,7 @@ export const oauthWithAihubmix = async (setKey) => {
   const messageHandler = async (event) => {
     const data = event.data
 
-    if (data && data.key === 'cherry_studio_oauth_callback') {
+    if (data && data.key === 'modaui_studio_oauth_callback') {
       const { iv, encryptedData } = data.data
 
       try {
@@ -62,7 +62,7 @@ export const oauthWithAihubmix = async (setKey) => {
 }
 
 export const oauthWithPPIO = async (setKey) => {
-  const redirectUri = 'cherrystudio://'
+  const redirectUri = 'modauistudio://'
   const authUrl = `https://ppio.com/oauth/authorize?invited_by=JYT9GD&client_id=${PPIO_CLIENT_ID}&scope=api%20openid&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}`
 
   window.open(
@@ -199,7 +199,7 @@ export interface NewApiOAuthConfig {
 }
 
 /**
- * CherryIN OAuth flow using Authorization Code with PKCE
+ * ModauiIN OAuth flow using Authorization Code with PKCE
  * PKCE generation and token exchange happen in the main process for security
  * @param setKey - Callback to set the API key
  * @param config - OAuth configuration (oauthServer, apiHost)
@@ -208,7 +208,7 @@ export const oauthWithCherryIn = async (setKey: (key: string) => void, config: N
   const { oauthServer, apiHost } = config
 
   // Start OAuth flow in main process (generates PKCE params and returns auth URL)
-  const { authUrl, state } = await window.api.cherryin.startOAuthFlow(oauthServer, apiHost)
+  const { authUrl, state } = await window.api.modauiin.startOAuthFlow(oauthServer, apiHost)
 
   logger.debug('Opening authorization URL')
 
@@ -260,7 +260,7 @@ export const oauthWithCherryIn = async (setKey: (key: string) => void, config: N
         logger.debug('Exchanging code for token via main process')
 
         // Exchange code for tokens in main process (has PKCE code_verifier)
-        const { apiKeys } = await window.api.cherryin.exchangeToken(code, state)
+        const { apiKeys } = await window.api.modauiin.exchangeToken(code, state)
 
         if (apiKeys) {
           logger.debug('Successfully obtained API keys')
@@ -306,7 +306,7 @@ export const providerCharge = async (provider: string) => {
       height: 700
     },
     aihubmix: {
-      url: `https://console.aihubmix.com/topup?client_id=cherry_studio_oauth&lang=${getLanguageCode()}&aff=SJyh`,
+      url: `https://console.aihubmix.com/topup?client_id=modaui_studio_oauth&lang=${getLanguageCode()}&aff=SJyh`,
       width: 720,
       height: 900
     },
@@ -316,7 +316,7 @@ export const providerCharge = async (provider: string) => {
       height: 700
     },
     ppio: {
-      url: 'https://ppio.com/user/register?invited_by=JYT9GD&utm_source=github_cherry-studio&redirect=/billing',
+      url: 'https://ppio.com/user/register?invited_by=JYT9GD&utm_source=github_modaui-studio&redirect=/billing',
       width: 900,
       height: 700
     },
@@ -349,7 +349,7 @@ export const providerBills = async (provider: string) => {
       height: 700
     },
     aihubmix: {
-      url: `https://console.aihubmix.com/statistics?client_id=cherry_studio_oauth&lang=${getLanguageCode()}&aff=SJyh`,
+      url: `https://console.aihubmix.com/statistics?client_id=modaui_studio_oauth&lang=${getLanguageCode()}&aff=SJyh`,
       width: 900,
       height: 700
     },
@@ -359,7 +359,7 @@ export const providerBills = async (provider: string) => {
       height: 700
     },
     ppio: {
-      url: 'https://ppio.com/user/register?invited_by=JYT9GD&utm_source=github_cherry-studio&redirect=/billing/billing-details',
+      url: 'https://ppio.com/user/register?invited_by=JYT9GD&utm_source=github_modaui-studio&redirect=/billing/billing-details',
       width: 900,
       height: 700
     },

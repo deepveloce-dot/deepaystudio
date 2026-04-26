@@ -1,16 +1,16 @@
+import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import Scrollbar from '@renderer/components/Scrollbar'
 import { MessageEditingProvider } from '@renderer/context/MessageEditingContext'
 import { useChatContext } from '@renderer/hooks/useChatContext'
 import { useMessageOperations } from '@renderer/hooks/useMessageOperations'
-import { useSettings } from '@renderer/hooks/useSettings'
 import { useTimer } from '@renderer/hooks/useTimer'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
-import type { MultiModelMessageStyle } from '@renderer/store/settings'
 import type { Topic } from '@renderer/types'
 import type { Message } from '@renderer/types/newMessage'
 import { classNames } from '@renderer/utils'
 import { scrollIntoView } from '@renderer/utils/dom'
+import type { MultiModelMessageStyle } from '@shared/data/preference/preferenceTypes'
 import { Popover } from 'antd'
 import type { ComponentProps } from 'react'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
@@ -31,7 +31,9 @@ const MessageGroup = ({ messages, topic, registerMessageElement }: Props) => {
 
   // Hooks
   const { editMessage } = useMessageOperations(topic)
-  const { multiModelMessageStyle: multiModelMessageStyleSetting, gridColumns, gridPopoverTrigger } = useSettings()
+  const [multiModelMessageStyleSetting] = usePreference('chat.message.multi_model.style')
+  const [gridColumns] = usePreference('chat.message.multi_model.grid_columns')
+  const [gridPopoverTrigger] = usePreference('chat.message.multi_model.grid_popover_trigger')
   const { isMultiSelectMode } = useChatContext(topic)
   const { setTimeoutTimer } = useTimer()
 
@@ -63,9 +65,9 @@ const MessageGroup = ({ messages, topic, registerMessageElement }: Props) => {
   const setSelectedMessage = useCallback(
     (message: Message) => {
       // 前一个
-      editMessage(selectedMessageId, { foldSelected: false })
+      void editMessage(selectedMessageId, { foldSelected: false })
       // 当前选中的消息
-      editMessage(message.id, { foldSelected: true })
+      void editMessage(message.id, { foldSelected: true })
 
       setTimeoutTimer(
         'setSelectedMessage',
@@ -165,16 +167,16 @@ const MessageGroup = ({ messages, topic, registerMessageElement }: Props) => {
         return
       }
       if (message.useful) {
-        editMessage(msgId, { useful: undefined })
+        void editMessage(msgId, { useful: undefined })
         return
       } else {
         const toResetUsefulMsgs = messages.filter((msg) => msg.id !== msgId && msg.useful)
         toResetUsefulMsgs.forEach(async (msg) => {
-          editMessage(msg.id, {
+          void editMessage(msg.id, {
             useful: undefined
           })
         })
-        editMessage(msgId, { useful: true })
+        void editMessage(msgId, { useful: true })
       }
     },
     [editMessage, messages]
@@ -281,7 +283,7 @@ const MessageGroup = ({ messages, topic, registerMessageElement }: Props) => {
             setMultiModelMessageStyle={(style) => {
               setMultiModelMessageStyle(style)
               messages.forEach((message) => {
-                editMessage(message.id, { multiModelMessageStyle: style })
+                void editMessage(message.id, { multiModelMessageStyle: style })
               })
             }}
             messages={messages}
@@ -361,7 +363,7 @@ interface MessageWrapperProps {
 const MessageWrapper = styled.div<MessageWrapperProps>`
   &.horizontal {
     padding: 1px;
-    overflow-y: auto;
+    overflow-y: visible;
     .message {
       height: 100%;
       border: 0.5px solid var(--color-border);

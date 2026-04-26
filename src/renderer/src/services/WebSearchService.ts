@@ -1,33 +1,60 @@
+import { cacheService } from '@data/CacheService'
+import { preferenceService } from '@data/PreferenceService'
 import { loggerService } from '@logger'
-import { DEFAULT_WEBSEARCH_RAG_DOCUMENT_COUNT } from '@renderer/config/constant'
-import i18n from '@renderer/i18n'
+import { filterSupportedWebSearchProviders, webSearchProviderRequiresApiKey } from '@renderer/config/webSearchProviders'
 import WebSearchEngineProvider from '@renderer/providers/WebSearchProvider'
 import { addSpan, endSpan } from '@renderer/services/SpanManagerService'
-import store from '@renderer/store'
-import { setWebSearchStatus } from '@renderer/store/runtime'
-import type { CompressionConfig, WebSearchState } from '@renderer/store/websearch'
 import type {
-  KnowledgeBase,
-  KnowledgeItem,
-  KnowledgeReference,
+  RendererCompressionConfig,
   WebSearchProvider,
   WebSearchProviderResponse,
   WebSearchProviderResult,
+  WebSearchState,
   WebSearchStatus
 } from '@renderer/types'
-import { hasObjectKey, removeSpecialCharactersForFileName, uuid } from '@renderer/utils'
 import { addAbortController } from '@renderer/utils/abortController'
-import { formatErrorMessage } from '@renderer/utils/error'
 import type { ExtractResults } from '@renderer/utils/extract'
 import { fetchWebContents } from '@renderer/utils/fetch'
-import { consolidateReferencesByUrl, selectReferences } from '@renderer/utils/websearch'
-import dayjs from 'dayjs'
+import type {
+  PreferenceDefaultScopeType,
+  PreferenceKeyType,
+  WebSearchProviderId,
+  WebSearchProviderOverride,
+  WebSearchProviderOverrides
+} from '@shared/data/preference/preferenceTypes'
+import { getDefaultValue } from '@shared/data/preference/preferenceUtils'
+import { PRESETS_WEB_SEARCH_PROVIDERS } from '@shared/data/presets/web-search-providers'
+import { normalizeWebSearchCutoffLimit } from '@shared/data/types/webSearch'
 import { sliceByTokens } from 'tokenx'
 
-import { getKnowledgeBaseParams } from './KnowledgeService'
-import { getKnowledgeSourceUrl, searchKnowledgeBase } from './KnowledgeService'
-
 const logger = loggerService.withContext('WebSearchService')
+
+type WebSearchPreferenceSnapshot = Pick<
+  PreferenceDefaultScopeType,
+  | 'chat.web_search.default_provider'
+  | 'chat.web_search.exclude_domains'
+  | 'chat.web_search.max_results'
+  | 'chat.web_search.provider_overrides'
+  | 'chat.web_search.subscribe_sources'
+  | 'chat.web_search.compression.method'
+  | 'chat.web_search.compression.cutoff_limit'
+  | 'chat.web_search.compression.cutoff_unit'
+>
+
+export const WEB_SEARCH_PREFERENCE_KEYS = {
+  defaultProvider: 'chat.web_search.default_provider',
+  excludeDomains: 'chat.web_search.exclude_domains',
+  maxResults: 'chat.web_search.max_results',
+  providerOverrides: 'chat.web_search.provider_overrides',
+  subscribeSources: 'chat.web_search.subscribe_sources',
+  compressionMethod: 'chat.web_search.compression.method',
+  cutoffLimit: 'chat.web_search.compression.cutoff_limit',
+  cutoffUnit: 'chat.web_search.compression.cutoff_unit'
+} as const
+
+type WebSearchPreferenceValues = {
+  [K in keyof typeof WEB_SEARCH_PREFERENCE_KEYS]: WebSearchPreferenceSnapshot[(typeof WEB_SEARCH_PREFERENCE_KEYS)[K]]
+}
 
 interface RequestState {
   signal: AbortSignal | null
@@ -38,7 +65,7 @@ interface RequestState {
 /**
  * 提供网络搜索相关功能的服务类
  */
-class WebSearchService {
+export class WebSearchService {
   /**
    * 是否暂停
    */
@@ -89,7 +116,7 @@ class WebSearchService {
    * @returns 网络搜索状态
    */
   private getWebSearchState(): WebSearchState {
-    return store.getState().websearch
+    return getCachedRendererWebSearchState()
   }
 
   /**
@@ -98,26 +125,18 @@ class WebSearchService {
    * @returns 如果默认搜索提供商已启用则返回true，否则返回false
    */
   public isWebSearchEnabled(providerId?: WebSearchProvider['id']): boolean {
-    const { providers } = this.getWebSearchState()
+    const providers = filterSupportedWebSearchProviders(this.getWebSearchState().providers)
     const provider = providers.find((provider) => provider.id === providerId)
 
     if (!provider) {
       return false
     }
 
-    if (provider.id.startsWith('local-')) {
-      return true
+    if (webSearchProviderRequiresApiKey(provider.id)) {
+      return provider.apiKey?.trim() !== ''
     }
 
-    if (hasObjectKey(provider, 'apiKey')) {
-      return provider.apiKey !== ''
-    }
-
-    if (hasObjectKey(provider, 'apiHost')) {
-      return provider.apiHost !== ''
-    }
-
-    return false
+    return provider.apiHost?.trim() !== ''
   }
 
   /**
@@ -138,11 +157,16 @@ class WebSearchService {
    * @returns 网络搜索提供商
    */
   public getWebSearchProvider(providerId?: string): WebSearchProvider | undefined {
-    const { providers } = this.getWebSearchState()
+    const providers = filterSupportedWebSearchProviders(this.getWebSearchState().providers)
     logger.debug('providers', providers)
     const provider = providers.find((provider) => provider.id === providerId)
 
     return provider
+  }
+
+  public async getWebSearchProviderAsync(providerId?: string): Promise<WebSearchProvider | undefined> {
+    const providers = filterSupportedWebSearchProviders((await getRendererWebSearchState()).providers)
+    return providers.find((provider) => provider.id === providerId)
   }
 
   /**
@@ -161,13 +185,7 @@ class WebSearchService {
     const websearch = this.getWebSearchState()
     const webSearchEngine = new WebSearchEngineProvider(provider, spanId)
 
-    let formattedQuery = query
-    // FIXME: 有待商榷，效果一般
-    if (websearch.searchWithTime) {
-      formattedQuery = `today is ${dayjs().format('YYYY-MM-DD')} \r\n ${query}`
-    }
-
-    return await webSearchEngine.search(formattedQuery, websearch, httpOptions)
+    return await webSearchEngine.search(query, websearch, httpOptions)
   }
 
   /**
@@ -191,170 +209,16 @@ class WebSearchService {
    * 设置网络搜索状态
    */
   private async setWebSearchStatus(requestId: string, status: WebSearchStatus, delayMs?: number) {
-    store.dispatch(setWebSearchStatus({ requestId, status }))
+    const activeSearches = cacheService.getShared('chat.web_search.active_searches') ?? {}
+    cacheService.setShared('chat.web_search.active_searches', {
+      ...activeSearches,
+      [requestId]: status
+    })
+
     if (delayMs) {
       await new Promise((resolve) => setTimeout(resolve, delayMs))
     }
   }
-
-  /**
-   * 创建临时搜索知识库
-   */
-  private async ensureSearchBase(
-    config: CompressionConfig,
-    documentCount: number,
-    requestId: string
-  ): Promise<KnowledgeBase> {
-    // requestId: eg: openai-responses-openai/gpt-5-timestamp-uuid
-    const baseId = `websearch-compression-${requestId}`
-
-    if (!config.embeddingModel) {
-      throw new Error('Embedding model is required for RAG compression')
-    }
-
-    // 创建新的知识库
-    const searchBase: KnowledgeBase = {
-      id: baseId,
-      name: `WebSearch-RAG-${requestId}`,
-      model: config.embeddingModel,
-      rerankModel: config.rerankModel,
-      dimensions: config.embeddingDimensions,
-      documentCount,
-      items: [],
-      created_at: Date.now(),
-      updated_at: Date.now(),
-      version: 1
-    }
-
-    // 创建知识库
-    const baseParams = getKnowledgeBaseParams(searchBase)
-    await window.api.knowledgeBase.create(baseParams)
-
-    return searchBase
-  }
-
-  /**
-   * 清理临时搜索知识库
-   */
-  private async cleanupSearchBase(searchBase: KnowledgeBase): Promise<void> {
-    try {
-      await window.api.knowledgeBase.delete(removeSpecialCharactersForFileName(searchBase.id))
-      logger.debug(`Cleaned up search base: ${searchBase.id}`)
-    } catch (error) {
-      logger.warn(`Failed to cleanup search base ${searchBase.id}:`, error as Error)
-    }
-  }
-
-  /**
-   * 对搜索知识库执行多问题查询并按分数排序
-   * @param questions 问题列表
-   * @param searchBase 搜索知识库
-   * @returns 排序后的知识引用列表
-   */
-  private async querySearchBase(questions: string[], searchBase: KnowledgeBase): Promise<KnowledgeReference[]> {
-    // 1. 单独搜索每个问题
-    const searchPromises = questions.map((question) => searchKnowledgeBase(question, searchBase))
-    const allResults = await Promise.all(searchPromises)
-
-    // 2. 合并所有结果并按分数排序
-    const flatResults = allResults.flat().sort((a, b) => b.score - a.score)
-
-    logger.debug(`Found ${flatResults.length} result(s) in search base related to question(s): `, questions)
-
-    // 3. 去重，保留最高分的重复内容
-    const seen = new Set<string>()
-    const uniqueResults = flatResults.filter((item) => {
-      if (seen.has(item.pageContent)) {
-        return false
-      }
-      seen.add(item.pageContent)
-      return true
-    })
-
-    logger.debug(`Found ${uniqueResults.length} unique result(s) from search base after sorting and deduplication`)
-
-    // 4. 转换为引用格式
-    return await Promise.all(
-      uniqueResults.map(async (result, index) => ({
-        id: index + 1,
-        content: result.pageContent,
-        sourceUrl: await getKnowledgeSourceUrl(result),
-        type: 'url' as const
-      }))
-    )
-  }
-
-  /**
-   * 使用RAG压缩搜索结果。
-   * - 一次性将所有搜索结果添加到知识库
-   * - 从知识库中 retrieve 相关结果
-   * - 根据 sourceUrl 映射回原始搜索结果
-   *
-   * @param questions 问题列表
-   * @param rawResults 原始搜索结果
-   * @param config 压缩配置
-   * @param requestId 请求ID
-   * @returns 压缩后的搜索结果
-   */
-  private async compressWithSearchBase(
-    questions: string[],
-    rawResults: WebSearchProviderResult[],
-    config: CompressionConfig,
-    requestId: string
-  ): Promise<WebSearchProviderResult[]> {
-    // 根据搜索次数计算所需的文档数量
-    const totalDocumentCount =
-      Math.max(0, rawResults.length) * (config.documentCount ?? DEFAULT_WEBSEARCH_RAG_DOCUMENT_COUNT)
-
-    const searchBase = await this.ensureSearchBase(config, totalDocumentCount, requestId)
-    logger.debug('Search base for RAG compression: ', searchBase)
-
-    try {
-      // 1. 清空知识库
-      const baseParams = getKnowledgeBaseParams(searchBase)
-      await window.api.knowledgeBase.reset(baseParams)
-
-      logger.debug('Search base parameters for RAG compression: ', baseParams)
-
-      // 2. 顺序添加所有搜索结果到知识库
-      // FIXME: 目前的知识库 add 不支持并发
-      for (const result of rawResults) {
-        const item: KnowledgeItem & { sourceUrl?: string } = {
-          id: uuid(),
-          type: 'note',
-          content: result.content,
-          sourceUrl: result.url, // 设置 sourceUrl 用于映射
-          created_at: Date.now(),
-          updated_at: Date.now(),
-          processingStatus: 'pending'
-        }
-
-        await window.api.knowledgeBase.add({
-          base: getKnowledgeBaseParams(searchBase),
-          item
-        })
-      }
-
-      // 3. 对知识库执行多问题搜索获取压缩结果
-      const references = await this.querySearchBase(questions, searchBase)
-
-      // 4. 使用 Round Robin 策略选择引用
-      const selectedReferences = selectReferences(rawResults, references, totalDocumentCount)
-
-      logger.verbose('With RAG, the number of search results:', {
-        raw: rawResults.length,
-        retrieved: references.length,
-        selected: selectedReferences.length
-      })
-
-      // 5. 按 sourceUrl 分组并合并同源片段
-      return consolidateReferencesByUrl(rawResults, selectedReferences)
-    } finally {
-      // 无论成功或失败都立即清理知识库
-      await this.cleanupSearchBase(searchBase)
-    }
-  }
-
   /**
    * 使用截断方式压缩搜索结果，可以选择单位 char 或 token。
    *
@@ -364,7 +228,7 @@ class WebSearchService {
    */
   private async compressWithCutoff(
     rawResults: WebSearchProviderResult[],
-    config: CompressionConfig
+    config: RendererCompressionConfig
   ): Promise<WebSearchProviderResult[]> {
     if (!config.cutoffLimit) {
       logger.warn('Cutoff limit is not set, skipping compression')
@@ -427,7 +291,7 @@ class WebSearchService {
     const signal = this.getRequestState(requestId).signal || this.signal
 
     const span = webSearchProvider.topicId
-      ? addSpan({
+      ? await addSpan({
           topicId: webSearchProvider.topicId,
           name: `WebSearch`,
           inputs: {
@@ -513,36 +377,8 @@ class WebSearchService {
 
     const { compressionConfig } = this.getWebSearchState()
 
-    // RAG压缩处理
-    if (compressionConfig?.method === 'rag' && requestId) {
-      await this.setWebSearchStatus(requestId, { phase: 'rag' }, 500)
-
-      const originalCount = finalResults.length
-
-      try {
-        finalResults = await this.compressWithSearchBase(questions, finalResults, compressionConfig, requestId)
-        await this.setWebSearchStatus(
-          requestId,
-          {
-            phase: 'rag_complete',
-            countBefore: originalCount,
-            countAfter: finalResults.length
-          },
-          1000
-        )
-      } catch (error) {
-        logger.warn('RAG compression failed, will return empty results:', error as Error)
-        window.toast.error({
-          timeout: 10000,
-          title: `${i18n.t('settings.tool.websearch.compression.error.rag_failed')}: ${formatErrorMessage(error)}`
-        })
-
-        finalResults = []
-        await this.setWebSearchStatus(requestId, { phase: 'rag_failed' }, 1000)
-      }
-    }
     // 截断压缩处理
-    else if (compressionConfig?.method === 'cutoff' && compressionConfig.cutoffLimit) {
+    if (compressionConfig?.method === 'cutoff' && compressionConfig.cutoffLimit) {
       await this.setWebSearchStatus(requestId, { phase: 'cutoff' }, 500)
       finalResults = await this.compressWithCutoff(finalResults, compressionConfig)
     }
@@ -565,4 +401,152 @@ class WebSearchService {
   }
 }
 
-export default new WebSearchService()
+export const webSearchService = new WebSearchService()
+
+export function parseApiKeys(apiKey?: string): string[] | undefined {
+  if (!apiKey) {
+    return undefined
+  }
+
+  const apiKeys = apiKey
+    .split(',')
+    .map((key) => key.trim())
+    .filter(Boolean)
+
+  return apiKeys.length > 0 ? apiKeys : undefined
+}
+
+export function stringifyApiKeys(apiKeys?: string[]): string {
+  return (
+    apiKeys
+      ?.map((key) => key.trim())
+      .filter(Boolean)
+      .join(',') ?? ''
+  )
+}
+
+export function resolveWebSearchProviders(overrides: WebSearchProviderOverrides): WebSearchProvider[] {
+  return PRESETS_WEB_SEARCH_PROVIDERS.map((preset) => {
+    const override = overrides[preset.id]
+
+    return {
+      id: preset.id,
+      name: preset.name,
+      apiKey: stringifyApiKeys(override?.apiKeys),
+      apiHost: override?.apiHost?.trim() || preset.defaultApiHost,
+      engines: override?.engines || [],
+      basicAuthUsername: override?.basicAuthUsername?.trim() || '',
+      basicAuthPassword: override?.basicAuthPassword?.trim() || ''
+    }
+  })
+}
+
+export function buildWebSearchProviderOverrides(providers: WebSearchProvider[]): WebSearchProviderOverrides {
+  return providers.reduce<WebSearchProviderOverrides>((acc, provider) => {
+    const normalizedOverride = normalizeWebSearchProviderOverride({
+      apiKeys: parseApiKeys(provider.apiKey),
+      apiHost: provider.apiHost,
+      engines: provider.engines,
+      basicAuthUsername: provider.basicAuthUsername,
+      basicAuthPassword: provider.basicAuthPassword
+    })
+
+    if (Object.keys(normalizedOverride).length > 0) {
+      acc[provider.id] = normalizedOverride
+    }
+
+    return acc
+  }, {})
+}
+
+export function updateWebSearchProviderOverride(
+  overrides: WebSearchProviderOverrides,
+  providerId: WebSearchProviderId,
+  updates: Partial<WebSearchProvider>
+): WebSearchProviderOverrides {
+  const currentOverride = overrides[providerId] ?? {}
+  const nextOverride: WebSearchProviderOverride = {
+    ...currentOverride,
+    apiKeys: updates.apiKey !== undefined ? parseApiKeys(updates.apiKey) : currentOverride.apiKeys,
+    apiHost: updates.apiHost !== undefined ? updates.apiHost : currentOverride.apiHost,
+    engines: updates.engines !== undefined ? updates.engines : currentOverride.engines,
+    basicAuthUsername:
+      updates.basicAuthUsername !== undefined ? updates.basicAuthUsername : currentOverride.basicAuthUsername,
+    basicAuthPassword:
+      updates.basicAuthPassword !== undefined ? updates.basicAuthPassword : currentOverride.basicAuthPassword
+  }
+
+  const normalizedOverride = normalizeWebSearchProviderOverride(nextOverride)
+
+  if (Object.keys(normalizedOverride).length === 0) {
+    const restOverrides = { ...overrides }
+    delete restOverrides[providerId]
+    return restOverrides
+  }
+
+  return {
+    ...overrides,
+    [providerId]: normalizedOverride
+  }
+}
+
+export function buildRendererWebSearchState(preferences: WebSearchPreferenceValues): WebSearchState {
+  return {
+    defaultProvider: preferences.defaultProvider,
+    providers: resolveWebSearchProviders(preferences.providerOverrides),
+    searchWithTime: false,
+    maxResults: Math.max(1, preferences.maxResults),
+    excludeDomains: preferences.excludeDomains,
+    subscribeSources: preferences.subscribeSources,
+    overwrite: false,
+    compressionConfig: {
+      method: preferences.compressionMethod,
+      cutoffLimit: normalizeWebSearchCutoffLimit(preferences.cutoffLimit),
+      cutoffUnit: preferences.cutoffUnit
+    }
+  }
+}
+
+export async function getRendererWebSearchState(): Promise<WebSearchState> {
+  const preferences = await preferenceService.getMultiple(WEB_SEARCH_PREFERENCE_KEYS)
+  return buildRendererWebSearchState(preferences)
+}
+
+export function getCachedRendererWebSearchState(): WebSearchState {
+  const getCachedPreference = <K extends PreferenceKeyType>(key: K): PreferenceDefaultScopeType[K] => {
+    const cachedValue = preferenceService.getCachedValue(key)
+    return (cachedValue !== undefined ? cachedValue : getDefaultValue(key)) as PreferenceDefaultScopeType[K]
+  }
+
+  const preferences = Object.fromEntries(
+    Object.entries(WEB_SEARCH_PREFERENCE_KEYS).map(([alias, key]) => [alias, getCachedPreference(key)])
+  ) as WebSearchPreferenceValues
+
+  return buildRendererWebSearchState(preferences)
+}
+
+function normalizeWebSearchProviderOverride(override: WebSearchProviderOverride): WebSearchProviderOverride {
+  const normalizedOverride: WebSearchProviderOverride = {}
+
+  if (override.apiKeys !== undefined) {
+    normalizedOverride.apiKeys = override.apiKeys.map((key) => key.trim()).filter(Boolean)
+  }
+
+  if (override.apiHost !== undefined) {
+    normalizedOverride.apiHost = override.apiHost.trim()
+  }
+
+  if (override.engines !== undefined) {
+    normalizedOverride.engines = override.engines
+  }
+
+  if (override.basicAuthUsername !== undefined) {
+    normalizedOverride.basicAuthUsername = override.basicAuthUsername.trim()
+  }
+
+  if (override.basicAuthPassword !== undefined) {
+    normalizedOverride.basicAuthPassword = override.basicAuthPassword
+  }
+
+  return normalizedOverride
+}

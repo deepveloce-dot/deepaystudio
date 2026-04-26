@@ -10,8 +10,8 @@
  * Any non-critical changes will conflict with the ongoing work.
  *
  * 🔗 Context & Status:
- * - Contribution Hold: https://github.com/CherryHQ/cherry-studio/issues/10954
- * - v2 Refactor PR   : https://github.com/CherryHQ/cherry-studio/pull/10162
+ * - Contribution Hold: https://github.com/CherryHQ/modaui-studio/issues/10954
+ * - v2 Refactor PR   : https://github.com/CherryHQ/modaui-studio/pull/10162
  * --------------------------------------------------------------------------
  */
 // @ts-nocheck
@@ -31,6 +31,7 @@ export interface AssistantsState {
   tagsOrder: string[]
   collapsedTags: Record<string, boolean>
   presets: AssistantPreset[]
+  /** @deprecated should be removed in v2 */
   unifiedListOrder: Array<{ type: 'agent' | 'assistant'; id: string }>
 }
 

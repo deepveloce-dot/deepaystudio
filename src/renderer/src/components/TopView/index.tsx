@@ -1,17 +1,17 @@
 // import { loggerService } from '@logger'
+import { Box } from '@modauistudio/ui'
+import { usePreference } from '@data/hooks/usePreference'
 import TopViewMinappContainer from '@renderer/components/MinApp/TopViewMinappContainer'
 import { useAppInit } from '@renderer/hooks/useAppInit'
-import { useShortcuts } from '@renderer/hooks/useShortcuts'
 import { message, Modal } from 'antd'
 import type { PropsWithChildren } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Box } from '../Layout'
 import { getToastUtilities, initMessageApi } from './toast'
 
 let onPop = () => {}
 let onShow = ({ element, id }: { element: React.FC | React.ReactNode; id: string }) => {
-  element
+  void element
   id
 }
 let onHide = (id: string) => {
@@ -37,8 +37,8 @@ const TopViewContainer: React.FC<Props> = ({ children }) => {
 
   const [modal, modalContextHolder] = Modal.useModal()
   const [messageApi, messageContextHolder] = message.useMessage()
-  const { shortcuts } = useShortcuts()
-  const enableQuitFullScreen = shortcuts.find((item) => item.key === 'exit_fullscreen')?.enabled
+  const [exitFullscreenPref] = usePreference('shortcut.general.exit_fullscreen')
+  const enableQuitFullScreen = exitFullscreenPref?.enabled !== false
 
   useAppInit()
 
@@ -74,8 +74,8 @@ const TopViewContainer: React.FC<Props> = ({ children }) => {
 
   const FullScreenContainer: React.FC<PropsWithChildren> = useCallback(({ children }) => {
     return (
-      <Box flex={1} position="absolute" w="100%" h="100%" className="topview-fullscreen-container">
-        <Box position="absolute" w="100%" h="100%" onClick={onPop} />
+      <Box className="topview-fullscreen-container absolute h-full w-full flex-1">
+        <Box className="absolute h-full w-full" onClick={onPop} />
         {children}
       </Box>
     )
@@ -87,7 +87,7 @@ const TopViewContainer: React.FC<Props> = ({ children }) => {
       if (!enableQuitFullScreen) return
 
       if (e.key === 'Escape' && !e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-        window.api.setFullScreen(false)
+        void window.api.windowManager.setFullScreen(false)
       }
     }
     window.addEventListener('keydown', handleKeyDown)

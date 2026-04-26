@@ -1,0 +1,103 @@
+name: Deploy Website to Server
+
+# 触发条件：
+#   - 手动触发（workflow_dispatch）
+#   - 推送到 main/master 分支（可按需开启）
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: "服务器域名或IP（默认读取 WEBSITE_HOST secret）"
+        required: false
+        default: ""
+
+# 需要在 GitHub 仓库 Settings → Secrets and variables → Actions 中配置：
+#
+#   WEBSITE_HOST      服务器 IP 或域名，例如 51.38.123.49
+#   WEBSITE_USER      SSH 登录用户名，例如 root 或 ubuntu
+#   WEBSITE_SSH_KEY   SSH 私钥（PEM 格式，完整内容，包含 -----BEGIN/END-----）
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Docusaurus
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. 拉取 Docusaurus 网站源码 ────────────────────────────────────────
+      - name: Checkout website source
+        uses: actions/checkout@v4
+        with:
+          repository: CherryHQ/cherry-studio-website-docusaurus
+          ref: main
+
+      # ── 2. 安装 Node.js ────────────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # ── 3. 安装 yarn（Corepack）────────────────────────────────────────────
+      - name: Enable Corepack / yarn
+        run: |
+          corepack enable
+          corepack prepare yarn@stable --activate
+
+      # ── 4. 缓存依赖 ────────────────────────────────────────────────────────
+      - name: Cache yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-
+
+      # ── 5. 安装依赖 ────────────────────────────────────────────────────────
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      # ── 6. 构建静态文件 ────────────────────────────────────────────────────
+      - name: Build
+        run: yarn build
+        # build/ 目录包含所有静态 HTML/JS/CSS
+
+      # ── 7. 部署到服务器 ────────────────────────────────────────────────────
+      - name: Deploy to server via rsync
+        env:
+          DEPLOY_HOST: ${{ inputs.domain != '' && inputs.domain || secrets.WEBSITE_HOST }}
+          DEPLOY_USER: ${{ secrets.WEBSITE_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.WEBSITE_SSH_KEY }}
+        run: |
+          # 写入 SSH 私钥
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          # 信任服务器主机指纹（避免交互提示）
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          # 同步 build/ → 服务器网站目录
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            build/ \
+            "${DEPLOY_USER}@${DEPLOY_HOST}:/var/www/cherry-studio/"
+
+          # 修正文件权限 & 重载 Nginx
+          ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=no \
+            "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "chown -R www-data:www-data /var/www/cherry-studio && nginx -t && systemctl reload nginx"
+
+          echo "✅ 部署完成！网站地址: http://${DEPLOY_HOST}/"
+
+      # ── 8. 部署汇总 ────────────────────────────────────────────────────────
+      - name: Summary
+        if: always()
+        run: |
+          HOST="${{ inputs.domain != '' && inputs.domain || secrets.WEBSITE_HOST }}"
+          echo "## 🍒 Cherry Studio 网站部署" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 字段 | 值 |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|-----|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 服务器 | \`${HOST}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 网站地址 | http://${HOST}/ |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 源码仓库 | CherryHQ/cherry-studio-website-docusaurus |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 触发方式 | \`${{ github.event_name }}\` |" >> "$GITHUB_STEP_SUMMARY"

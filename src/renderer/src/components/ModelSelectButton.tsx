@@ -1,10 +1,10 @@
+import type { TooltipProps } from '@modauistudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import type { Model } from '@renderer/types'
-import type { TooltipProps } from 'antd'
-import { Button, Tooltip } from 'antd'
 import { useCallback, useMemo } from 'react'
 
 import ModelAvatar from './Avatar/ModelAvatar'
-import { SelectModelPopup } from './Popups/SelectModelPopup'
+import { SelectChatModelPopup } from './Popups/SelectModelPopup'
 
 type Props = {
   model: Model
@@ -16,21 +16,25 @@ type Props = {
 
 const ModelSelectButton = ({ model, onSelectModel, modelFilter, noTooltip, tooltipProps }: Props) => {
   const onClick = useCallback(async () => {
-    const selectedModel = await SelectModelPopup.show({ model, filter: modelFilter })
+    const selectedModel = await SelectChatModelPopup.show({ model, filter: modelFilter })
     if (selectedModel) {
       onSelectModel?.(selectedModel)
     }
   }, [model, modelFilter, onSelectModel])
 
   const button = useMemo(() => {
-    return <Button icon={<ModelAvatar model={model} size={22} />} type="text" shape="circle" onClick={onClick} />
+    return (
+      <Button variant="ghost" className="rounded-full" size="icon" onClick={onClick}>
+        <ModelAvatar model={model} size={22} />
+      </Button>
+    )
   }, [model, onClick])
 
   if (noTooltip) {
     return button
   } else {
     return (
-      <Tooltip title={model.name} {...tooltipProps}>
+      <Tooltip content={model.name} {...tooltipProps}>
         {button}
       </Tooltip>
     )

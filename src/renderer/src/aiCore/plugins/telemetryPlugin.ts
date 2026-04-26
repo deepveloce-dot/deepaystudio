@@ -6,8 +6,8 @@
  * 集成 AiSdkSpanAdapter 将 AI SDK trace 数据转换为现有格式
  */
 
-import type { AiPlugin } from '@cherrystudio/ai-core'
-import { definePlugin, type StreamTextParams, type StreamTextResult } from '@cherrystudio/ai-core'
+import type { AiPlugin } from '@modauistudio/ai-core'
+import { definePlugin, type StreamTextParams, type StreamTextResult } from '@modauistudio/ai-core'
 import { loggerService } from '@logger'
 import type { Context, Span, SpanContext, Tracer } from '@opentelemetry/api'
 import { context as otelContext, trace } from '@opentelemetry/api'
@@ -137,7 +137,7 @@ class AdapterTracer {
         })
 
         // 保存转换后的数据
-        window.api.trace.saveEntity(spanEntity)
+        void window.api.trace.saveEntity(spanEntity)
 
         logger.debug('AI SDK span converted and saved successfully (from startSpan)', {
           spanName: name,
@@ -220,7 +220,7 @@ class AdapterTracer {
             })
 
             // 保存转换后的数据
-            window.api.trace.saveEntity(spanEntity)
+            void window.api.trace.saveEntity(spanEntity)
 
             logger.debug('AI SDK span converted and saved successfully (from startActiveSpan)', {
               spanName: name,

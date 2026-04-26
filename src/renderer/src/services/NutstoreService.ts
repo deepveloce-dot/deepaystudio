@@ -7,7 +7,7 @@ import { NUTSTORE_HOST } from '@shared/config/nutstore'
 import dayjs from 'dayjs'
 import { type CreateDirectoryOptions } from 'webdav'
 
-import { getBackupData, handleData } from './BackupService'
+import { handleData } from './BackupService'
 
 const logger = loggerService.withContext('NutstoreService')
 
@@ -78,7 +78,7 @@ async function cleanupOldBackups(webdavConfig: WebDavConfig, maxBackups: number)
     }
 
     const backupFiles = files
-      .filter((file) => file.fileName.startsWith('cherry-studio') && file.fileName.endsWith('.zip'))
+      .filter((file) => file.fileName.startsWith('modaui-studio') && file.fileName.endsWith('.zip'))
       .sort((a, b) => new Date(b.modifiedTime).getTime() - new Date(a.modifiedTime).getTime())
 
     if (backupFiles.length < maxBackups) {
@@ -136,14 +136,13 @@ export async function backupToNutstore({
     logger.error('[backupToNutstore] Failed to get device type:', error as Error)
   }
   const timestamp = dayjs().format('YYYYMMDDHHmmss')
-  const backupFileName = customFileName || `cherry-studio.${timestamp}.${deviceType}.zip`
+  const backupFileName = customFileName || `modaui-studio.${timestamp}.${deviceType}.zip`
   const finalFileName = backupFileName.endsWith('.zip') ? backupFileName : `${backupFileName}.zip`
 
   isManualBackupRunning = true
 
   store.dispatch(setNutstoreSyncState({ syncing: true, lastSyncError: null }))
 
-  const backupData = await getBackupData()
   const skipBackupFile = store.getState().nutstore.nutstoreSkipBackupFile
   const maxBackups = store.getState().nutstore.nutstoreMaxBackups
 
@@ -151,7 +150,7 @@ export async function backupToNutstore({
     // 先清理旧备份
     await cleanupOldBackups(config, maxBackups)
 
-    const isSuccess = await window.api.backup.backupToWebdav(backupData, {
+    const isSuccess = await window.api.backup.backupToWebdav({
       ...config,
       fileName: finalFileName,
       skipBackupFile: skipBackupFile

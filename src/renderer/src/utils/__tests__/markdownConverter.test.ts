@@ -399,10 +399,10 @@ describe('markdownConverter', () => {
     })
     it('should convert markdown image with file:// protocol to HTML img tag', () => {
       const markdown =
-        '![pasted_image_45285c9c-a7cd-4c3d-a9b6-6854c3bbe479.png](file:///Users/xxxx/Library/Application Support/CherryStudioDev/Data/Files/45285c9c-a7cd-4c3d-a9b6-6854c3bbe479.png)'
+        '![pasted_image_45285c9c-a7cd-4c3d-a9b6-6854c3bbe479.png](file:///Users/xxxx/Library/Application Support/ModauiStudioDev/Data/Files/45285c9c-a7cd-4c3d-a9b6-6854c3bbe479.png)'
       const result = markdownToHtml(markdown)
       expect(result).toContain(
-        '<img src="file:///Users/xxxx/Library/Application Support/CherryStudioDev/Data/Files/45285c9c-a7cd-4c3d-a9b6-6854c3bbe479.png" alt="pasted_image_45285c9c-a7cd-4c3d-a9b6-6854c3bbe479.png" />'
+        '<img src="file:///Users/xxxx/Library/Application Support/ModauiStudioDev/Data/Files/45285c9c-a7cd-4c3d-a9b6-6854c3bbe479.png" alt="pasted_image_45285c9c-a7cd-4c3d-a9b6-6854c3bbe479.png" />'
       )
     })
 

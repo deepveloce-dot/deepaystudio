@@ -1,4 +1,4 @@
-import { Center } from '@renderer/components/Layout'
+import { Center } from '@modauistudio/ui'
 import type { MenuProps } from 'antd'
 import { Alert, Spin } from 'antd'
 import type { ReactNode } from 'react'
@@ -12,6 +12,7 @@ export type SettingsPopupTab =
   | 'prompt'
   | 'permission-mode'
   | 'tools-mcp'
+  | 'mcp'
   | 'advanced'
   | 'plugins'
   | 'installed'
@@ -54,7 +55,7 @@ export const BaseSettingsPopup: React.FC<BaseSettingsPopupProps> = ({
   const renderContent = () => {
     if (isLoading) {
       return (
-        <Center flex={1}>
+        <Center className="flex-1">
           <Spin />
         </Center>
       )
@@ -62,7 +63,7 @@ export const BaseSettingsPopup: React.FC<BaseSettingsPopupProps> = ({
 
     if (error) {
       return (
-        <Center flex={1}>
+        <Center className="flex-1">
           <Alert type="error" message={t('agent.get.error.failed')} />
         </Center>
       )

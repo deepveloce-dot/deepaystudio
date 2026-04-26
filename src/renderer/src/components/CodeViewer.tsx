@@ -1,7 +1,7 @@
+import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import { useCodeStyle } from '@renderer/context/CodeStyleProvider'
 import { useCodeHighlight } from '@renderer/hooks/useCodeHighlight'
-import { useSettings } from '@renderer/hooks/useSettings'
 import { uuid } from '@renderer/utils'
 import { getReactStyleFromToken } from '@renderer/utils/shiki'
 import { useVirtualizer } from '@tanstack/react-virtual'
@@ -87,7 +87,8 @@ const CodeViewer = ({
   wrapped = true,
   onRequestExpand
 }: CodeViewerProps) => {
-  const { codeShowLineNumbers: _lineNumbers, fontSize: _fontSize } = useSettings()
+  const [_lineNumbers] = usePreference('chat.code.show_line_numbers')
+  const [_fontSize] = usePreference('chat.message.font_size')
   const { getShikiPreProperties, isShikiThemeDark } = useCodeStyle()
   const shikiThemeRef = useRef<HTMLDivElement>(null)
   const scrollerRef = useRef<HTMLDivElement>(null)
@@ -117,7 +118,7 @@ const CodeViewer = ({
   // 设置 pre 标签属性
   useLayoutEffect(() => {
     let mounted = true
-    getShikiPreProperties(language).then((properties) => {
+    void getShikiPreProperties(language).then((properties) => {
       if (!mounted) return
       const shikiTheme = shikiThemeRef.current
       if (shikiTheme) {
@@ -165,7 +166,7 @@ const CodeViewer = ({
           const lineContainer = element.parentElement
           const lineContent = lineContainer?.querySelector('.line-content')
           if (lineContent) {
-            element = lineContent as Element
+            element = lineContent
             break
           }
         }
@@ -366,7 +367,7 @@ const CodeViewer = ({
   useEffect(() => {
     if (virtualItems.length > 0 && shikiThemeRef.current) {
       const lastIndex = virtualItems[virtualItems.length - 1].index
-      debouncedHighlightLines(lastIndex + 1)
+      void debouncedHighlightLines(lastIndex + 1)
     }
   }, [virtualItems, debouncedHighlightLines])
 

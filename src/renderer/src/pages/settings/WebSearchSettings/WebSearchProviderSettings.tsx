@@ -1,23 +1,32 @@
+import { isSupportedWebSearchProviderId } from '@renderer/config/webSearchProviders'
 import { useTheme } from '@renderer/context/ThemeProvider'
-import type { WebSearchProviderId } from '@renderer/types'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import type { FC } from 'react'
-import { useParams } from 'react-router'
+import { useEffect } from 'react'
 
 import { SettingContainer, SettingGroup } from '..'
 import WebSearchProviderSetting from './WebSearchProviderSetting'
 
 const WebSearchProviderSettings: FC = () => {
-  const { providerId } = useParams<{ providerId: string }>()
+  const params = useParams({ strict: false })
+  const providerId = params.providerId
   const { theme } = useTheme()
+  const navigate = useNavigate()
 
-  if (!providerId) {
+  useEffect(() => {
+    if (!providerId || !isSupportedWebSearchProviderId(providerId)) {
+      void navigate({ to: '/settings/websearch/general' })
+    }
+  }, [navigate, providerId])
+
+  if (!providerId || !isSupportedWebSearchProviderId(providerId)) {
     return null
   }
 
   return (
     <SettingContainer theme={theme}>
       <SettingGroup theme={theme}>
-        <WebSearchProviderSetting providerId={providerId as WebSearchProviderId} />
+        <WebSearchProviderSetting providerId={providerId} />
       </SettingGroup>
     </SettingContainer>
   )

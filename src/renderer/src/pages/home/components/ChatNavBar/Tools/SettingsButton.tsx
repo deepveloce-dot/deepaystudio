@@ -1,13 +1,13 @@
-import { useRuntime } from '@renderer/hooks/useRuntime'
+import { Tooltip } from '@modauistudio/ui'
 import type { Assistant } from '@renderer/types'
-import { Drawer, Tooltip } from 'antd'
+import { Drawer } from 'antd'
 import { t } from 'i18next'
 import { Settings2 } from 'lucide-react'
 import type { FC } from 'react'
 import { useState } from 'react'
 
 import NavbarIcon from '../../../../../components/NavbarIcon'
-import { AgentSettingsTab, AssistantSettingsTab } from './SettingsTab'
+import { AssistantSettingsTab } from './SettingsTab'
 
 interface Props {
   assistant?: Assistant
@@ -15,14 +15,10 @@ interface Props {
 
 const SettingsButton: FC<Props> = ({ assistant }) => {
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const { chat } = useRuntime()
-
-  const isTopicSettings = chat.activeTopicOrSession === 'topic'
-  const isAgentSettings = chat.activeTopicOrSession === 'session'
 
   return (
     <>
-      <Tooltip title={t('settings.title')} mouseEnterDelay={0.8}>
+      <Tooltip content={t('settings.title')} delay={800}>
         <NavbarIcon onClick={() => setSettingsOpen(true)}>
           <Settings2 size={18} />
         </NavbarIcon>
@@ -34,8 +30,7 @@ const SettingsButton: FC<Props> = ({ assistant }) => {
         width="var(--assistants-width)"
         closable={false}
         styles={{ body: { padding: 0, paddingTop: 'var(--navbar-height)' } }}>
-        {isTopicSettings && assistant && <AssistantSettingsTab assistant={assistant} />}
-        {isAgentSettings && <AgentSettingsTab />}
+        {assistant && <AssistantSettingsTab assistant={assistant} />}
       </Drawer>
     </>
   )

@@ -169,7 +169,7 @@ export class ChatGPTImporter implements ConversationImporter {
   }
 
   /**
-   * Map ChatGPT role to Cherry Studio role
+   * Map ChatGPT role to Modaui Studio role
    */
   private mapRole(chatgptRole: string): 'user' | 'assistant' | 'system' {
     if (chatgptRole === 'user') return 'user'
@@ -232,7 +232,7 @@ export class ChatGPTImporter implements ConversationImporter {
   }
 
   /**
-   * Convert ChatGPT conversation to Cherry Studio Topic
+   * Convert ChatGPT conversation to Modaui Studio Topic
    */
   private convertConversationToTopic(
     conversation: ChatGPTConversation,

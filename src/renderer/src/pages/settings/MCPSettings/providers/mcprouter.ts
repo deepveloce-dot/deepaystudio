@@ -61,7 +61,7 @@ export const syncMCPRouterServers = async (
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
         'HTTP-Referer': 'https://cherry-ai.com',
-        'X-Title': 'Cherry Studio'
+        'X-Title': 'Modaui Studio'
       },
       body: JSON.stringify({})
     })

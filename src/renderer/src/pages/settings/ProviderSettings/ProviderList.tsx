@@ -1,3 +1,4 @@
+import { Button, MenuItem } from '@modauistudio/ui'
 import type { DropResult } from '@hello-pangea/dnd'
 import { loggerService } from '@logger'
 import {
@@ -13,14 +14,14 @@ import ImageStorage from '@renderer/services/ImageStorage'
 import type { Provider, ProviderType } from '@renderer/types'
 import { isSystemProvider } from '@renderer/types'
 import { getFancyProviderName, matchKeywordsInModel, matchKeywordsInProvider, uuid } from '@renderer/utils'
+import { isAnthropicSupportedProvider } from '@renderer/utils/provider'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { MenuProps } from 'antd'
-import { Button, Dropdown, Input, Tag } from 'antd'
-import { GripVertical, PlusIcon, Search, UserPen } from 'lucide-react'
+import { Dropdown, Input, Tag } from 'antd'
+import { Check, Filter, GripVertical, PlusIcon, Search, UserPen } from 'lucide-react'
 import type { FC } from 'react'
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router-dom'
-import styled from 'styled-components'
 import useSWRImmutable from 'swr/immutable'
 
 import AddProviderPopup from './AddProviderPopup'
@@ -42,8 +43,16 @@ const getIsOvmsSupported = async (): Promise<boolean> => {
   }
 }
 
-const ProviderList: FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
+interface ProviderListProps {
+  /** Whether in onboarding mode for new users */
+  isOnboarding?: boolean
+}
+
+const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
+  // TODO: Define validateSearch in routes/settings/provider.tsx and replace with Route.useSearch()
+  // for type-safe search params. Currently using untyped useSearch as a stopgap after removing react-router-dom.
+  const search = useSearch({ strict: false })
+  const navigate = useNavigate()
   const providers = useAllProviders()
   const { updateProviders, addProvider, removeProvider, updateProvider } = useProviders()
   const { setTimeoutTimer } = useTimer()
@@ -51,6 +60,7 @@ const ProviderList: FC = () => {
   const { t } = useTranslation()
   const [searchText, setSearchText] = useState<string>('')
   const [dragging, setDragging] = useState(false)
+  const [agentFilterEnabled, setAgentFilterEnabled] = useState(false)
   const [providerLogos, setProviderLogos] = useState<Record<string, string>>({})
   const listRef = useRef<DraggableVirtualListRef>(null)
 
@@ -78,16 +88,22 @@ const ProviderList: FC = () => {
       setProviderLogos(logos)
     }
 
-    loadAllLogos()
+    void loadAllLogos()
   }, [providers])
 
   useEffect(() => {
-    if (searchParams.get('id')) {
-      const providerId = searchParams.get('id')
+    let shouldUpdate = false
+
+    // Handle filter param first - when filter is enabled, ignore id param
+    if (search.filter === 'agent') {
+      setAgentFilterEnabled(true)
+      shouldUpdate = true
+    } else if (search.id) {
+      const providerId = search.id
       const provider = providers.find((p) => p.id === providerId)
       if (provider) {
         setSelectedProvider(provider)
-        // 滚动到选中的 provider
+        // Scroll to the selected provider
         const index = providers.findIndex((p) => p.id === providerId)
         if (index >= 0) {
           setTimeoutTimer(
@@ -99,10 +115,18 @@ const ProviderList: FC = () => {
       } else {
         setSelectedProvider(providers[0])
       }
-      searchParams.delete('id')
-      setSearchParams(searchParams)
+      shouldUpdate = true
     }
-  }, [providers, searchParams, setSearchParams, setSelectedProvider, setTimeoutTimer])
+
+    if (shouldUpdate) {
+      // FIXME: Using navigate + Object.fromEntries to strip consumed params is a workaround.
+      // Ideal: define validateSearch on the route so navigate({ search }) is fully typed,
+      // and consumed params can be cleared without manual filtering or type casts.
+      const restSearch = Object.fromEntries(Object.entries(search).filter(([key]) => key !== 'filter' && key !== 'id'))
+      void navigate({ to: '/settings/provider', search: restSearch as Record<string, string>, replace: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [providers, search.filter, search.id, navigate, setSelectedProvider, setTimeoutTimer])
 
   // Handle provider add key from URL schema
   useEffect(() => {
@@ -116,7 +140,7 @@ const ProviderList: FC = () => {
       const { id } = data
 
       const { updatedProvider, isNew, displayName } = await UrlSchemaInfoPopup.show(data)
-      window.navigate(`/settings/provider?id=${id}`)
+      void navigate({ to: '/settings/provider', search: { id } })
 
       if (!updatedProvider) {
         return
@@ -132,8 +156,8 @@ const ProviderList: FC = () => {
       window.toast.success(t('settings.models.provider_key_added', { provider: displayName }))
     }
 
-    // 检查 URL 参数
-    const addProviderData = searchParams.get('addProviderData')
+    // Check URL parameters
+    const addProviderData = search.addProviderData
     if (!addProviderData) {
       return
     }
@@ -142,17 +166,17 @@ const ProviderList: FC = () => {
       const { id, apiKey: newApiKey, baseUrl, type, name } = JSON.parse(addProviderData)
       if (!id || !newApiKey || !baseUrl) {
         window.toast.error(t('settings.models.provider_key_add_failed_by_invalid_data'))
-        window.navigate('/settings/provider')
+        void navigate({ to: '/settings/provider' })
         return
       }
 
-      handleProviderAddKey({ id, apiKey: newApiKey, baseUrl, type, name })
+      void handleProviderAddKey({ id, apiKey: newApiKey, baseUrl, type, name })
     } catch (error) {
       window.toast.error(t('settings.models.provider_key_add_failed_by_invalid_data'))
-      window.navigate('/settings/provider')
+      void navigate({ to: '/settings/provider' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
+  }, [search.addProviderData])
 
   const onAddProvider = async () => {
     const { name: providerName, type, logo } = await AddProviderPopup.show()
@@ -250,7 +274,7 @@ const ProviderList: FC = () => {
           okText: t('common.delete'),
           centered: true,
           onOk: async () => {
-            // 删除provider前先清理其logo
+            // Remove the provider logo before deleting the provider
             if (provider.id) {
               try {
                 await ImageStorage.remove(`provider-${provider.id}`)
@@ -280,8 +304,8 @@ const ProviderList: FC = () => {
     if (isSystemProvider(provider)) {
       return [noteMenu]
     } else if (provider.isSystem) {
-      // 这里是处理数据中存在新版本删掉的系统提供商的情况
-      // 未来期望能重构一下，不要依赖isSystem字段
+      // Handle legacy system providers that were removed in newer versions but still exist in stored data
+      // This should ideally be refactored in the future to avoid relying on the isSystem field
       return [noteMenu, deleteMenu]
     } else {
       return menus
@@ -291,6 +315,11 @@ const ProviderList: FC = () => {
   const filteredProviders = providers.filter((provider) => {
     // don't show it when isOvmsSupported is loading
     if (provider.id === 'ovms' && !isOvmsSupported) {
+      return false
+    }
+
+    // Filter by agent support
+    if (agentFilterEnabled && !isAnthropicSupportedProvider(provider)) {
       return false
     }
 
@@ -320,15 +349,42 @@ const ProviderList: FC = () => {
   )
 
   return (
-    <Container className="selectable">
-      <ProviderListContainer>
-        <AddButtonWrapper>
+    <div className="selectable flex w-full flex-row justify-between">
+      <div className="flex min-w-[calc(var(--settings-width)+10px)] flex-col border-r border-r-(--color-border) pb-1.25">
+        <div className="flex h-12.5 flex-row items-center justify-center px-2 py-2.5">
           <Input
             type="text"
             placeholder={t('settings.provider.search')}
             value={searchText}
-            style={{ borderRadius: 'var(--list-item-border-radius)', height: 35 }}
-            suffix={<Search size={14} />}
+            style={{ borderRadius: 10, height: 35 }}
+            prefix={<Search size={14} />}
+            suffix={
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      label: t('settings.provider.filter.all'),
+                      key: 'all',
+                      icon: agentFilterEnabled ? <CheckPlaceholder /> : <Check size={14} />,
+                      onClick: () => setAgentFilterEnabled(false)
+                    },
+                    {
+                      label: t('settings.provider.filter.agent'),
+                      key: 'agent',
+                      icon: agentFilterEnabled ? <Check size={14} /> : <CheckPlaceholder />,
+                      onClick: () => setAgentFilterEnabled(true)
+                    }
+                  ]
+                }}
+                trigger={['click']}>
+                <div className="flex h-5.5 w-5.5 cursor-pointer items-center justify-center rounded-sm">
+                  <Filter
+                    size={14}
+                    className={agentFilterEnabled ? 'text-(--color-primary)' : 'text-(--color-text-3)'}
+                  />
+                </div>
+              </Dropdown>
+            }
             onChange={(e) => setSearchText(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Escape') {
@@ -339,12 +395,13 @@ const ProviderList: FC = () => {
             allowClear
             disabled={dragging}
           />
-        </AddButtonWrapper>
+        </div>
         <DraggableVirtualList
           ref={listRef}
           list={filteredProviders}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          disableInteractiveElementBlocking
           estimateSize={useCallback(() => 40, [])}
           itemKey={itemKey}
           overscan={3}
@@ -358,115 +415,50 @@ const ProviderList: FC = () => {
           itemContainerStyle={{ paddingBottom: 5 }}>
           {(provider) => (
             <Dropdown menu={{ items: getDropdownMenus(provider) }} trigger={['contextMenu']}>
-              <ProviderListItem
+              <MenuItem
                 key={provider.id}
-                className={provider.id === selectedProvider?.id ? 'active' : ''}
-                onClick={() => setSelectedProvider(provider)}>
-                <DragHandle>
-                  <GripVertical size={12} />
-                </DragHandle>
-                <ProviderAvatar
-                  style={{
-                    width: 24,
-                    height: 24
-                  }}
-                  provider={provider}
-                  customLogos={providerLogos}
-                />
-                <ProviderItemName className="text-nowrap">{getFancyProviderName(provider)}</ProviderItemName>
-                {provider.enabled && (
-                  <Tag color="green" style={{ marginLeft: 'auto', marginRight: 0, borderRadius: 16 }}>
-                    ON
-                  </Tag>
-                )}
-              </ProviderListItem>
+                className="w-full cursor-pointer select-none overflow-hidden rounded-[10px] text-[14px] data-[active=true]:font-semibold"
+                label={getFancyProviderName(provider)}
+                active={provider.id === selectedProvider?.id}
+                onClick={() => setSelectedProvider(provider)}
+                icon={
+                  <div className="flex items-center">
+                    <div className="mr-0.5 flex w-3 cursor-grab items-center justify-center text-(--color-text-3) opacity-0 transition-opacity duration-200 ease-in-out active:cursor-grabbing group-hover:opacity-100">
+                      <GripVertical size={12} />
+                    </div>
+                    <ProviderAvatar
+                      style={{
+                        width: 24,
+                        height: 24
+                      }}
+                      provider={provider}
+                      customLogos={providerLogos}
+                    />
+                  </div>
+                }
+                suffix={
+                  provider.enabled ? (
+                    <Tag color="green" style={{ marginLeft: 'auto', marginRight: 0, borderRadius: 16 }}>
+                      ON
+                    </Tag>
+                  ) : undefined
+                }
+              />
             </Dropdown>
           )}
         </DraggableVirtualList>
-        <AddButtonWrapper>
-          <Button
-            style={{ width: '100%', borderRadius: 'var(--list-item-border-radius)' }}
-            icon={<PlusIcon size={16} />}
-            onClick={onAddProvider}
-            disabled={dragging}>
+        <div className="flex h-12.5 flex-row items-center justify-center px-2 py-2.5">
+          <Button size="sm" style={{ width: '100%', borderRadius: 10 }} onClick={onAddProvider} disabled={dragging}>
+            <PlusIcon size={16} />
             {t('button.add')}
           </Button>
-        </AddButtonWrapper>
-      </ProviderListContainer>
-      <ProviderSetting providerId={selectedProvider.id} key={selectedProvider.id} />
-    </Container>
+        </div>
+      </div>
+      <ProviderSetting providerId={selectedProvider.id} key={selectedProvider.id} isOnboarding={isOnboarding} />
+    </div>
   )
 }
 
-const Container = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`
-
-const ProviderListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: calc(var(--settings-width) + 10px);
-  height: calc(100vh - var(--navbar-height));
-  padding-bottom: 5px;
-  border-right: 0.5px solid var(--color-border);
-`
-
-const ProviderListItem = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 5px 10px;
-  width: 100%;
-  border-radius: var(--list-item-border-radius);
-  font-size: 14px;
-  transition: all 0.2s ease-in-out;
-  border: 0.5px solid transparent;
-  user-select: none;
-  cursor: pointer;
-  &:hover {
-    background: var(--color-background-soft);
-  }
-  &.active {
-    background: var(--color-background-soft);
-    border: 0.5px solid var(--color-border);
-    font-weight: bold !important;
-  }
-`
-
-const DragHandle = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: -8px;
-  width: 12px;
-  color: var(--color-text-3);
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
-  cursor: grab;
-
-  ${ProviderListItem}:hover & {
-    opacity: 1;
-  }
-
-  &:active {
-    cursor: grabbing;
-  }
-`
-
-const ProviderItemName = styled.div`
-  margin-left: 10px;
-  font-weight: 500;
-`
-
-const AddButtonWrapper = styled.div`
-  height: ${BUTTON_WRAPPER_HEIGHT}px;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 8px;
-`
+const CheckPlaceholder = () => <span className="inline-block h-3.5 w-3.5" />
 
 export default ProviderList

@@ -1,3 +1,6 @@
+import { useCache } from '@data/hooks/useCache'
+import { useMultiplePreferences, usePreference } from '@data/hooks/usePreference'
+import AddButton from '@renderer/components/AddButton'
 import AssistantAvatar from '@renderer/components/Avatar/AssistantAvatar'
 import type { DraggableVirtualListRef } from '@renderer/components/DraggableList'
 import { DraggableVirtualList } from '@renderer/components/DraggableList'
@@ -9,17 +12,14 @@ import { isMac } from '@renderer/config/constant'
 import { db } from '@renderer/databases'
 import { useAssistant, useAssistants } from '@renderer/hooks/useAssistant'
 import { useInPlaceEdit } from '@renderer/hooks/useInPlaceEdit'
+import { modelGenerating } from '@renderer/hooks/useModel'
 import { useNotesSettings } from '@renderer/hooks/useNotesSettings'
-import { modelGenerating } from '@renderer/hooks/useRuntime'
-import { useSettings } from '@renderer/hooks/useSettings'
 import { finishTopicRenaming, startTopicRenaming, TopicManager } from '@renderer/hooks/useTopic'
 import { fetchMessagesSummary } from '@renderer/services/ApiService'
 import { getDefaultTopic } from '@renderer/services/AssistantService'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
 import type { RootState } from '@renderer/store'
-import store from '@renderer/store'
 import { newMessagesActions } from '@renderer/store/newMessage'
-import { setGenerating } from '@renderer/store/runtime'
 import type { Assistant, Topic } from '@renderer/types'
 import { classNames, removeSpecialCharactersForFileName } from '@renderer/utils'
 import { copyTopicAsMarkdown, copyTopicAsPlainText } from '@renderer/utils/copy'
@@ -59,7 +59,6 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import AddButton from './AddButton'
 import { TopicManagePanel, useTopicManageMode } from './TopicManageMode'
 
 interface Props {
@@ -74,12 +73,17 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
   const { notesPath } = useNotesSettings()
   const { assistants } = useAssistants()
   const { assistant, addTopic, removeTopic, moveTopic, updateTopic, updateTopics } = useAssistant(_assistant.id)
-  const { showTopicTime, pinTopicsToTop, setTopicPosition, topicPosition } = useSettings()
 
-  const renamingTopics = useSelector((state: RootState) => state.runtime.chat.renamingTopics)
+  const [showTopicTime] = usePreference('topic.tab.show_time')
+  const [pinTopicsToTop] = usePreference('topic.tab.pin_to_top')
+  const [topicPosition, setTopicPosition] = usePreference('topic.position')
+
+  const [, setGenerating] = useCache('chat.generating')
+
+  const [renamingTopics] = useCache('topic.renaming')
   const topicLoadingQuery = useSelector((state: RootState) => state.messages.loadingByTopic)
   const topicFulfilledQuery = useSelector((state: RootState) => state.messages.fulfilledByTopic)
-  const newlyRenamedTopics = useSelector((state: RootState) => state.runtime.chat.newlyRenamedTopics)
+  const [newlyRenamedTopics] = useCache('topic.newly_renamed')
 
   const borderRadius = showTopicTime ? 12 : 'var(--list-item-border-radius)'
 
@@ -141,11 +145,14 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
     deleteTimerRef.current = setTimeout(() => setDeletingTopicId(null), 2000)
   }, [])
 
-  const onClearMessages = useCallback((topic: Topic) => {
-    // window.keyv.set(EVENT_NAMES.CHAT_COMPLETION_PAUSED, true)
-    store.dispatch(setGenerating(false))
-    EventEmitter.emit(EVENT_NAMES.CLEAR_MESSAGES, topic)
-  }, [])
+  const onClearMessages = useCallback(
+    (topic: Topic) => {
+      // window.keyv.set(EVENT_NAMES.CHAT_COMPLETION_PAUSED, true)
+      setGenerating(false)
+      void EventEmitter.emit(EVENT_NAMES.CLEAR_MESSAGES, topic)
+    },
+    [setGenerating]
+  )
 
   const handleConfirmDelete = useCallback(
     async (topic: Topic, e: React.MouseEvent) => {
@@ -170,46 +177,40 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
 
   const onPinTopic = useCallback(
     (topic: Topic) => {
-      let newIndex = 0
+      // 只有当 pinTopicsToTop 开启时才重新排序话题
+      if (pinTopicsToTop) {
+        let newIndex = 0
 
-      if (topic.pinned) {
-        // 取消固定：将话题移到未固定话题的顶部
-        const pinnedTopics = assistant.topics.filter((t) => t.pinned)
-        const unpinnedTopics = assistant.topics.filter((t) => !t.pinned)
+        if (topic.pinned) {
+          // 取消固定：将话题移到未固定话题的顶部
+          const pinnedTopics = assistant.topics.filter((t) => t.pinned)
+          const unpinnedTopics = assistant.topics.filter((t) => !t.pinned)
 
-        // 构建新顺序：其他固定话题 + 取消固定的话题(移到顶部) + 其他未固定话题
-        const reorderedTopics = [
-          ...pinnedTopics.filter((t) => t.id !== topic.id), // 其他固定话题
-          topic, // 取消固定的话题移到顶部
-          ...unpinnedTopics // 其他未固定话题
-        ]
+          const reorderedTopics = [...pinnedTopics.filter((t) => t.id !== topic.id), topic, ...unpinnedTopics]
 
-        newIndex = pinnedTopics.length - 1 // 最后一个固定话题的索引 + 1 = 第一个未固定的索引
-        updateTopics(reorderedTopics)
-      } else {
-        // 固定话题：移到固定区域顶部
-        const pinnedTopics = assistant.topics.filter((t) => t.pinned)
-        const unpinnedTopics = assistant.topics.filter((t) => !t.pinned)
+          newIndex = pinnedTopics.length - 1
+          updateTopics(reorderedTopics)
+        } else {
+          // 固定话题：移到固定区域顶部
+          const pinnedTopics = assistant.topics.filter((t) => t.pinned)
+          const unpinnedTopics = assistant.topics.filter((t) => !t.pinned)
 
-        const reorderedTopics = [
-          topic, // 新固定的话题移到顶部
-          ...pinnedTopics, // 其他固定话题
-          ...unpinnedTopics.filter((t) => t.id !== topic.id) // 其他未固定话题（排除 topic）
-        ]
+          const reorderedTopics = [topic, ...pinnedTopics, ...unpinnedTopics.filter((t) => t.id !== topic.id)]
 
-        newIndex = 0
-        updateTopics(reorderedTopics)
+          newIndex = 0
+          updateTopics(reorderedTopics)
+        }
+
+        // 延迟滚动到话题位置（等待渲染完成）
+        setTimeout(() => {
+          listRef.current?.scrollToIndex(newIndex, { align: 'auto' })
+        }, 50)
       }
 
       const updatedTopic = { ...topic, pinned: !topic.pinned }
       updateTopic(updatedTopic)
-
-      // 延迟滚动到话题位置（等待渲染完成）
-      setTimeout(() => {
-        listRef.current?.scrollToIndex(newIndex, { align: 'auto' })
-      }, 50)
     },
-    [assistant.topics, updateTopic, updateTopics]
+    [assistant.topics, updateTopic, updateTopics, pinTopicsToTop]
   )
 
   const onDeleteTopic = useCallback(
@@ -242,7 +243,19 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
     [setActiveTopic]
   )
 
-  const exportMenuOptions = useSelector((state: RootState) => state.settings.exportMenuOptions)
+  const [exportMenuOptions] = useMultiplePreferences({
+    docx: 'data.export.menus.docx',
+    image: 'data.export.menus.image',
+    joplin: 'data.export.menus.joplin',
+    markdown: 'data.export.menus.markdown',
+    markdown_reason: 'data.export.menus.markdown_reason',
+    notes: 'data.export.menus.notes',
+    notion: 'data.export.menus.notion',
+    obsidian: 'data.export.menus.obsidian',
+    plain_text: 'data.export.menus.plain_text',
+    siyuan: 'data.export.menus.siyuan',
+    yuque: 'data.export.menus.yuque'
+  })
 
   const [_targetTopic, setTargetTopic] = useState<Topic | null>(null)
   const targetTopic = useDeferredValue(_targetTopic)
@@ -261,7 +274,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
           if (messages.length >= 2) {
             startTopicRenaming(topic.id)
             try {
-              const { text: summaryText, error } = await fetchMessagesSummary({ messages, assistant })
+              const { text: summaryText, error } = await fetchMessagesSummary({ messages })
               if (summaryText) {
                 const updatedTopic = { ...topic, name: summaryText, isNameManuallyEdited: false }
                 updateTopic(updatedTopic)
@@ -335,7 +348,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
         key: 'notes',
         icon: <NotebookPen size={14} />,
         onClick: async () => {
-          exportTopicToNotes(topic, notesPath)
+          void exportTopicToNotes(topic, notesPath)
         }
       },
       {
@@ -429,14 +442,14 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
             key: 'word',
             onClick: async () => {
               const markdown = await topicToMarkdown(topic)
-              window.api.export.toWord(markdown, removeSpecialCharactersForFileName(topic.name))
+              void window.api.export.toWord(markdown, removeSpecialCharactersForFileName(topic.name))
             }
           },
           exportMenuOptions.notion && {
             label: t('chat.topics.export.notion'),
             key: 'notion',
             onClick: async () => {
-              exportTopicToNotion(topic)
+              void exportTopicToNotion(topic)
             }
           },
           exportMenuOptions.yuque && {
@@ -444,7 +457,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
             key: 'yuque',
             onClick: async () => {
               const markdown = await topicToMarkdown(topic)
-              exportMarkdownToYuque(topic.name, markdown)
+              void exportMarkdownToYuque(topic.name, markdown)
             }
           },
           exportMenuOptions.obsidian && {
@@ -459,7 +472,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
             key: 'joplin',
             onClick: async () => {
               const topicMessages = await TopicManager.getTopicMessages(topic.id)
-              exportMarkdownToJoplin(topic.name, topicMessages)
+              void exportMarkdownToJoplin(topic.name, topicMessages)
             }
           },
           exportMenuOptions.siyuan && {
@@ -467,7 +480,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
             key: 'siyuan',
             onClick: async () => {
               const markdown = await topicToMarkdown(topic)
-              exportMarkdownToSiyuan(topic.name, markdown)
+              void exportMarkdownToSiyuan(topic.name, markdown)
             }
           }
         ].filter(Boolean) as ItemType<MenuItemType>[]
@@ -479,6 +492,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
         label: t('chat.topics.move_to'),
         key: 'move',
         icon: <FolderOpen size={14} />,
+        popupClassName: 'move-to-submenu',
         children: assistants
           .filter((a) => a.id !== assistant.id)
           .map((a) => ({
@@ -575,7 +589,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
         itemContainerStyle={{ paddingBottom: '8px' }}
         header={
           <HeaderRow>
-            <AddButton onClick={() => EventEmitter.emit(EVENT_NAMES.ADD_NEW_TOPIC)}>
+            <AddButton onClick={() => EventEmitter.emit(EVENT_NAMES.ADD_NEW_TOPIC)} className="">
               {t('chat.add.topic.title')}
             </AddButton>
             <Tooltip title={t('chat.topics.manage.title')} mouseEnterDelay={0.5}>
@@ -597,8 +611,8 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
           const canSelect = !topic.pinned
 
           const getTopicNameClassName = () => {
-            if (isRenaming(topic.id)) return 'shimmer'
-            if (isNewlyRenamed(topic.id)) return 'typing'
+            if (isRenaming(topic.id)) return 'animation-shimmer'
+            if (isNewlyRenamed(topic.id)) return 'animation-reveal'
             return ''
           }
 
@@ -608,7 +622,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
                 toggleSelectTopic(topic.id)
               }
             } else {
-              onSwitchTopic(topic)
+              void onSwitchTopic(topic)
             }
           }
 
@@ -675,9 +689,9 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
                         className="menu"
                         onClick={(e) => {
                           if (e.ctrlKey || e.metaKey) {
-                            handleConfirmDelete(topic, e)
+                            void handleConfirmDelete(topic, e)
                           } else if (deletingTopicId === topic.id) {
-                            handleConfirmDelete(topic, e)
+                            void handleConfirmDelete(topic, e)
                           } else {
                             handleDeleteClick(topic.id, e)
                           }
@@ -716,7 +730,7 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
         assistants={assistants}
         activeTopic={activeTopic}
         setActiveTopic={setActiveTopic}
-        removeTopic={removeTopic}
+        updateTopics={updateTopics}
         moveTopic={moveTopic}
         manageState={manageState}
         filteredTopics={filteredTopics}
@@ -795,46 +809,12 @@ const TopicName = styled.div`
   overflow: hidden;
   font-size: 13px;
   position: relative;
-  will-change: background-position, width;
   flex: 1;
   text-align: left;
 
-  --color-shimmer-mid: var(--color-text-1);
-  --color-shimmer-end: color-mix(in srgb, var(--color-text-1) 25%, transparent);
-
-  &.shimmer {
-    background: linear-gradient(to left, var(--color-shimmer-end), var(--color-shimmer-mid), var(--color-shimmer-end));
-    background-size: 200% 100%;
-    background-clip: text;
-    color: transparent;
-    animation: shimmer 3s linear infinite;
-  }
-
-  &.typing {
-    display: block;
+  &.animation-reveal {
     -webkit-line-clamp: unset;
     -webkit-box-orient: unset;
-    white-space: nowrap;
-    overflow: hidden;
-    animation: typewriter 0.5s steps(40, end);
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
-  }
-
-  @keyframes typewriter {
-    from {
-      width: 0;
-    }
-    to {
-      width: 100%;
-    }
   }
 `
 

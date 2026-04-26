@@ -1,25 +1,28 @@
+import { cacheService } from '@data/CacheService'
+import { preferenceService } from '@data/PreferenceService'
+import { loggerService } from '@logger'
 import db from '@renderer/databases'
 import i18n from '@renderer/i18n'
 import { fetchMessagesSummary } from '@renderer/services/ApiService'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
-import { deleteMessageFiles } from '@renderer/services/MessagesService'
+import { safeDeleteFiles } from '@renderer/services/MessagesService'
 import store from '@renderer/store'
 import { updateTopic } from '@renderer/store/assistants'
-import { setNewlyRenamedTopics, setRenamingTopics } from '@renderer/store/runtime'
 import { loadTopicMessagesThunk } from '@renderer/store/thunk/messageThunk'
-import type { Assistant, Topic } from '@renderer/types'
+import type { Assistant, FileMetadata, Topic } from '@renderer/types'
+import type { FileMessageBlock, ImageMessageBlock } from '@renderer/types/newMessage'
+import { MessageBlockType } from '@renderer/types/newMessage'
 import { findMainTextBlocks } from '@renderer/utils/messageUtils/find'
 import { truncateText } from '@renderer/utils/naming'
 import { find, isEmpty } from 'lodash'
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 
 import { useAssistant } from './useAssistant'
-import { getStoreSetting } from './useSettings'
 
 let _activeTopic: Topic
 let _setActiveTopic: Dispatch<SetStateAction<Topic>>
 
-// const logger = loggerService.withContext('useTopic')
+const logger = loggerService.withContext('useTopic')
 
 export function useActiveTopic(assistantId: string, topic?: Topic) {
   const { assistant } = useAssistant(assistantId)
@@ -30,8 +33,8 @@ export function useActiveTopic(assistantId: string, topic?: Topic) {
 
   useEffect(() => {
     if (activeTopic) {
-      store.dispatch(loadTopicMessagesThunk(activeTopic.id))
-      EventEmitter.emit(EVENT_NAMES.CHANGE_TOPIC, activeTopic)
+      void store.dispatch(loadTopicMessagesThunk(activeTopic.id))
+      void EventEmitter.emit(EVENT_NAMES.CHANGE_TOPIC, activeTopic)
     }
   }, [activeTopic])
 
@@ -83,9 +86,9 @@ export async function getTopicById(topicId: string) {
  * 开始重命名指定话题
  */
 export const startTopicRenaming = (topicId: string) => {
-  const currentIds = store.getState().runtime.chat.renamingTopics
+  const currentIds = cacheService.get('topic.renaming') ?? []
   if (!currentIds.includes(topicId)) {
-    store.dispatch(setRenamingTopics([...currentIds, topicId]))
+    cacheService.set('topic.renaming', [...currentIds, topicId])
   }
 }
 
@@ -93,20 +96,26 @@ export const startTopicRenaming = (topicId: string) => {
  * 完成重命名指定话题
  */
 export const finishTopicRenaming = (topicId: string) => {
-  const state = store.getState()
-
   // 1. 立即从 renamingTopics 移除
-  const currentRenaming = state.runtime.chat.renamingTopics
-  store.dispatch(setRenamingTopics(currentRenaming.filter((id) => id !== topicId)))
+  const renamingTopics = cacheService.get('topic.renaming')
+  if (renamingTopics && renamingTopics.includes(topicId)) {
+    cacheService.set(
+      'topic.renaming',
+      renamingTopics.filter((id) => id !== topicId)
+    )
+  }
 
   // 2. 立即添加到 newlyRenamedTopics
-  const currentNewlyRenamed = state.runtime.chat.newlyRenamedTopics
-  store.dispatch(setNewlyRenamedTopics([...currentNewlyRenamed, topicId]))
+  const currentNewlyRenamed = cacheService.get('topic.newly_renamed') ?? []
+  cacheService.set('topic.newly_renamed', [...currentNewlyRenamed, topicId])
 
   // 3. 延迟从 newlyRenamedTopics 移除
   setTimeout(() => {
-    const current = store.getState().runtime.chat.newlyRenamedTopics
-    store.dispatch(setNewlyRenamedTopics(current.filter((id) => id !== topicId)))
+    const current = cacheService.get('topic.newly_renamed') ?? []
+    cacheService.set(
+      'topic.newly_renamed',
+      current.filter((id) => id !== topicId)
+    )
   }, 700)
 }
 
@@ -121,7 +130,7 @@ export const autoRenameTopic = async (assistant: Assistant, topicId: string) => 
     topicRenamingLocks.add(topicId)
 
     const topic = await getTopicById(topicId)
-    const enableTopicNaming = getStoreSetting('enableTopicNaming')
+    const enableTopicNaming = await preferenceService.get('topic.naming.enabled')
 
     if (isEmpty(topic.messages)) {
       return
@@ -166,7 +175,7 @@ export const autoRenameTopic = async (assistant: Assistant, topicId: string) => 
     if (topic && topic.name === i18n.t('chat.default.topic.name') && topic.messages.length >= 2) {
       startTopicRenaming(topicId)
       try {
-        const { text: summaryText, error } = await fetchMessagesSummary({ messages: topic.messages, assistant })
+        const { text: summaryText, error } = await fetchMessagesSummary({ messages: topic.messages })
         if (summaryText) {
           applyTopicName(summaryText)
         } else {
@@ -217,23 +226,46 @@ export const TopicManager = {
     await db.topics.delete(id)
   },
 
-  async clearTopicMessages(id: string) {
-    const topic = await TopicManager.getTopic(id)
+  async clearTopicMessages(id: string): Promise<void> {
+    // 暂存需要删除的文件信息
+    let filesToDelete: FileMetadata[] = []
 
-    if (topic) {
-      for (const message of topic?.messages ?? []) {
-        await deleteMessageFiles(message)
-      }
+    try {
+      await db.transaction('rw', [db.topics, db.message_blocks], async () => {
+        const topic = await db.topics.get(id)
 
-      // 删除关联的 message_blocks 记录
-      const blockIds = topic.messages.flatMap((message) => message.blocks || [])
-      if (blockIds.length > 0) {
-        await db.message_blocks.bulkDelete(blockIds)
-      }
+        if (!topic || !topic.messages || topic.messages.length === 0) {
+          return
+        }
 
-      topic.messages = []
+        const blockIds = topic.messages.flatMap((message) => message.blocks || [])
 
-      await db.topics.update(id, topic)
+        if (blockIds.length > 0) {
+          // 删除 block 之前先从 DB 里找出来
+          const blocks = await db.message_blocks.where('id').anyOf(blockIds).toArray()
+
+          // 提取文件元数据
+          filesToDelete = blocks
+            .filter(
+              (block): block is ImageMessageBlock | FileMessageBlock =>
+                block.type === MessageBlockType.IMAGE || block.type === MessageBlockType.FILE
+            )
+            .map((block) => block.file)
+            .filter((file) => file !== undefined)
+
+          await db.message_blocks.bulkDelete(blockIds)
+        }
+
+        await db.topics.update(id, { messages: [] })
+      })
+    } catch (dbError) {
+      logger.error(`Failed to clear database records for topic ${id}:`, dbError as Error)
+      throw dbError
+    }
+
+    // 删除文件
+    if (filesToDelete.length > 0) {
+      await safeDeleteFiles(filesToDelete)
     }
   }
 }

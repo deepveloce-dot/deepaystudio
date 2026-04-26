@@ -14,8 +14,7 @@ import { safeSerialize } from '@shared/utils/serialize'
 import type { NoSuchToolError } from 'ai'
 import { AISDKError } from 'ai'
 import { InvalidToolInputError } from 'ai'
-import type { AxiosError } from 'axios'
-import { isAxiosError } from 'axios'
+import { type AxiosError, isAxiosError } from 'axios'
 import { t } from 'i18next'
 import type * as z from 'zod'
 import { ZodError } from 'zod'
@@ -80,7 +79,7 @@ export function formatErrorMessage(error: unknown): string {
 }
 
 export function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) {
+  if (error instanceof Error && error.message) {
     return error.message
   } else {
     return t('error.unknown')
@@ -92,7 +91,25 @@ export function formatErrorMessageWithPrefix(error: unknown, prefix: string): st
   return `${prefix}: ${msg}`
 }
 
+export const isTimeoutError = (error: any): boolean => {
+  if (error instanceof DOMException && error.name === 'TimeoutError') {
+    return true
+  }
+
+  const cause = error?.cause
+  if (cause instanceof DOMException && cause.name === 'TimeoutError') {
+    return true
+  }
+
+  return false
+}
+
 export const isAbortError = (error: any): boolean => {
+  // Timeout errors should not be treated as user-initiated aborts
+  if (isTimeoutError(error)) {
+    return false
+  }
+
   // Convert message to string for consistent checking
   const errorMessage = String(error?.message || '')
 

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { getAiSdkProviderId } from '../factory'
 
 // Mock the external dependencies
-vi.mock('@cherrystudio/ai-core', () => ({
+vi.mock('@modauistudio/ai-core', () => ({
   registerMultipleProviders: vi.fn(() => 4), // Mock successful registration of 4 providers
   getProviderMapping: vi.fn((id: string) => {
     // Mock dynamic mappings
@@ -147,7 +147,7 @@ describe('Integrated Provider Registry', () => {
     it('should maintain compatibility with existing providers', () => {
       const grokProvider = createTestProvider('grok', 'grok')
       const result = getAiSdkProviderId(grokProvider)
-      expect(result).toBe('xai')
+      expect(result).toBe('xai-responses')
     })
   })
 })

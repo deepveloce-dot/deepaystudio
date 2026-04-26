@@ -6,9 +6,11 @@ import 'dayjs/locale/ja'
 import 'dayjs/locale/pt'
 import 'dayjs/locale/ro'
 import 'dayjs/locale/ru'
+import 'dayjs/locale/vi'
 import 'dayjs/locale/zh-cn'
 import 'dayjs/locale/zh-tw'
 
+import { preferenceService } from '@data/PreferenceService'
 import { loggerService } from '@logger'
 import { defaultLanguage } from '@shared/config/constant'
 import dayjs from 'dayjs'
@@ -28,6 +30,7 @@ import jaJP from './translate/ja-jp.json'
 import ptPT from './translate/pt-pt.json'
 import roRO from './translate/ro-ro.json'
 import ruRU from './translate/ru-ru.json'
+import viVN from './translate/vi-vn.json'
 
 const logger = loggerService.withContext('I18N')
 
@@ -43,16 +46,17 @@ const resources = Object.fromEntries(
     ['es-ES', esES],
     ['fr-FR', frFR],
     ['pt-PT', ptPT],
-    ['ro-RO', roRO]
+    ['ro-RO', roRO],
+    ['vi-VN', viVN]
   ].map(([locale, translation]) => [locale, { translation }])
 )
 
-export const getLanguage = () => {
-  return localStorage.getItem('language') || navigator.language || defaultLanguage
+export const getLanguage = async () => {
+  return (await preferenceService.get('app.language')) || navigator.language || defaultLanguage
 }
 
-export const getLanguageCode = () => {
-  return getLanguage().split('-')[0]
+export const getLanguageCode = async () => {
+  return (await getLanguage()).split('-')[0]
 }
 
 // Map i18n language codes to dayjs locale codes
@@ -67,7 +71,8 @@ const dayjsLocaleMap: Record<string, string> = {
   'es-ES': 'es',
   'fr-FR': 'fr',
   'pt-PT': 'pt',
-  'ro-RO': 'ro'
+  'ro-RO': 'ro',
+  'vi-VN': 'vi'
 }
 
 export const setDayjsLocale = (language: string) => {
@@ -75,9 +80,9 @@ export const setDayjsLocale = (language: string) => {
   dayjs.locale(dayjsLocale)
 }
 
-i18n.use(initReactI18next).init({
+void i18n.use(initReactI18next).init({
   resources,
-  lng: getLanguage(),
+  lng: await getLanguage(),
   fallbackLng: defaultLanguage,
   interpolation: {
     escapeValue: false

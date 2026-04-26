@@ -59,7 +59,6 @@ const NotesSidebar: FC<NotesSidebarProps> = ({
   const { t } = useTranslation()
   const { activeNode } = useActiveNode(notesTree)
   const sortType = useAppSelector(selectSortType)
-
   const [isShowStarred, setIsShowStarred] = useState(false)
   const [isShowSearch, setIsShowSearch] = useState(false)
   const [searchKeyword, setSearchKeyword] = useState('')
@@ -358,7 +357,7 @@ const NotesSidebar: FC<NotesSidebarProps> = ({
                   onDragLeave={() => setIsDragOverSidebar(false)}
                   onDrop={(e) => {
                     if (!draggedNodeId) {
-                      handleDropFiles(e)
+                      void handleDropFiles(e)
                     }
                   }}>
                   <NotesSidebarHeader

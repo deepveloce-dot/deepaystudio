@@ -1,5 +1,6 @@
+import { Button } from '@modauistudio/ui'
 import { isWin } from '@renderer/config/constant'
-import { Button, Form, Input, Modal } from 'antd'
+import { Form, Input, Modal } from 'antd'
 import type { FC } from 'react'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -31,7 +32,7 @@ const SelectionFilterListModal: FC<SelectionFilterListModalProps> = ({ open, onC
         .trim()
         .toLowerCase()
         .split('\n')
-        .map((line: string) => line.trim().slice(0, 32))
+        .map((line: string) => line.trim())
         .filter((line: string) => line.length > 0)
       onSave([...new Set(newList)])
       onClose()
@@ -52,7 +53,7 @@ const SelectionFilterListModal: FC<SelectionFilterListModalProps> = ({ open, onC
         <Button key="modal-cancel" onClick={onClose}>
           {t('common.cancel')}
         </Button>,
-        <Button key="modal-save" type="primary" onClick={handleSave}>
+        <Button key="modal-save" color="primary" onClick={handleSave}>
           {t('common.save')}
         </Button>
       ]}>

@@ -136,10 +136,15 @@ export async function fetchWebContent(
 export function isXPostUrl(url: string): boolean {
   try {
     const parsed = new URL(url)
+<<<<<<< HEAD
+    const host = parsed.hostname.replace(/^www\./, '')
+    return (host === 'x.com' || host === 'twitter.com') && /\/status\/\d+/.test(parsed.pathname)
+=======
     return (
       (parsed.hostname === 'x.com' || parsed.hostname === 'twitter.com' || parsed.hostname === 'www.x.com') &&
       /\/status\/\d+/.test(parsed.pathname)
     )
+>>>>>>> origin/DeJeune-add-codeowner-clean
   } catch {
     return false
   }

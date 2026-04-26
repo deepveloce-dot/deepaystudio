@@ -1,0 +1,48 @@
+# V2 重构临时目录
+
+本目录是 Modaui Studio V2 数据和 UI 重构项目的临时工作目录，用于存放重构过程中使用的共享工具、文档和临时文件。
+
+**重要**: 本目录将在 V2 重构完成后删除。
+
+## 目录结构
+
+```
+v2-refactor-temp/
+├── tools/                    # 重构工具
+│   └── data-classify/        # 数据分类与代码生成工具
+├── docs/                     # 临时文档（如有需要）
+│   ├── breaking-changes.md   # V2 破坏性变更索引
+│   └── breaking-changes/     # 单个破坏性变更记录
+└── README.md                 # 本文件
+```
+
+## 包含内容
+
+### 工具 (tools/)
+
+- **data-classify/** - 数据分类与代码生成工具
+  - 从源码提取数据清单
+  - 管理数据分类映射
+  - 生成 TypeScript 类型定义和迁移映射
+  - 详见 [tools/data-classify/README.md](./tools/data-classify/README.md)
+
+### 文档 (docs/)
+
+- **breaking-changes.md** - V2 破坏性变更索引
+  - 任何移除能力、数据结构不兼容、迁移降级或用户可见行为变化，都需要新增独立文档，并同步追加到该索引
+  - 详见 [docs/breaking-changes.md](./docs/breaking-changes.md)
+
+## 使用说明
+
+1. 本目录不包含任何生产代码，仅用于重构辅助
+2. 生成的代码会输出到正式的项目目录中
+3. 不要在本目录中存放需要长期保留的内容
+
+## 清理计划
+
+V2 重构完成后，本目录将被完全删除。届时需要：
+
+1. 确认所有工具不再需要
+2. 将有价值的文档迁移到正式位置（如有）
+3. 删除整个 `v2-refactor-temp/` 目录
+4. 更新 `.gitignore` 和相关引用

@@ -1,6 +1,5 @@
 import { ActionIconButton } from '@renderer/components/Buttons'
 import type { ToolQuickPanelApi, ToolQuickPanelController } from '@renderer/pages/home/Inputbar/types'
-import type { InstalledPlugin } from '@renderer/types/plugin'
 import { Tooltip } from 'antd'
 import { FolderOpen } from 'lucide-react'
 import type { FC } from 'react'
@@ -14,19 +13,10 @@ interface Props {
   quickPanel: ToolQuickPanelApi
   quickPanelController: ToolQuickPanelController
   accessiblePaths: string[]
-  plugins: InstalledPlugin[]
-  pluginsLoading: boolean
   setText: React.Dispatch<React.SetStateAction<string>>
 }
 
-const ResourceButton: FC<Props> = ({
-  quickPanel,
-  quickPanelController,
-  accessiblePaths,
-  plugins,
-  pluginsLoading,
-  setText
-}) => {
+const ResourceButton: FC<Props> = ({ quickPanel, quickPanelController, accessiblePaths, setText }) => {
   const { t } = useTranslation()
 
   const { handleOpenQuickPanel } = useResourcePanel(
@@ -34,8 +24,6 @@ const ResourceButton: FC<Props> = ({
       quickPanel,
       quickPanelController,
       accessiblePaths,
-      plugins,
-      pluginsLoading,
       setText
     },
     'button'
@@ -43,9 +31,10 @@ const ResourceButton: FC<Props> = ({
 
   return (
     <Tooltip placement="top" title={t('chat.input.resource_panel.title')} mouseLeaveDelay={0} arrow>
-      <ActionIconButton onClick={handleOpenQuickPanel} aria-label={t('chat.input.resource_panel.title')}>
-        <FolderOpen size={18} />
-      </ActionIconButton>
+      <ActionIconButton
+        onClick={handleOpenQuickPanel}
+        aria-label={t('chat.input.resource_panel.title')}
+        icon={<FolderOpen size={18} />}></ActionIconButton>
     </Tooltip>
   )
 }

@@ -199,27 +199,45 @@ export const defaultLanguage = 'en-US'
 
 export enum FeedUrl {
   PRODUCTION = 'https://releases.cherry-ai.com',
-  GITHUB_LATEST = 'https://github.com/CherryHQ/cherry-studio/releases/latest/download'
+  GITHUB_LATEST = 'https://github.com/CherryHQ/modaui-studio/releases/latest/download'
 }
 
 export enum UpdateConfigUrl {
-  GITHUB = 'https://raw.githubusercontent.com/CherryHQ/cherry-studio/refs/heads/x-files/app-upgrade-config/app-upgrade-config.json',
-  GITCODE = 'https://raw.gitcode.com/CherryHQ/cherry-studio/raw/x-files%2Fapp-upgrade-config/app-upgrade-config.json'
+  GITHUB = 'https://raw.githubusercontent.com/CherryHQ/modaui-studio/refs/heads/x-files/app-upgrade-config/app-upgrade-config.json',
+  GITCODE = 'https://raw.gitcode.com/CherryHQ/modaui-studio/raw/x-files%2Fapp-upgrade-config/app-upgrade-config.json'
 }
 
-export enum UpgradeChannel {
-  LATEST = 'latest', // 最新稳定版本
-  RC = 'rc', // 公测版本
-  BETA = 'beta' // 预览版本
-}
+// export enum UpgradeChannel {
+//   LATEST = 'latest', // 最新稳定版本
+//   RC = 'rc', // 公测版本
+//   BETA = 'beta' // 预览版本
+// }
 
 export enum UpdateMirror {
   GITHUB = 'github',
   GITCODE = 'gitcode'
 }
 
-export const defaultTimeout = 10 * 1000 * 60
+export const DEFAULT_TIMEOUT = 30 * 1000 * 60
 
+/**
+ * @deprecated v1 leftover. v2's preboot relocation copies the entire
+ * Electron userData directory tree at startup (in
+ * `src/main/core/preboot/userDataLocation.ts`), after the previous process
+ * has fully exited and no file is locked. The distinction between
+ * "occupied" and "non-occupied" directories has no meaning in v2 — the
+ * entire tree is opaque and copied as one unit.
+ *
+ * The constant is only kept on disk because two v1-era call sites still
+ * reference it:
+ *   - `src/main/bootstrap.ts` (deprecated; no longer imported anywhere)
+ *   - `src/renderer/src/pages/settings/DataSettings/BasicDataSettings.tsx`
+ *     (v1 in-process migration flow, to be rewritten to the new BootConfig
+ *     `temp.user_data_relocation` protocol)
+ *
+ * Both will be migrated in a follow-up cleanup PR; this constant should
+ * be removed at the same time.
+ */
 export const occupiedDirs = ['logs', 'Network', 'Partitions/webview/Network']
 
 export const MIN_WINDOW_WIDTH = 960
@@ -227,7 +245,7 @@ export const SECOND_MIN_WINDOW_WIDTH = 520
 export const MIN_WINDOW_HEIGHT = 600
 export const defaultByPassRules = 'localhost,127.0.0.1,::1'
 
-export enum codeTools {
+export enum codeCLI {
   qwenCode = 'qwen-code',
   claudeCode = 'claude-code',
   geminiCli = 'gemini-cli',
@@ -351,7 +369,7 @@ export const WINDOWS_TERMINALS_WITH_COMMANDS: TerminalConfigWithCommand[] = [
     name: 'Windows Terminal',
     command: (_: string, fullCommand: string) => ({
       command: 'wt',
-      args: ['-p', 'Command Prompt', '--', 'cmd', '/c', `"${fullCommand}"`]
+      args: ['--', 'cmd', '/c', fullCommand]
     })
   },
   {
@@ -485,7 +503,7 @@ export const MACOS_TERMINALS_WITH_COMMANDS: TerminalConfigWithCommand[] = [
 ]
 
 // resources/scripts should be maintained manually
-export const HOME_CHERRY_DIR = '.cherrystudio'
+export const HOME_CHERRY_DIR = '.modauistudio'
 
 // Git Bash path configuration types
 export type GitBashPathSource = 'manual' | 'auto'
@@ -495,10 +513,12 @@ export interface GitBashPathInfo {
   source: GitBashPathSource | null
 }
 
-// CherryIN OAuth configuration
+// ModauiIN OAuth configuration
 export const CHERRYIN_CONFIG = {
   CLIENT_ID: '2a348c87-bae1-4756-a62f-b2e97200fd6d',
-  ALLOWED_HOSTS: ['https://open.cherryin.ai', 'https://open.cherryin.dev'],
-  REDIRECT_URI: 'cherrystudio://oauth/callback',
+  ALLOWED_HOSTS: ['https://open.modauiin.ai', 'https://open.modauiin.dev'],
+  REDIRECT_URI: 'modauistudio://oauth/callback',
   SCOPES: 'openid profile email offline_access balance:read usage:read tokens:read tokens:write'
 }
+
+export const APP_NAME = 'Modaui Studio'

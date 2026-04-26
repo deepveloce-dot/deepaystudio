@@ -1,4 +1,6 @@
+import { DEFAULT_SESSION_PAGE_SIZE } from '@renderer/api/agent'
 import type {
+  AgentSessionEntity,
   CreateAgentSessionResponse,
   CreateSessionForm,
   GetAgentSessionResponse,
@@ -10,21 +12,20 @@ import { useTranslation } from 'react-i18next'
 import useSWRInfinite from 'swr/infinite'
 
 import { useAgentClient } from './useAgentClient'
+import { useSessionChanged } from './useSessionChanged'
 
-const DEFAULT_PAGE_SIZE = 20
-
-export const useSessions = (agentId: string | null, pageSize = DEFAULT_PAGE_SIZE) => {
+export const useSessions = (agentId: string | null, pageSize = DEFAULT_SESSION_PAGE_SIZE) => {
   const { t } = useTranslation()
   const client = useAgentClient()
 
   const getKey = (pageIndex: number, previousPageData: ListAgentSessionsResponse | null) => {
-    if (!agentId) return null
+    if (!agentId || !client) return null
     if (previousPageData && previousPageData.data.length < pageSize) return null
     return [client.getSessionPaths(agentId).base, pageIndex, pageSize]
   }
 
   const fetcher = async ([, pageIndex, pageLimit]: [string, number, number]) => {
-    if (!agentId) throw new Error('No active agent.')
+    if (!agentId || !client) throw new Error('No active agent.')
     return await client.listSessions(agentId, {
       limit: pageLimit,
       offset: pageIndex * pageLimit
@@ -47,7 +48,7 @@ export const useSessions = (agentId: string | null, pageSize = DEFAULT_PAGE_SIZE
 
   const loadMore = useCallback(() => {
     if (!isLoadingMore && hasMore) {
-      setSize((currentSize) => currentSize + 1)
+      void setSize((currentSize) => currentSize + 1)
     }
   }, [isLoadingMore, hasMore, setSize])
 
@@ -55,12 +56,15 @@ export const useSessions = (agentId: string | null, pageSize = DEFAULT_PAGE_SIZE
     await mutate()
   }, [mutate])
 
+  // Auto-refresh when IM channel creates/updates sessions
+  useSessionChanged(agentId ?? undefined, reload)
+
   const createSession = useCallback(
     async (form: CreateSessionForm): Promise<CreateAgentSessionResponse | null> => {
-      if (!agentId) return null
+      if (!agentId || !client) return null
       try {
         const result = await client.createSession(agentId, form)
-        mutate(
+        void mutate(
           (prev) => {
             if (!prev || prev.length === 0) {
               return [{ data: [result], total: 1, limit: pageSize, offset: 0 }]
@@ -85,10 +89,10 @@ export const useSessions = (agentId: string | null, pageSize = DEFAULT_PAGE_SIZE
 
   const getSession = useCallback(
     async (id: string): Promise<GetAgentSessionResponse | null> => {
-      if (!agentId) return null
+      if (!agentId || !client) return null
       try {
         const result = await client.getSession(agentId, id)
-        mutate(
+        void mutate(
           (prev) =>
             prev?.map((page) => ({
               ...page,
@@ -107,10 +111,10 @@ export const useSessions = (agentId: string | null, pageSize = DEFAULT_PAGE_SIZE
 
   const deleteSession = useCallback(
     async (id: string): Promise<boolean> => {
-      if (!agentId) return false
+      if (!agentId || !client) return false
       try {
         await client.deleteSession(agentId, id)
-        mutate(
+        void mutate(
           (prev) => {
             if (!prev || prev.length === 0) return prev
             const newTotal = prev[0].total - 1
@@ -131,6 +135,28 @@ export const useSessions = (agentId: string | null, pageSize = DEFAULT_PAGE_SIZE
     [agentId, client, mutate, t]
   )
 
+  const reorderSessions = useCallback(
+    async (reorderedList: AgentSessionEntity[]) => {
+      if (!agentId || !client) return
+      const orderedIds = reorderedList.map((s) => s.id)
+      // Optimistic update: replace all pages with single page containing reordered list
+      void mutate(
+        (prev) => {
+          const realTotal = prev && prev.length > 0 ? prev[prev.length - 1].total : reorderedList.length
+          return [{ data: reorderedList, total: realTotal, limit: pageSize, offset: 0 }]
+        },
+        { revalidate: false }
+      )
+      try {
+        await client.reorderSessions(agentId, orderedIds)
+      } catch (error) {
+        void mutate()
+        window.toast.error(formatErrorMessageWithPrefix(error, t('agent.session.reorder.error.failed')))
+      }
+    },
+    [agentId, client, mutate, pageSize, t]
+  )
+
   return {
     sessions,
     total,
@@ -143,6 +169,7 @@ export const useSessions = (agentId: string | null, pageSize = DEFAULT_PAGE_SIZE
     loadMore,
     createSession,
     getSession,
-    deleteSession
+    deleteSession,
+    reorderSessions
   }
 }

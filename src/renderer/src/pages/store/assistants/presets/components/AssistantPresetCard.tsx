@@ -1,3 +1,4 @@
+import { Button } from '@modauistudio/ui'
 import { DeleteIcon, EditIcon } from '@renderer/components/Icons'
 import CustomTag from '@renderer/components/Tags/CustomTag'
 import { useAssistantPresets } from '@renderer/hooks/useAssistantPresets'
@@ -5,7 +6,7 @@ import AssistantSettingsPopup from '@renderer/pages/settings/AssistantSettings'
 import { createAssistantFromAgent } from '@renderer/services/AssistantService'
 import type { AssistantPreset } from '@renderer/types'
 import { getLeadingEmoji } from '@renderer/utils'
-import { Button, Dropdown } from 'antd'
+import { Dropdown } from 'antd'
 import { t } from 'i18next'
 import { isArray } from 'lodash'
 import { Ellipsis, PlusIcon, Settings2, SquareArrowOutUpRight } from 'lucide-react'
@@ -64,7 +65,7 @@ const AssistantPresetCard: FC<Props> = ({ preset, onClick, activegroup, getLocal
       icon: <EditIcon size={14} />,
       onClick: (e: any) => {
         e.domEvent.stopPropagation()
-        AssistantSettingsPopup.show({ assistant: preset })
+        void AssistantSettingsPopup.show({ assistant: preset })
       }
     },
     {
@@ -73,7 +74,7 @@ const AssistantPresetCard: FC<Props> = ({ preset, onClick, activegroup, getLocal
       icon: <PlusIcon size={14} />,
       onClick: (e: any) => {
         e.domEvent.stopPropagation()
-        createAssistantFromAgent(preset)
+        void createAssistantFromAgent(preset)
       }
     },
     {
@@ -91,7 +92,7 @@ const AssistantPresetCard: FC<Props> = ({ preset, onClick, activegroup, getLocal
       icon: <SquareArrowOutUpRight size={14} />,
       onClick: (e: any) => {
         e.domEvent.stopPropagation()
-        exportPreset()
+        void exportPreset()
       }
     },
     {
@@ -160,16 +161,9 @@ const AssistantPresetCard: FC<Props> = ({ preset, onClick, activegroup, getLocal
                   }}
                   trigger={['click']}
                   placement="bottomRight">
-                  <MenuButton
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      e.preventDefault()
-                    }}
-                    color="default"
-                    variant="filled"
-                    shape="circle"
-                    icon={<Ellipsis size={14} color="var(--color-text-3)" />}
-                  />
+                  <MenuButton variant="ghost" className="rounded-full" size="icon">
+                    <Ellipsis size={14} color="var(--color-text-3)" />
+                  </MenuButton>
                 </Dropdown>
               </AgentCardHeaderInfoAction>
             ) : (

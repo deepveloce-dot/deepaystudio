@@ -1,10 +1,9 @@
+import { usePreference } from '@data/hooks/usePreference'
 import AddAssistantPopup from '@renderer/components/Popups/AddAssistantPopup'
 import { useAssistants, useDefaultAssistant } from '@renderer/hooks/useAssistant'
-import { useNavbarPosition, useSettings } from '@renderer/hooks/useSettings'
+import { useNavbarPosition } from '@renderer/hooks/useNavbar'
 import { useShowTopics } from '@renderer/hooks/useStore'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
-import { useAppDispatch } from '@renderer/store'
-import { setActiveAgentId, setActiveTopicOrSessionAction } from '@renderer/store/runtime'
 import type { Assistant, Topic } from '@renderer/types'
 import type { Tab } from '@renderer/types/chat'
 import { classNames, uuid } from '@renderer/utils'
@@ -38,12 +37,11 @@ const HomeTabs: FC<Props> = ({
   style
 }) => {
   const { addAssistant } = useAssistants()
-  const { topicPosition } = useSettings()
+  const [topicPosition] = usePreference('topic.position')
   const { defaultAssistant } = useDefaultAssistant()
   const { toggleShowTopics } = useShowTopics()
   const { isLeftNavbar } = useNavbarPosition()
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
 
   const [tab, setTab] = useState<Tab>(position === 'left' ? _tab || 'assistants' : 'topic')
   const borderStyle = '0.5px solid var(--color-border)'
@@ -62,8 +60,6 @@ const HomeTabs: FC<Props> = ({
     const assistant = await AddAssistantPopup.show()
     if (assistant) {
       setActiveAssistant(assistant)
-      dispatch(setActiveAgentId(null))
-      dispatch(setActiveTopicOrSessionAction('topic'))
     }
   }
 
@@ -71,8 +67,6 @@ const HomeTabs: FC<Props> = ({
     const assistant = { ...defaultAssistant, id: uuid() }
     addAssistant(assistant)
     setActiveAssistant(assistant)
-    dispatch(setActiveAgentId(null))
-    dispatch(setActiveTopicOrSessionAction('topic'))
   }
 
   useEffect(() => {
@@ -86,7 +80,7 @@ const HomeTabs: FC<Props> = ({
       EventEmitter.on(EVENT_NAMES.SWITCH_TOPIC_SIDEBAR, () => {
         showTab && setTab('topic')
         if (position === 'left' && topicPosition === 'right') {
-          toggleShowTopics()
+          void toggleShowTopics()
         }
       })
     ]

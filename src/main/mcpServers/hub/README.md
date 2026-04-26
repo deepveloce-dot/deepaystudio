@@ -1,8 +1,8 @@
 # Hub MCP Server
 
-A built-in MCP server that aggregates all active MCP servers in Cherry Studio and exposes them through **meta-tools**.
+A built-in MCP server that aggregates all active MCP servers in Modaui Studio and exposes them through **meta-tools**.
 
-This server is the core component of Cherry Studio’s **Auto MCP Mode**.
+This server is the core component of Modaui Studio’s **Auto MCP Mode**.
 
 ## Tools (mcphub-aligned)
 

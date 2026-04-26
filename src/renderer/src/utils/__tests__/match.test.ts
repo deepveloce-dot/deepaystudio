@@ -1,7 +1,19 @@
 import type { Model, Provider, SystemProvider } from '@renderer/types'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { includeKeywords, matchKeywordsInModel, matchKeywordsInProvider, matchKeywordsInString } from '../match'
+
+// Mock i18n to return English provider labels
+vi.mock('@renderer/i18n/label', () => ({
+  getProviderLabel: vi.fn((id: string) => {
+    const labelMap: Record<string, string> = {
+      dashscope: 'Alibaba Cloud',
+      openai: 'OpenAI',
+      anthropic: 'Anthropic'
+    }
+    return labelMap[id] || id
+  })
+}))
 
 describe('match', () => {
   const provider = {
@@ -70,17 +82,17 @@ describe('match', () => {
   })
 
   describe('matchKeywordsInProvider', () => {
-    it('should match non-system provider by name only, not id', () => {
+    it('should match non-system provider by name and id', () => {
       expect(matchKeywordsInProvider('OpenAI', provider)).toBe(true)
-      expect(matchKeywordsInProvider('12345', provider)).toBe(false) // Should NOT match by id
+      expect(matchKeywordsInProvider('12345', provider)).toBe(true) // Should match by id
       expect(matchKeywordsInProvider('foo', provider)).toBe(false)
     })
 
-    it('should match i18n name for system provider', () => {
-      // system provider 不应该通过 name 字段匹配
+    it('should match i18n name, id, and name for system provider', () => {
       expect(matchKeywordsInProvider('dashscope', sysProvider)).toBe(true)
       expect(matchKeywordsInProvider('Alibaba', sysProvider)).toBe(true)
-      expect(matchKeywordsInProvider('doesnt matter', sysProvider)).toBe(false)
+      // system provider 现在也可以通过 name 字段匹配
+      expect(matchKeywordsInProvider('doesnt matter', sysProvider)).toBe(true)
     })
   })
 
@@ -106,8 +118,8 @@ describe('match', () => {
     it('should match model name and i18n provider name for system provider', () => {
       expect(matchKeywordsInModel('gpt-4.1 dashscope', model, sysProvider)).toBe(true)
       expect(matchKeywordsInModel('dashscope', model, sysProvider)).toBe(true)
-      // system provider 不会直接用 name 检索
-      expect(matchKeywordsInModel('doesnt matter', model, sysProvider)).toBe(false)
+      // system provider 现在也可以通过 name 字段检索
+      expect(matchKeywordsInModel('doesnt matter', model, sysProvider)).toBe(true)
       expect(matchKeywordsInModel('Alibaba', model, sysProvider)).toBe(true)
     })
 

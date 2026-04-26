@@ -81,7 +81,7 @@ Respond in the language of the user's query, unless the user instructions specif
 `
 
 /**
- * 默认工具使用示例（提取自 Cherry Studio）
+ * 默认工具使用示例（提取自 Modaui Studio）
  */
 const DEFAULT_TOOL_USE_EXAMPLES = `
 Here are a few examples using notional tools:
@@ -156,7 +156,7 @@ User: <tool_use_result>
 A: The population of Shanghai is 26 million, while Guangzhou has a population of 15 million. Therefore, Shanghai has the highest population.`
 
 /**
- * 构建可用工具部分（提取自 Cherry Studio）
+ * 构建可用工具部分（提取自 Modaui Studio）
  */
 function buildAvailableTools(tools: ToolSet): string | null {
   const availableTools = Object.keys(tools)
@@ -181,7 +181,7 @@ ${result}
 }
 
 /**
- * 默认的系统提示符构建函数（提取自 Cherry Studio）
+ * 默认的系统提示符构建函数（提取自 Modaui Studio）
  */
 function defaultBuildSystemPrompt(userSystemPrompt: string, tools: ToolSet, mcpMode?: string): string {
   const availableTools = buildAvailableTools(tools)
@@ -212,7 +212,7 @@ Above example were using notional tools that might not exist for you. You only h
 }
 
 /**
- * 默认工具解析函数（提取自 Cherry Studio）
+ * 默认工具解析函数（提取自 Modaui Studio）
  * 解析 XML 格式的工具调用
  */
 function defaultParseToolUse(content: string, tools: ToolSet): { results: ToolUseResult[]; content: string } {
@@ -301,7 +301,7 @@ export const createPromptToolUsePlugin = (
       const providerDefinedTools: ToolSet = {}
       const promptTools: ToolSet = {}
 
-      for (const [toolName, tool] of Object.entries(params.tools as ToolSet)) {
+      for (const [toolName, tool] of Object.entries(params.tools)) {
         if (tool.type === 'provider') {
           // provider 类型的工具保留在 tools 参数中
           providerDefinedTools[toolName] = tool
@@ -348,7 +348,7 @@ export const createPromptToolUsePlugin = (
         return new TransformStream()
       }
 
-      // 从 context 中获取或初始化 usage 累加器
+      // 初始化 usage 累加器和工具执行状态
       if (!context.accumulatedUsage) {
         context.accumulatedUsage = {
           inputTokens: 0,
@@ -358,16 +358,14 @@ export const createPromptToolUsePlugin = (
           cachedInputTokens: 0
         }
       }
+      if (context.hasExecutedToolsInCurrentStep === undefined) {
+        context.hasExecutedToolsInCurrentStep = false
+      }
 
       // 创建工具执行器、流事件管理器和标签提取器
       const toolExecutor = new ToolExecutor()
       const streamEventManager = new StreamEventManager()
       const tagExtractor = new TagExtractor(TOOL_USE_TAG_CONFIG)
-
-      // 在context中初始化工具执行状态，避免递归调用时状态丢失
-      if (!context.hasExecutedToolsInCurrentStep) {
-        context.hasExecutedToolsInCurrentStep = false
-      }
 
       // 用于hold text-start事件，直到确认有非工具标签内容
       let pendingTextStart: TextStreamPart<TOOLS> | null = null

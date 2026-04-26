@@ -1,4 +1,4 @@
-import { Flex } from 'antd'
+import { Flex } from '@modauistudio/ui'
 import type { FC, ReactNode } from 'react'
 import { memo } from 'react'
 import styled from 'styled-components'

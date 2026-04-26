@@ -7,6 +7,7 @@
 import { loggerService } from '@logger'
 import type { AgentType, BuiltinMCPServerName, BuiltinOcrProviderId } from '@renderer/types'
 import { BuiltinMCPServerNames } from '@renderer/types'
+import { SHORTCUT_DEFINITIONS, type ShortcutLabelKey } from '@shared/shortcuts/definitions'
 
 import i18n from './index'
 
@@ -35,7 +36,7 @@ const providerKeyMap = {
   'baidu-cloud': 'provider.baidu-cloud',
   burncloud: 'provider.burncloud',
   cephalon: 'provider.cephalon',
-  cherryin: 'provider.cherryin',
+  modauiin: 'provider.modauiin',
   copilot: 'provider.copilot',
   dashscope: 'provider.dashscope',
   deepseek: 'provider.deepseek',
@@ -89,7 +90,9 @@ const providerKeyMap = {
   sophnet: 'provider.sophnet',
   gateway: 'provider.ai-gateway',
   cerebras: 'provider.cerebras',
-  mimo: 'provider.mimo'
+  mimo: 'provider.mimo',
+  'minimax-global': 'provider.minimax-global',
+  zai: 'provider.zai'
 } as const
 
 /**
@@ -108,9 +111,10 @@ export const getProviderLabel = (id: string): string => {
 const backupProgressKeyMap = {
   completed: 'backup.progress.completed',
   compressing: 'backup.progress.compressing',
+  copying_database: 'backup.progress.copying_database',
   copying_files: 'backup.progress.copying_files',
-  preparing_compression: 'backup.progress.preparing_compression',
   preparing: 'backup.progress.preparing',
+  preparing_compression: 'backup.progress.preparing_compression',
   title: 'backup.progress.title',
   writing_data: 'backup.progress.writing_data'
 } as const
@@ -126,7 +130,10 @@ const restoreProgressKeyMap = {
   extracting: 'restore.progress.extracting',
   preparing: 'restore.progress.preparing',
   reading_data: 'restore.progress.reading_data',
-  title: 'restore.progress.title'
+  restoring_data: 'restore.progress.restoring_data',
+  restoring_database: 'restore.progress.restoring_database',
+  title: 'restore.progress.title',
+  validating: 'restore.progress.validating'
 }
 
 export const getRestoreProgressLabel = (key: string): string => {
@@ -143,12 +150,12 @@ const titleKeyMap = {
   knowledge: 'title.knowledge',
   launchpad: 'title.launchpad',
   'mcp-servers': 'title.mcp-servers',
-  memories: 'title.memories',
   notes: 'title.notes',
   paintings: 'title.paintings',
   settings: 'title.settings',
   translate: 'title.translate',
-  openclaw: 'openclaw.title'
+  openclaw: 'openclaw.title',
+  agents: 'agent.sidebar_title'
 } as const
 
 export const getTitleLabel = (key: string): string => {
@@ -179,6 +186,7 @@ export const getThemeModeLabel = (key: string): string => {
 
 const sidebarIconKeyMap = {
   assistants: 'assistants.title',
+  agents: 'agent.sidebar_title',
   store: 'assistants.presets.title',
   paintings: 'paintings.title',
   translate: 'translate.title',
@@ -187,51 +195,25 @@ const sidebarIconKeyMap = {
   files: 'files.title',
   code_tools: 'code.title',
   notes: 'notes.title',
-  openclaw: 'openclaw.title'
+  openclaw: 'openclaw.title',
+  fashion: 'fashion.title',
+  deepay: 'deepay.title'
 } as const
 
 export const getSidebarIconLabel = (key: string): string => {
   return getLabel(sidebarIconKeyMap, key)
 }
 
-const shortcutKeyMap = {
-  action: 'settings.shortcuts.action',
-  actions: 'settings.shortcuts.actions',
-  clear_shortcut: 'settings.shortcuts.clear_shortcut',
-  clear_topic: 'settings.shortcuts.clear_topic',
-  rename_topic: 'settings.shortcuts.rename_topic',
-  copy_last_message: 'settings.shortcuts.copy_last_message',
-  edit_last_user_message: 'settings.shortcuts.edit_last_user_message',
-  enabled: 'settings.shortcuts.enabled',
-  exit_fullscreen: 'settings.shortcuts.exit_fullscreen',
-  label: 'settings.shortcuts.label',
-  mini_window: 'settings.shortcuts.mini_window',
-  new_topic: 'settings.shortcuts.new_topic',
-  press_shortcut: 'settings.shortcuts.press_shortcut',
-  reset_defaults: 'settings.shortcuts.reset_defaults',
-  reset_defaults_confirm: 'settings.shortcuts.reset_defaults_confirm',
-  reset_to_default: 'settings.shortcuts.reset_to_default',
-  search_message: 'settings.shortcuts.search_message',
-  search_message_in_chat: 'settings.shortcuts.search_message_in_chat',
-  select_model: 'settings.shortcuts.select_model',
-  selection_assistant_select_text: 'settings.shortcuts.selection_assistant_select_text',
-  selection_assistant_toggle: 'settings.shortcuts.selection_assistant_toggle',
-  show_app: 'settings.shortcuts.show_app',
-  show_settings: 'settings.shortcuts.show_settings',
-  title: 'settings.shortcuts.title',
-  toggle_new_context: 'settings.shortcuts.toggle_new_context',
-  toggle_show_assistants: 'settings.shortcuts.toggle_show_assistants',
-  toggle_show_topics: 'settings.shortcuts.toggle_show_topics',
-  zoom_in: 'settings.shortcuts.zoom_in',
-  zoom_out: 'settings.shortcuts.zoom_out',
-  zoom_reset: 'settings.shortcuts.zoom_reset'
-} as const
+const shortcutLabelKeyMap = Object.fromEntries(
+  SHORTCUT_DEFINITIONS.map((definition) => [definition.labelKey, `settings.shortcuts.${definition.labelKey}`])
+) as Record<ShortcutLabelKey, string>
 
-export const getShortcutLabel = (key: string): string => {
-  return getLabel(shortcutKeyMap, key)
+export const getShortcutLabel = (key: ShortcutLabelKey): string => {
+  return getLabel(shortcutLabelKeyMap, key)
 }
 
 const selectionDescriptionKeyMap = {
+  linux: 'selection.settings.toolbar.trigger_mode.description_note.linux',
   mac: 'selection.settings.toolbar.trigger_mode.description_note.mac',
   windows: 'selection.settings.toolbar.trigger_mode.description_note.windows'
 } as const
@@ -338,6 +320,7 @@ export const getFileFieldLabel = (key: string): string => {
 }
 
 const builtInMcpDescriptionKeyMap: Record<BuiltinMCPServerName, string> = {
+  [BuiltinMCPServerNames.flomo]: 'settings.mcp.builtinServersDescriptions.flomo',
   [BuiltinMCPServerNames.mcpAutoInstall]: 'settings.mcp.builtinServersDescriptions.mcp_auto_install',
   [BuiltinMCPServerNames.memory]: 'settings.mcp.builtinServersDescriptions.memory',
   [BuiltinMCPServerNames.sequentialThinking]: 'settings.mcp.builtinServersDescriptions.sequentialthinking',
@@ -370,11 +353,7 @@ export const getBuiltinOcrProviderLabel = (key: BuiltinOcrProviderId) => {
   else return getLabel(builtinOcrProviderKeyMap, key)
 }
 
-export const getAgentTypeLabel = (key: AgentType) => {
-  switch (key) {
-    case 'claude-code':
-      return 'Claude Code'
-    default:
-      return 'Unknown Type'
-  }
+// oxlint-disable-next-line no-unused-vars -- placeholder for future agent type labels
+export const getAgentTypeLabel = (_key: AgentType) => {
+  return 'Agent'
 }

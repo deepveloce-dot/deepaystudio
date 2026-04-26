@@ -17,15 +17,11 @@ on:
           - windows
           - mac
           - linux
-  push:
-    tags:
-      - v*.*.*
   pull_request_target:
     branches:
       - main
     types:
-      - opened
-      - synchronize
+      - closed
 
 permissions:
   contents: write
@@ -36,7 +32,7 @@ jobs:
     if: |
       github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.event.pull_request.head.ref, 'release/v'))
+      (github.event_name == 'pull_request_target' && github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.event.pull_request.head.ref, 'release/v'))
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -91,7 +87,11 @@ jobs:
           brew install python-setuptools
 
       - name: Install pnpm
+<<<<<<< HEAD
+        uses: pnpm/action-setup@v5
+=======
         uses: pnpm/action-setup@v6
+>>>>>>> origin/DeJeune-add-codeowner-clean
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -112,13 +112,13 @@ jobs:
       - name: Build Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo apt-get install -y rpm
+          sudo apt-get install -y rpm libevdev-dev libxtst-dev libx11-dev libxfixes-dev libwayland-dev
           pnpm build:linux
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=8192
-          MAIN_VITE_CHERRYAI_CLIENT_SECRET: ${{ secrets.MAIN_VITE_CHERRYAI_CLIENT_SECRET }}
+          MAIN_VITE_MODAUIIN_CLIENT_SECRET: ${{ secrets.MAIN_VITE_MODAUIIN_CLIENT_SECRET }}
           MAIN_VITE_MINERU_API_KEY: ${{ secrets.MAIN_VITE_MINERU_API_KEY }}
           RENDERER_VITE_AIHUBMIX_SECRET: ${{ secrets.RENDERER_VITE_AIHUBMIX_SECRET }}
           RENDERER_VITE_PPIO_APP_SECRET: ${{ secrets.RENDERER_VITE_PPIO_APP_SECRET }}
@@ -137,7 +137,7 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=8192
-          MAIN_VITE_CHERRYAI_CLIENT_SECRET: ${{ secrets.MAIN_VITE_CHERRYAI_CLIENT_SECRET }}
+          MAIN_VITE_MODAUIIN_CLIENT_SECRET: ${{ secrets.MAIN_VITE_MODAUIIN_CLIENT_SECRET }}
           MAIN_VITE_MINERU_API_KEY: ${{ secrets.MAIN_VITE_MINERU_API_KEY }}
           RENDERER_VITE_AIHUBMIX_SECRET: ${{ secrets.RENDERER_VITE_AIHUBMIX_SECRET }}
           RENDERER_VITE_PPIO_APP_SECRET: ${{ secrets.RENDERER_VITE_PPIO_APP_SECRET }}
@@ -149,7 +149,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=8192
-          MAIN_VITE_CHERRYAI_CLIENT_SECRET: ${{ secrets.MAIN_VITE_CHERRYAI_CLIENT_SECRET }}
+          MAIN_VITE_MODAUIIN_CLIENT_SECRET: ${{ secrets.MAIN_VITE_MODAUIIN_CLIENT_SECRET }}
           MAIN_VITE_MINERU_API_KEY: ${{ secrets.MAIN_VITE_MINERU_API_KEY }}
           RENDERER_VITE_AIHUBMIX_SECRET: ${{ secrets.RENDERER_VITE_AIHUBMIX_SECRET }}
           RENDERER_VITE_PPIO_APP_SECRET: ${{ secrets.RENDERER_VITE_PPIO_APP_SECRET }}
@@ -159,7 +159,8 @@ jobs:
         with:
           draft: true
           allowUpdates: true
-          makeLatest: false
+          makeLatest: true
           tag: ${{ steps.get-tag.outputs.tag }}
+          name: "Modaui Studio ${{ steps.get-tag.outputs.tag }}"
           artifacts: "dist/*.exe,dist/*.zip,dist/*.dmg,dist/*.AppImage,dist/*.snap,dist/*.deb,dist/*.rpm,dist/*.tar.gz,dist/latest*.yml,dist/rc*.yml,dist/beta*.yml,dist/*.blockmap"
           token: ${{ secrets.GITHUB_TOKEN }}

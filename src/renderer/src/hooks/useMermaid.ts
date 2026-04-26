@@ -1,5 +1,5 @@
 import { useTheme } from '@renderer/context/ThemeProvider'
-import { ThemeMode } from '@renderer/types'
+import { ThemeMode } from '@shared/data/preference/preferenceTypes'
 import { useEffect, useState } from 'react'
 
 // 跟踪 mermaid 模块状态，单例模式
@@ -63,7 +63,7 @@ export const useMermaid = () => {
       }
     }
 
-    initialize()
+    void initialize()
 
     return () => {
       mounted = false

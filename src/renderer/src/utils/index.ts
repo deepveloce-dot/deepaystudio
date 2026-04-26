@@ -11,7 +11,7 @@ const logger = loggerService.withContext('Utils')
  * @param {() => void} fn 要执行的函数
  * @returns {Promise<void>} 执行结果
  */
-export const runAsyncFunction = async (fn: () => void): Promise<void> => {
+export const runAsyncFunction = async (fn: () => Promise<void>): Promise<void> => {
   await fn()
 }
 
@@ -55,7 +55,13 @@ export const waitAsyncFunction = (
   })()
 }
 
-export const uuid = () => uuidv4()
+/**
+ * Generate a UUID v4 string.
+ * @returns {string} A UUID v4 string
+ */
+export function uuid(): string {
+  return uuidv4()
+}
 
 /**
  * 从错误对象中提取错误信息。
@@ -222,3 +228,4 @@ export * from './match'
 export * from './naming'
 export * from './sort'
 export * from './style'
+export * from './url'

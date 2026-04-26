@@ -1,7 +1,7 @@
+import { agentSessionService as sessionService } from '@data/services/AgentSessionService'
 import { loggerService } from '@logger'
-import { AgentModelValidationError, sessionMessageService, sessionService } from '@main/services/agents'
-import type { ListAgentSessionsResponse, UpdateSessionResponse } from '@types'
-import { type ReplaceSessionRequest } from '@types'
+import { AgentModelValidationError } from '@main/services/agents'
+import type { ReplaceSessionRequest } from '@types'
 import type { Request, Response } from 'express'
 
 import type { ValidationRequest } from '../validators/zodValidator'
@@ -115,19 +115,7 @@ export const getSession = async (req: Request, res: Response): Promise<Response>
     //     }
     //   })
     // }
-
-    // Fetch session messages
-    logger.debug('Fetching session messages', { sessionId })
-    const { messages } = await sessionMessageService.listSessionMessages(sessionId)
-
-    // Add messages to session
-    const sessionWithMessages = {
-      ...session,
-      messages: messages
-    }
-
-    logger.info('Session retrieved', { agentId, sessionId, messageCount: messages.length })
-    return res.json(sessionWithMessages)
+    return res.json(session)
   } catch (error: any) {
     logger.error('Error getting session', { error, agentId: req.params.agentId, sessionId: req.params.sessionId })
     return res.status(500).json({
@@ -148,7 +136,7 @@ export const updateSession = async (req: Request, res: Response): Promise<Respon
 
     // First check if session exists and belongs to agent
     const existingSession = await sessionService.getSession(agentId, sessionId)
-    if (!existingSession || existingSession.agent_id !== agentId) {
+    if (!existingSession || existingSession.agentId !== agentId) {
       logger.warn('Session not found for update', { agentId, sessionId })
       return res.status(404).json({
         error: {
@@ -176,7 +164,7 @@ export const updateSession = async (req: Request, res: Response): Promise<Respon
     }
 
     logger.info('Session updated', { agentId, sessionId })
-    return res.json(session satisfies UpdateSessionResponse)
+    return res.json(session)
   } catch (error: any) {
     if (error instanceof AgentModelValidationError) {
       logger.warn('Session model validation error during update', {
@@ -209,7 +197,7 @@ export const patchSession = async (req: Request, res: Response): Promise<Respons
 
     // First check if session exists and belongs to agent
     const existingSession = await sessionService.getSession(agentId, sessionId)
-    if (!existingSession || existingSession.agent_id !== agentId) {
+    if (!existingSession || existingSession.agentId !== agentId) {
       logger.warn('Session not found for patch', { agentId, sessionId })
       return res.status(404).json({
         error: {
@@ -267,7 +255,7 @@ export const deleteSession = async (req: Request, res: Response): Promise<Respon
 
     // First check if session exists and belongs to agent
     const existingSession = await sessionService.getSession(agentId, sessionId)
-    if (!existingSession || existingSession.agent_id !== agentId) {
+    if (!existingSession || existingSession.agentId !== agentId) {
       logger.warn('Session not found for deletion', { agentId, sessionId })
       return res.status(404).json({
         error: {
@@ -331,6 +319,42 @@ export const deleteSession = async (req: Request, res: Response): Promise<Respon
   }
 }
 
+export const reorderSessions = async (req: Request, res: Response): Promise<Response> => {
+  const { agentId } = req.params
+  try {
+    const { ordered_ids } = req.body
+
+    if (
+      !Array.isArray(ordered_ids) ||
+      ordered_ids.length === 0 ||
+      !ordered_ids.every((id: unknown) => typeof id === 'string' && id.length > 0)
+    ) {
+      return res.status(400).json({
+        error: {
+          message: 'ordered_ids must be a non-empty array of session IDs',
+          type: 'invalid_request_error',
+          code: 'invalid_ordered_ids'
+        }
+      })
+    }
+
+    logger.debug('Reordering sessions', { agentId, count: ordered_ids.length })
+    await sessionService.reorderSessions(agentId, ordered_ids)
+
+    logger.info('Sessions reordered', { agentId, count: ordered_ids.length })
+    return res.json({ success: true })
+  } catch (error: any) {
+    logger.error('Error reordering sessions', { error, agentId })
+    return res.status(500).json({
+      error: {
+        message: 'Failed to reorder sessions',
+        type: 'internal_error',
+        code: 'session_reorder_failed'
+      }
+    })
+  }
+}
+
 // Convenience endpoints for sessions without agent context
 export const listAllSessions = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -353,7 +377,7 @@ export const listAllSessions = async (req: Request, res: Response): Promise<Resp
       total: result.total,
       limit,
       offset
-    } satisfies ListAgentSessionsResponse)
+    })
   } catch (error: any) {
     logger.error('Error listing all sessions', { error })
     return res.status(500).json({
