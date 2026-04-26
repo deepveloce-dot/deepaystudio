@@ -49,7 +49,11 @@ jobs:
           node-version-file: '.node-version'
 
       - name: Install pnpm
+<<<<<<< HEAD
         uses: pnpm/action-setup@v5
+=======
+        uses: pnpm/action-setup@v6
+>>>>>>> origin/DeJeune-add-codeowner-clean
 
       - name: Clean node_modules
         if: ${{ github.event.inputs.clean == 'true' }}

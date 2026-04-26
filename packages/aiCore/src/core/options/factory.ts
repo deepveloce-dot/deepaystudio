@@ -60,3 +60,34 @@ export function mergeProviderOptions(...optionsMap: Partial<TypedProviderOptions
     return acc
   }, {} as TypedProviderOptions)
 }
+<<<<<<< HEAD
+=======
+
+/**
+ * 创建OpenAI供应商选项的便捷函数
+ */
+export function createOpenAIOptions(options: ExtractProviderOptions<'openai'>) {
+  return createProviderOptions('openai', options)
+}
+
+/**
+ * 创建Anthropic供应商选项的便捷函数
+ */
+export function createAnthropicOptions(options: ExtractProviderOptions<'anthropic'>) {
+  return createProviderOptions('anthropic', options)
+}
+
+/**
+ * 创建Google供应商选项的便捷函数
+ */
+export function createGoogleOptions(options: ExtractProviderOptions<'google'>) {
+  return createProviderOptions('google', options)
+}
+
+/**
+ * 创建OpenRouter供应商选项的便捷函数
+ */
+export function createOpenRouterOptions(options: ExtractProviderOptions<'openrouter'> | Record<string, any>) {
+  return createProviderOptions('openrouter', options)
+}
+>>>>>>> origin/DeJeune-add-codeowner-clean

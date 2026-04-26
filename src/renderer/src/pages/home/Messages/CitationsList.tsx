@@ -158,6 +158,7 @@ const WebSearchCitation: React.FC<{ citation: Citation }> = ({ citation }) => {
     select: (content) => truncateText(content, 100)
   })
 
+<<<<<<< HEAD
   const { data: oembedData } = useQuery({
     queryKey: ['xOembed', citation.url],
     queryFn: () => fetchXOEmbed(citation.url),
@@ -166,6 +167,12 @@ const WebSearchCitation: React.FC<{ citation: Citation }> = ({ citation }) => {
   })
 
   const displayTitle = isXPost && oembedData?.author ? `@${oembedData.author}` : citation.title
+=======
+  const displayTitle =
+    isXPost && fetchedContent
+      ? fetchedContent.split(':')[0] // show @author as title
+      : citation.title
+>>>>>>> origin/DeJeune-add-codeowner-clean
 
   return (
     <ContextMenu>

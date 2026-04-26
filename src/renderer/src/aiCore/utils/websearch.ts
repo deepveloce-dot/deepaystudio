@@ -1,5 +1,16 @@
+<<<<<<< HEAD
 import type { WebSearchPluginConfig } from '@modauistudio/ai-core/core/plugins/built-in/webSearchPlugin'
 import type { AppProviderId } from '@renderer/aiCore/types'
+=======
+import type {
+  AnthropicSearchConfig,
+  OpenAISearchConfig,
+  WebSearchPluginConfig,
+  XAIWebSearchConfig,
+  XAIXSearchConfig
+} from '@cherrystudio/ai-core/core/plugins/built-in/webSearchPlugin/helper'
+import type { BaseProviderId } from '@cherrystudio/ai-core/provider'
+>>>>>>> origin/DeJeune-add-codeowner-clean
 import { isOpenAIDeepResearchModel, isOpenAIWebSearchChatCompletionOnlyModel } from '@renderer/config/models'
 import type { Model, WebSearchState } from '@renderer/types'
 import { mapRegexToPatterns } from '@renderer/utils/blacklistMatchPattern'
@@ -87,17 +98,30 @@ export function buildProviderBuiltinWebSearchConfig(
     case 'xai':
     case 'xai-responses': {
       const excludeDomains = mapRegexToPatterns(webSearchConfig.excludeDomains)
+<<<<<<< HEAD
       const xaiWebConfig: NonNullable<NonNullable<WebSearchPluginConfig['xai-responses']>['webSearch']> = {
+=======
+      const xaiWebConfig: XAIWebSearchConfig = {
+>>>>>>> origin/DeJeune-add-codeowner-clean
         enableImageUnderstanding: true
       }
       if (excludeDomains.length > 0) {
         xaiWebConfig.excludedDomains = excludeDomains.slice(0, 5)
       }
+<<<<<<< HEAD
       return {
         'xai-responses': {
           webSearch: xaiWebConfig,
           xSearch: { enableImageUnderstanding: true }
         }
+=======
+      const xaiXSearchConfig: XAIXSearchConfig = {
+        enableImageUnderstanding: true
+      }
+      return {
+        xai: xaiWebConfig,
+        'xai-xsearch': xaiXSearchConfig
+>>>>>>> origin/DeJeune-add-codeowner-clean
       }
     }
     case 'openrouter': {

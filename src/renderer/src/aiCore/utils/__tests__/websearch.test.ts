@@ -270,6 +270,7 @@ describe('websearch utils', () => {
     })
 
     describe('xai provider', () => {
+<<<<<<< HEAD
       it('should return xai-responses search options with enableImageUnderstanding when no excludeDomains', () => {
         const result = buildProviderBuiltinWebSearchConfig('xai', defaultWebSearchConfig)
 
@@ -278,6 +279,14 @@ describe('websearch utils', () => {
             webSearch: { enableImageUnderstanding: true },
             xSearch: { enableImageUnderstanding: true }
           }
+=======
+      it('should return xai search options with enableImageUnderstanding when no excludeDomains', () => {
+        const result = buildProviderBuiltinWebSearchConfig('xai', defaultWebSearchConfig)
+
+        expect(result).toEqual({
+          xai: { enableImageUnderstanding: true },
+          'xai-xsearch': { enableImageUnderstanding: true }
+>>>>>>> origin/DeJeune-add-codeowner-clean
         })
       })
 
@@ -291,6 +300,7 @@ describe('websearch utils', () => {
         const result = buildProviderBuiltinWebSearchConfig('xai', config)
 
         expect(result).toEqual({
+<<<<<<< HEAD
           'xai-responses': {
             webSearch: {
               enableImageUnderstanding: true,
@@ -298,6 +308,13 @@ describe('websearch utils', () => {
             },
             xSearch: { enableImageUnderstanding: true }
           }
+=======
+          xai: {
+            enableImageUnderstanding: true,
+            excludedDomains: ['site1.com', 'site2.com']
+          },
+          'xai-xsearch': { enableImageUnderstanding: true }
+>>>>>>> origin/DeJeune-add-codeowner-clean
         })
       })
 
@@ -310,7 +327,11 @@ describe('websearch utils', () => {
 
         const result = buildProviderBuiltinWebSearchConfig('xai', config)
 
+<<<<<<< HEAD
         expect(result?.['xai-responses']?.webSearch?.excludedDomains).toHaveLength(5)
+=======
+        expect(result?.xai?.excludedDomains).toHaveLength(5)
+>>>>>>> origin/DeJeune-add-codeowner-clean
       })
     })
 

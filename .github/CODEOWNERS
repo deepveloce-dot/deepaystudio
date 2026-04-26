@@ -3,6 +3,7 @@
 /src/main/services/ConfigManager.ts @0xfullex @DeJeune
 /packages/shared/IpcChannel.ts @0xfullex @DeJeune
 /src/main/ipc.ts @0xfullex @DeJeune
+<<<<<<< HEAD
 
 /migrations/ @0xfullex
 /src/main/core/ @0xfullex
@@ -15,4 +16,6 @@
 /docs/references/data/ @0xfullex
 /packages/ui/ @MyPrototypeWhat
 
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
 /app-upgrade-config.json @kangfenmao

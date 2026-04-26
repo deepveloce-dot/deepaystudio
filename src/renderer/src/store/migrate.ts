@@ -3257,6 +3257,7 @@ const migrateConfig = {
   '200': (state: RootState) => {
     try {
       state.llm.providers.forEach((provider) => {
+<<<<<<< HEAD
         if (provider.type === 'ollama') {
           provider.anthropicApiHost = provider.apiHost || 'http://localhost:11434'
         }
@@ -3280,16 +3281,22 @@ const migrateConfig = {
       addProvider(state, 'zai')
       // Update grok provider type to openai-response
       state.llm.providers.forEach((provider) => {
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
         if (provider.id === SystemProviderIds.grok) {
           provider.type = 'openai-response'
         }
       })
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
       return state
     } catch (error) {
       logger.error('migrate 200 error', error as Error)
       return state
     }
+<<<<<<< HEAD
   },
   '201': (state: RootState) => {
     try {
@@ -3414,6 +3421,8 @@ const migrateConfig = {
       logger.error('migrate 206 error', error as Error)
       return state
     }
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
   }
 }
 

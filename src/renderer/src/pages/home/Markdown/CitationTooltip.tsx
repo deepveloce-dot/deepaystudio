@@ -3,6 +3,10 @@ import Favicon from '@renderer/components/Icons/FallbackFavicon'
 import MarqueeText from '@renderer/components/MarqueeText'
 import { fetchXOEmbed, isXPostUrl } from '@renderer/utils/fetch'
 import { useQuery } from '@tanstack/react-query'
+<<<<<<< HEAD
+=======
+import { Tooltip } from 'antd'
+>>>>>>> origin/DeJeune-add-codeowner-clean
 import React, { memo, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import * as z from 'zod'

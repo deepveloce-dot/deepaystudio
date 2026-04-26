@@ -86,7 +86,11 @@ const persistedReducer = persistReducer(
   {
     key: 'modaui-studio',
     storage,
+<<<<<<< HEAD
     version: 206,
+=======
+    version: 200,
+>>>>>>> origin/DeJeune-add-codeowner-clean
     blacklist: ['runtime', 'messages', 'messageBlocks', 'tabs', 'toolPermissions'],
     migrate
   },

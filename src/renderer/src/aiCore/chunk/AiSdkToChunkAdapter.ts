@@ -34,7 +34,10 @@ export class AiSdkToChunkAdapter {
   private hasTextContent = false
   private getSessionWasCleared?: () => boolean
   private providerId?: string
+<<<<<<< HEAD
   private idleTimeout?: IdleTimeoutHandle
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
 
   constructor(
     private onChunk: (chunk: Chunk) => void,
@@ -43,8 +46,12 @@ export class AiSdkToChunkAdapter {
     enableWebSearch?: boolean,
     onSessionUpdate?: (sessionId: string) => void,
     getSessionWasCleared?: () => boolean,
+<<<<<<< HEAD
     providerId?: string,
     idleTimeout?: IdleTimeoutHandle
+=======
+    providerId?: string
+>>>>>>> origin/DeJeune-add-codeowner-clean
   ) {
     this.toolCallHandler = new ToolCallChunkHandler(onChunk, mcpTools)
     this.accumulate = accumulate
@@ -52,7 +59,10 @@ export class AiSdkToChunkAdapter {
     this.onSessionUpdate = onSessionUpdate
     this.getSessionWasCleared = getSessionWasCleared
     this.providerId = providerId
+<<<<<<< HEAD
     this.idleTimeout = idleTimeout
+=======
+>>>>>>> origin/DeJeune-add-codeowner-clean
   }
 
   private markFirstTokenIfNeeded() {

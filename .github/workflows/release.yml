@@ -87,7 +87,11 @@ jobs:
           brew install python-setuptools
 
       - name: Install pnpm
+<<<<<<< HEAD
         uses: pnpm/action-setup@v5
+=======
+        uses: pnpm/action-setup@v6
+>>>>>>> origin/DeJeune-add-codeowner-clean
 
       - name: Get pnpm store directory
         id: pnpm-cache
