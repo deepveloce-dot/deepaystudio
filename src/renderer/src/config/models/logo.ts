@@ -1,3 +1,5 @@
+import type { CompoundIcon } from '@modauistudio/ui'
+import { resolveIcon, resolveModelIcon } from '@modauistudio/ui/icons'
 import LongCatAppLogo from '@renderer/assets/images/apps/longcat.svg'
 import Ai360ModelLogo from '@renderer/assets/images/models/360.png'
 import Ai360ModelLogoDark from '@renderer/assets/images/models/360_dark.png'
@@ -166,6 +168,14 @@ import type { Model } from '@renderer/types'
 
 export type { CompoundIcon }
 
+export function getModelLogoById(modelId: string): CompoundIcon | undefined {
+  if (!modelId) {
+    return undefined
+  }
+  return resolveModelIcon(modelId)
+}
+
+export function getModelLogoPath(modelId: string, isLight?: boolean): string | undefined {
   if (!modelId) {
     return undefined
   }

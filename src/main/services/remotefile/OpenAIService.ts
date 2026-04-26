@@ -1,5 +1,5 @@
 import { application } from '@application'
-import OpenAI from '@modauistudio/openai'
+import OpenAI from '@cherrystudio/openai'
 import { loggerService } from '@logger'
 import { fileStorage } from '@main/services/FileStorage'
 import type { FileListResponse, FileMetadata, FileUploadResponse, Provider } from '@types'

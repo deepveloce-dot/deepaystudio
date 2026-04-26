@@ -46,6 +46,12 @@ export function configureChromiumFlags(): void {
   if (isLinux) {
     app.commandLine.appendSwitch('class', 'ModauiStudio')
     app.commandLine.appendSwitch('name', 'ModauiStudio')
+    // In containerised / CI environments (GitHub Actions, Docker, etc.) the
+    // SUID sandbox helper is not owned by root.  Detect and disable sandbox
+    // only when no display server is available — real desktops keep it on.
+    if (!process.env.DISPLAY && !process.env.WAYLAND_DISPLAY) {
+      app.commandLine.appendSwitch('no-sandbox')
+    }
   }
 
   // Unconditional Chromium feature flags:

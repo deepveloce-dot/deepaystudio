@@ -1,4 +1,4 @@
-import type { BaseEmbeddings } from '@modauistudio/embedjs-interfaces'
+import type { BaseEmbeddings } from '@cherrystudio/embedjs-interfaces'
 import { TraceMethod } from '@mcp-trace/trace-core'
 import type { ApiClient } from '@types'
 

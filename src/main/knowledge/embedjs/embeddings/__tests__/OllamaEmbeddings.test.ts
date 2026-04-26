@@ -1,4 +1,4 @@
-import { OllamaEmbeddings } from '@modauistudio/embedjs-ollama'
+import { OllamaEmbeddings } from '@cherrystudio/embedjs-ollama'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { fetchMock } = vi.hoisted(() => {

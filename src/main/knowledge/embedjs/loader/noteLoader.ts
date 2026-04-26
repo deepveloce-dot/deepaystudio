@@ -1,5 +1,5 @@
-import { BaseLoader } from '@modauistudio/embedjs-interfaces'
-import { cleanString } from '@modauistudio/embedjs-utils'
+import { BaseLoader } from '@cherrystudio/embedjs-interfaces'
+import { cleanString } from '@cherrystudio/embedjs-utils'
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
 import md5 from 'md5'
 

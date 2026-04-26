@@ -1,5 +1,5 @@
-import OpenAI from '@modauistudio/openai'
-import type { ChatCompletionCreateParams, ChatCompletionCreateParamsStreaming } from '@modauistudio/openai/resources'
+import OpenAI from '@cherrystudio/openai'
+import type { ChatCompletionCreateParams, ChatCompletionCreateParamsStreaming } from '@cherrystudio/openai/resources'
 import { loggerService } from '@logger'
 import type { Provider } from '@types'
 

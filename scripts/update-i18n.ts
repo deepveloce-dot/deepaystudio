@@ -4,7 +4,7 @@
  * API_KEY=sk-xxxx BASE_URL=xxxx MODEL=xxxx ts-node scripts/update-i18n.ts
  */
 
-import OpenAI from '@modauistudio/openai'
+import OpenAI from '@cherrystudio/openai'
 import cliProgress from 'cli-progress'
 import fs from 'fs'
 

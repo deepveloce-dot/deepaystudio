@@ -1,8 +1,8 @@
 import { application } from '@application'
+import { userProviderTable } from '@data/db/schemas/userProvider'
 import type { ProtoProviderConfig } from '@modauistudio/provider-registry'
 import { buildRuntimeEndpointConfigs, ENDPOINT_TYPE } from '@modauistudio/provider-registry'
 import { RegistryLoader } from '@modauistudio/provider-registry/node'
-import { userProviderTable } from '@data/db/schemas/userProvider'
 
 import type { DbType, ISeeder } from '../../types'
 
@@ -72,7 +72,7 @@ export class PresetProviderSeeder implements ISeeder {
         name: 'ModauiAI',
         endpointConfigs: {
           [ENDPOINT_TYPE.OPENAI_CHAT_COMPLETIONS]: {
-            baseUrl: 'https://api.cherry-ai.com'
+            baseUrl: 'https://api.modauistudio.com'
           }
         },
         defaultChatEndpoint: ENDPOINT_TYPE.OPENAI_CHAT_COMPLETIONS,

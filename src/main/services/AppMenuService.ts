@@ -138,13 +138,13 @@ export class AppMenuService extends BaseService {
           {
             label: appMenu.website,
             click: () => {
-              void shell.openExternal('https://cherry-ai.com')
+              void shell.openExternal('https://modauistudio.com')
             }
           },
           {
             label: appMenu.documentation,
             click: () => {
-              void shell.openExternal('https://cherry-ai.com/docs')
+              void shell.openExternal('https://modauistudio.com/docs')
             }
           },
           {

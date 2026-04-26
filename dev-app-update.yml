@@ -1,8 +1,5 @@
-# provider: generic
-# url: http://127.0.0.1:8080
-# updaterCacheDirName: modaui-studio-updater
-# provider: github
-# repo: modaui-studio
-# owner: kangfenmao
-provider: generic
-url: https://releases.cherry-ai.com
+# Development auto-updater config (points to GitHub Releases)
+provider: github
+owner: deepveloce-dot
+repo: deepaystudio
+updaterCacheDirName: modaui-studio-updater

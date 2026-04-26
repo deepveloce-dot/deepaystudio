@@ -8,7 +8,7 @@
  * - Progress tracking and detailed logging
  * - Built-in rate limiting to avoid API limits
  */
-import { OpenAI } from '@modauistudio/openai'
+import { OpenAI } from '@cherrystudio/openai'
 import * as cliProgress from 'cli-progress'
 import * as fs from 'fs'
 import * as path from 'path'

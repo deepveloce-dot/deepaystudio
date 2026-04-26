@@ -1,5 +1,5 @@
 import { MessageStream } from '@anthropic-ai/sdk/resources/messages/messages'
-import { Stream } from '@modauistudio/openai/streaming'
+import { Stream } from '@cherrystudio/openai/streaming'
 import { preferenceService } from '@data/PreferenceService'
 import { loggerService } from '@logger'
 import type { SpanEntity, TokenUsage } from '@mcp-trace/trace-core'

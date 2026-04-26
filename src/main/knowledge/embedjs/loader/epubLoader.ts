@@ -1,6 +1,6 @@
 import { application } from '@application'
-import { BaseLoader } from '@modauistudio/embedjs-interfaces'
-import { cleanString } from '@modauistudio/embedjs-utils'
+import { BaseLoader } from '@cherrystudio/embedjs-interfaces'
+import { cleanString } from '@cherrystudio/embedjs-utils'
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
 import { loggerService } from '@logger'
 import EPub from 'epub'

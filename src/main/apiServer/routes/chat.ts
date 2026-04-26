@@ -1,4 +1,4 @@
-import type { ChatCompletionCreateParams } from '@modauistudio/openai/resources'
+import type { ChatCompletionCreateParams } from '@cherrystudio/openai/resources'
 import { loggerService } from '@logger'
 import type { Request, Response } from 'express'
 import express from 'express'

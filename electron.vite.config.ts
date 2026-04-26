@@ -133,10 +133,7 @@ export default defineConfig({
       }
     },
     optimizeDeps: {
-      exclude: ['pyodide'],
-      esbuildOptions: {
-        target: 'esnext' // for dev
-      }
+      exclude: ['pyodide']
     },
     worker: {
       format: 'es'

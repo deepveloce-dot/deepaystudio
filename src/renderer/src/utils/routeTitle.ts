@@ -1,7 +1,7 @@
 import i18n from '@renderer/i18n'
 
 /** Base URL for parsing relative route paths */
-const BASE_URL = 'https://www.cherry-ai.com/'
+const BASE_URL = 'https://www.modauistudio.com/'
 
 /**
  * Route to i18n key mapping for default tab titles

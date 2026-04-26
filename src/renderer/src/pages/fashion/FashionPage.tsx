@@ -14,15 +14,7 @@
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import { cn } from '@renderer/utils'
-import {
-  CheckCircle,
-  ExternalLink,
-  Loader2,
-  RefreshCw,
-  ShoppingBag,
-  Sparkles,
-  Wand2
-} from 'lucide-react'
+import { CheckCircle, ExternalLink, Loader2, RefreshCw, ShoppingBag, Sparkles, Wand2 } from 'lucide-react'
 import { type FC, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -154,7 +146,7 @@ const FashionPage: FC = () => {
       const mocks = Array.from({ length: 6 }, (_, i) => mockImageUrl(category, style, i))
       setImages(mocks)
     } catch (err) {
-      logger.error('generate error', err)
+      logger.error('generate error', err as Error)
       // 退化 mock
       const mocks = Array.from({ length: 6 }, (_, i) => mockImageUrl(category, style, i))
       setImages(mocks)
@@ -459,15 +451,7 @@ function FilterGroup({
   )
 }
 
-function ImageCard({
-  src,
-  isSelected,
-  onSelect
-}: {
-  src: string
-  isSelected: boolean
-  onSelect: () => void
-}) {
+function ImageCard({ src, isSelected, onSelect }: { src: string; isSelected: boolean; onSelect: () => void }) {
   return (
     <button
       type="button"
@@ -491,11 +475,7 @@ function LoadingGrid() {
   return (
     <div className="grid grid-cols-3 gap-3">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div
-          key={i}
-          className="animate-pulse rounded-xl bg-muted"
-          style={{ aspectRatio: '4/5' }}
-        />
+        <div key={i} className="animate-pulse rounded-xl bg-muted" style={{ aspectRatio: '4/5' }} />
       ))}
     </div>
   )

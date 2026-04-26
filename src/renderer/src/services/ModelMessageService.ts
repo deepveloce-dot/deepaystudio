@@ -1,4 +1,4 @@
-import type { ChatCompletionContentPart, ChatCompletionMessageParam } from '@modauistudio/openai/resources'
+import type { ChatCompletionContentPart, ChatCompletionMessageParam } from '@cherrystudio/openai/resources'
 import type { Model } from '@renderer/types'
 import { findLast } from 'lodash'
 

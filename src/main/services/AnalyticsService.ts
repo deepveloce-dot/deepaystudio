@@ -1,6 +1,6 @@
 import { application } from '@application'
-import type { TokenUsageData } from '@modauistudio/analytics-client'
-import { AnalyticsClient } from '@modauistudio/analytics-client'
+import type { TokenUsageData } from '@cherrystudio/analytics-client'
+import { AnalyticsClient } from '@cherrystudio/analytics-client'
 import { loggerService } from '@logger'
 import { type Activatable, BaseService, Injectable, Phase, ServicePhase } from '@main/core/lifecycle'
 import { generateUserAgent, getClientId } from '@main/utils/systemInfo'

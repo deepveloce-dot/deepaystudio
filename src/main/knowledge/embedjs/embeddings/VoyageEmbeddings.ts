@@ -1,4 +1,4 @@
-import { BaseEmbeddings } from '@modauistudio/embedjs-interfaces'
+import { BaseEmbeddings } from '@cherrystudio/embedjs-interfaces'
 import { VoyageEmbeddings as _VoyageEmbeddings } from '@langchain/community/embeddings/voyage'
 
 /**

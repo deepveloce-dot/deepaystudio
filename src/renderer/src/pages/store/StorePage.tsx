@@ -116,9 +116,7 @@ const DeepayPage: FC = () => {
 
       {/* 标签内容 */}
       <div className="flex-1 overflow-hidden">
-        {activeTab === 'create' && (
-          <CreateTab deepayApiBase={deepayApiBase} onShopCreated={onShopCreated} />
-        )}
+        {activeTab === 'create' && <CreateTab deepayApiBase={deepayApiBase} onShopCreated={onShopCreated} />}
         {activeTab === 'shops' && <ShopsTab shops={shops} />}
         {activeTab === 'admin' && <AdminTab deepayApiBase={deepayApiBase} />}
       </div>
@@ -173,7 +171,7 @@ function CreateTab({
         return
       }
     } catch (err) {
-      logger.warn('create-product backend error', err)
+      logger.warn('create-product backend error', err as Error)
     }
 
     // mock（后台不可用时）
@@ -257,11 +255,7 @@ function CreateTab({
 
             <div className="mb-4 flex gap-4">
               {result.image && (
-                <img
-                  src={result.image}
-                  alt="design"
-                  className="h-24 w-20 rounded-lg object-cover flex-shrink-0"
-                />
+                <img src={result.image} alt="design" className="h-24 w-20 rounded-lg object-cover flex-shrink-0" />
               )}
               <div className="flex-1 space-y-2 text-xs">
                 <InfoRow label="商品描述" value={result.prompt} />
@@ -320,9 +314,7 @@ function ShopsTab({ shops }: { shops: ShopRecord[] }) {
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10">
           <ShoppingBag size={24} className="text-emerald-400" />
         </div>
-        <p className="font-medium text-foreground text-sm">
-          {t('deepay.no_shops', { defaultValue: '还没有店铺' })}
-        </p>
+        <p className="font-medium text-foreground text-sm">{t('deepay.no_shops', { defaultValue: '还没有店铺' })}</p>
         <p className="text-muted-foreground text-xs">在「一键开店」标签创建你的第一个店铺</p>
       </div>
     )
@@ -342,9 +334,7 @@ function ShopsTab({ shops }: { shops: ShopRecord[] }) {
 function ShopCard({ shop }: { shop: ShopRecord }) {
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden">
-      {shop.image && (
-        <img src={shop.image} alt={shop.prompt} className="h-32 w-full object-cover" />
-      )}
+      {shop.image && <img src={shop.image} alt={shop.prompt} className="h-32 w-full object-cover" />}
       <div className="p-3">
         <p className="mb-1 truncate font-medium text-foreground text-sm">{shop.prompt}</p>
         <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
@@ -449,7 +439,9 @@ function AdminTab({ deepayApiBase }: { deepayApiBase: string }) {
             target="_blank"
             rel="noreferrer"
             className="group rounded-2xl border border-border bg-card p-5 text-left transition-all hover:border-emerald-500/40 hover:-translate-y-0.5 hover:shadow-lg">
-            <p className="mb-1 font-bold text-foreground text-base group-hover:text-emerald-400 transition-colors">{label}</p>
+            <p className="mb-1 font-bold text-foreground text-base group-hover:text-emerald-400 transition-colors">
+              {label}
+            </p>
             <p className="text-muted-foreground text-xs">{desc}</p>
           </a>
         ))}
@@ -460,26 +452,11 @@ function AdminTab({ deepayApiBase }: { deepayApiBase: string }) {
 
 // ── 工具组件 ──────────────────────────────────────────────────────────────────
 
-function InfoRow({
-  label,
-  value,
-  mono,
-  small
-}: {
-  label: string
-  value: string
-  mono?: boolean
-  small?: boolean
-}) {
+function InfoRow({ label, value, mono, small }: { label: string; value: string; mono?: boolean; small?: boolean }) {
   return (
     <div className="flex justify-between gap-2">
       <span className="text-muted-foreground">{label}</span>
-      <span
-        className={cn(
-          'font-medium text-foreground truncate',
-          mono && 'font-mono',
-          small && 'text-[10px]'
-        )}>
+      <span className={cn('font-medium text-foreground truncate', mono && 'font-mono', small && 'text-[10px]')}>
         {value}
       </span>
     </div>

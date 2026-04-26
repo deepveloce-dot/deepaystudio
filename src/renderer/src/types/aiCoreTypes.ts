@@ -1,4 +1,4 @@
-import type OpenAI from '@modauistudio/openai'
+import type OpenAI from '@cherrystudio/openai'
 import type { NotUndefined } from '@types'
 import type { generateText, ModelMessage, streamText } from 'ai'
 import * as z from 'zod'
