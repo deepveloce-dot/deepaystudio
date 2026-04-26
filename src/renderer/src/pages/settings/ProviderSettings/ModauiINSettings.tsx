@@ -3,7 +3,7 @@ import { Select } from 'antd'
 import type { FC } from 'react'
 import { useCallback, useMemo } from 'react'
 
-interface CherryINSettingsProps {
+interface ModauiINSettingsProps {
   providerId: string
   apiHost: string
   setApiHost: (host: string) => void
@@ -11,23 +11,23 @@ interface CherryINSettingsProps {
 
 const API_HOST_OPTIONS = [
   {
-    value: 'https://open.cherryin.cc',
+    value: 'https://open.modauiin.cc',
     labelKey: '加速域名',
-    description: 'open.cherryin.cc'
+    description: 'open.modauiin.cc'
   },
   {
-    value: 'https://open.cherryin.net',
+    value: 'https://open.modauiin.net',
     labelKey: '国际域名',
-    description: 'open.cherryin.net'
+    description: 'open.modauiin.net'
   },
   {
-    value: 'https://open.cherryin.ai',
+    value: 'https://open.modauiin.ai',
     labelKey: '备用域名',
-    description: 'open.cherryin.ai'
+    description: 'open.modauiin.ai'
   }
 ]
 
-const CherryINSettings: FC<CherryINSettingsProps> = ({ providerId, apiHost, setApiHost }) => {
+const ModauiINSettings: FC<ModauiINSettingsProps> = ({ providerId, apiHost, setApiHost }) => {
   const { updateProvider } = useProvider(providerId)
 
   const getCurrentHost = useMemo(() => {
@@ -69,4 +69,4 @@ const CherryINSettings: FC<CherryINSettingsProps> = ({ providerId, apiHost, setA
   )
 }
 
-export default CherryINSettings
+export default ModauiINSettings

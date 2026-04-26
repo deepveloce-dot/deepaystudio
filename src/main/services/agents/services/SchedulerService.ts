@@ -1,12 +1,12 @@
 import { loggerService } from '@logger'
-import type { CherryClawConfiguration, ScheduledTaskEntity } from '@types'
+import type { ModauiClawConfiguration, ScheduledTaskEntity } from '@types'
 
 import { agentService } from './AgentService'
 import type { ChannelAdapter } from './channels'
 import { channelManager } from './channels/ChannelManager'
 import { broadcastSessionChanged } from './channels/sessionStreamIpc'
 import { channelService } from './ChannelService'
-import { readHeartbeat } from './cherryclaw/heartbeat'
+import { readHeartbeat } from './modauiclaw/heartbeat'
 import { sessionMessageService } from './SessionMessageService'
 import { sessionService } from './SessionService'
 import { taskService } from './TaskService'
@@ -208,7 +208,7 @@ class SchedulerService {
         throw new Error(`Agent not found: ${task.agent_id}`)
       }
 
-      const config = (agent.configuration ?? {}) as CherryClawConfiguration
+      const config = (agent.configuration ?? {}) as ModauiClawConfiguration
       const workspacePath = agent.accessible_paths?.[0]
 
       // For heartbeat tasks, read prompt from workspace heartbeat.md file

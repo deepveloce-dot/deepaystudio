@@ -59,7 +59,7 @@ vi.mock('../channels/sessionStreamIpc', () => ({
   broadcastSessionChanged: vi.fn()
 }))
 
-vi.mock('../cherryclaw/heartbeat', () => ({
+vi.mock('../modauiclaw/heartbeat', () => ({
   readHeartbeat: vi.fn().mockResolvedValue(undefined)
 }))
 

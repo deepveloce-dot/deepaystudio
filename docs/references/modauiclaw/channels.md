@@ -1,6 +1,6 @@
-# CherryClaw Channel System
+# ModauiClaw Channel System
 
-The channel system provides IM integration for CherryClaw, allowing users to interact with agents through instant messaging platforms like Telegram. The system uses an abstract adapter pattern, supporting future expansion to Discord, Slack, and other platforms.
+The channel system provides IM integration for ModauiClaw, allowing users to interact with agents through instant messaging platforms like Telegram. The system uses an abstract adapter pattern, supporting future expansion to Discord, Slack, and other platforms.
 
 ## Architecture
 
@@ -8,7 +8,7 @@ The channel system provides IM integration for CherryClaw, allowing users to int
 ChannelManager (singleton, lifecycle management)
   ├── adapters Map<key, ChannelAdapter>      — Active adapter instances
   ├── notifyChannels Set<key>                — Channels marked as notification receivers
-  ├── start()   → Load all CherryClaw agents, create adapters for enabled channels
+  ├── start()   → Load all ModauiClaw agents, create adapters for enabled channels
   ├── stop()    → Disconnect all adapters
   └── syncAgent(agentId) → Disconnect old adapters, rebuild from current config
 
@@ -70,7 +70,7 @@ User sends message in Telegram
 
 ## Streaming Response
 
-CherryClaw's streaming response follows these rules:
+ModauiClaw's streaming response follows these rules:
 
 - `text-delta` events within the same text block are **cumulative** — each event contains the full text so far, not an increment
 - `ChannelMessageHandler` uses `text = value.text` (replace) within a block, commits on `text-end`

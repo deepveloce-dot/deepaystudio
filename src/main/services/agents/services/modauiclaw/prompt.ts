@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 
 import { loggerService } from '@logger'
-import type { CherryClawConfiguration } from '@types'
+import type { ModauiClawConfiguration } from '@types'
 
 import { BOOTSTRAP_INSTRUCTIONS, SOUL_CONTENT_THRESHOLD } from './seedWorkspace'
 
@@ -36,7 +36,7 @@ type CacheEntry = {
   content: string
 }
 
-const DEFAULT_BASIC_PROMPT = `You are CherryClaw, a personal assistant running inside ModauiStudio.
+const DEFAULT_BASIC_PROMPT = `You are ModauiClaw, a personal assistant running inside ModauiStudio.
 
 `
 
@@ -62,7 +62,7 @@ When to act:
 - Before writing to \`FACT.md\`, ask: will this still matter in 6 months? If not, append to the journal instead.
 - Never write to \`memory/FACT.md\` or \`memory/JOURNAL.jsonl\` via direct file tools — always go through the memory tool so writes stay atomic and searchable.`
 
-const CLAW_GUIDANCE = `## CherryClaw Tools
+const CLAW_GUIDANCE = `## ModauiClaw Tools
 
 You have exclusive access to these tools for interacting with ModauiStudio's autonomous features. Always prefer them over manual alternatives.
 
@@ -155,7 +155,7 @@ ${sections}`
 export class PromptBuilder {
   private cache = new Map<string, CacheEntry>()
 
-  async buildSystemPrompt(workspacePath: string, config?: CherryClawConfiguration): Promise<string> {
+  async buildSystemPrompt(workspacePath: string, config?: ModauiClawConfiguration): Promise<string> {
     const parts: string[] = []
 
     // Basic prompt: workspace system.md (case-insensitive) > embedded default
@@ -232,7 +232,7 @@ ${content}
    * - If SOUL.md has substantial non-template content, skip (legacy agent migration).
    * - Otherwise, run bootstrap.
    */
-  private async shouldRunBootstrap(workspacePath: string, config?: CherryClawConfiguration): Promise<boolean> {
+  private async shouldRunBootstrap(workspacePath: string, config?: ModauiClawConfiguration): Promise<boolean> {
     if (config?.bootstrap_completed === true) {
       return false
     }

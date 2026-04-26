@@ -1,6 +1,6 @@
-# CherryClaw Scheduler
+# ModauiClaw Scheduler
 
-CherryClaw's scheduler uses a nanoclaw-inspired task-based polling design. The database is the single source of truth — no in-memory timer state is needed, and the system auto-recovers after app restart.
+ModauiClaw's scheduler uses a nanoclaw-inspired task-based polling design. The database is the single source of truth — no in-memory timer state is needed, and the system auto-recovers after app restart.
 
 ## Architecture
 

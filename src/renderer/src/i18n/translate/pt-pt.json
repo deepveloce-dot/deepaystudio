@@ -268,7 +268,7 @@
         "title": "Tarefas agendadas"
       },
       "warning": {
-        "bypassPermissions": "Os agentes CherryClaw funcionam em modo automático completo por predefinição. Todas as ferramentas são executadas sem pedir aprovação."
+        "bypassPermissions": "Os agentes ModauiClaw funcionam em modo automático completo por predefinição. Todas as ferramentas são executadas sem pedir aprovação."
       }
     },
     "delete": {
@@ -2792,15 +2792,15 @@
     },
     "skip": "Pular",
     "toast": {
-      "connected": "Conectado com sucesso ao CherryIN"
+      "connected": "Conectado com sucesso ao ModauiIN"
     },
     "welcome": {
-      "login_cherryin": "Entrar com CherryIN",
+      "login_modauiin": "Entrar com ModauiIN",
       "or_continue_with": "OU CONTINUAR COM",
       "other_provider": "Escolher Outros Provedores",
       "select_other_provider": "Selecionar Outro Provedor",
       "setup_hint": "Por favor, configure pelo menos um provedor para a melhor experiência",
-      "subtitle": "Desfrute de serviços de IA de alto nível com CherryIN",
+      "subtitle": "Desfrute de serviços de IA de alto nível com ModauiIN",
       "title": "Bem-vindo ao Modaui Studio"
     }
   },
@@ -3281,7 +3281,7 @@
     "burncloud": "BurnCloud",
     "cephalon": "Cephalon",
     "cerebras": "Cerebras AI",
-    "cherryin": "CherryIN",
+    "modauiin": "ModauiIN",
     "copilot": "GitHub Copiloto",
     "dashscope": "Área de Atuação AliCloud",
     "deepseek": "Busca Profunda",

@@ -30,7 +30,7 @@ async function getCherryAiFreeModel(): Promise<Model | undefined> {
     const models = await fetchModels(CHERRYAI_PROVIDER)
     return models.length > 0 ? models[0] : undefined
   } catch {
-    logger.warn('Failed to fetch CherryAI free models')
+    logger.warn('Failed to fetch ModauiAI free models')
     return undefined
   }
 }
@@ -39,7 +39,7 @@ async function buildModelsToTry(context?: DiagnosisContext): Promise<Model[]> {
   const defaultModel = store.getState().llm.defaultModel
   const models: Model[] = []
 
-  // CherryAI free model as primary diagnosis model
+  // ModauiAI free model as primary diagnosis model
   const cherryModel = await getCherryAiFreeModel()
   if (cherryModel) {
     models.push(cherryModel)

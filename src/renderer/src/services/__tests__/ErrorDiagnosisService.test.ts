@@ -9,7 +9,7 @@ vi.mock('../ApiService', () => ({
 
 // Mock CHERRYAI_PROVIDER
 vi.mock('@renderer/config/providers', () => ({
-  CHERRYAI_PROVIDER: { id: 'cherryai', type: 'openai', apiHost: 'https://api.cherry-ai.com', models: [] }
+  CHERRYAI_PROVIDER: { id: 'modauiai', type: 'openai', apiHost: 'https://api.cherry-ai.com', models: [] }
 }))
 
 // Mock store
@@ -54,8 +54,8 @@ describe('ErrorDiagnosisService', () => {
     mockGetState.mockReturnValue({
       llm: { defaultModel: null }
     } as any)
-    // Default: CherryAI returns a free model as fallback
-    mockFetchModels.mockResolvedValue([{ id: 'qwen', name: 'Qwen', provider: 'cherryai' }] as any)
+    // Default: ModauiAI returns a free model as fallback
+    mockFetchModels.mockResolvedValue([{ id: 'qwen', name: 'Qwen', provider: 'modauiai' }] as any)
   })
 
   describe('diagnoseError', () => {
@@ -102,7 +102,7 @@ describe('ErrorDiagnosisService', () => {
       await expect(diagnoseError(makeError(), 'en')).rejects.toThrow('Invalid diagnosis response format')
     })
 
-    it('uses CherryAI free model as primary', async () => {
+    it('uses ModauiAI free model as primary', async () => {
       const customModel = { id: 'gpt-4', name: 'GPT-4', provider: 'openai' }
       mockGetState.mockReturnValue({ llm: { defaultModel: customModel } } as any)
 
@@ -115,13 +115,13 @@ describe('ErrorDiagnosisService', () => {
       mockFetchGenerate.mockResolvedValue(JSON.stringify(mockResult))
 
       await diagnoseError(makeError(), 'en')
-      // First call should use CherryAI free model (primary), not defaultModel
+      // First call should use ModauiAI free model (primary), not defaultModel
       expect(mockFetchGenerate.mock.calls[0][0]).toEqual(
         expect.objectContaining({ model: expect.objectContaining({ id: 'qwen' }) })
       )
     })
 
-    it('falls back to defaultModel when CherryAI is unavailable', async () => {
+    it('falls back to defaultModel when ModauiAI is unavailable', async () => {
       mockFetchModels.mockResolvedValue([])
       const customModel = { id: 'gpt-4', name: 'GPT-4', provider: 'openai' }
       mockGetState.mockReturnValue({ llm: { defaultModel: customModel } } as any)
@@ -138,7 +138,7 @@ describe('ErrorDiagnosisService', () => {
       expect(mockFetchGenerate.mock.calls[0][0]).toEqual(expect.objectContaining({ model: customModel }))
     })
 
-    it('uses only CherryAI when no default model', async () => {
+    it('uses only ModauiAI when no default model', async () => {
       mockGetState.mockReturnValue({ llm: { defaultModel: null } } as any)
 
       const mockResult = {

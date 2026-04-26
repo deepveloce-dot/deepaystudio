@@ -2,7 +2,7 @@
  * BuiltinAgentBootstrap
  *
  * Encapsulates all startup initialization logic for built-in skills and agents
- * (CherryClaw, Cherry Assistant, etc.). Keeps business details out of
+ * (ModauiClaw, Cherry Assistant, etc.). Keeps business details out of
  * the main entry point (`src/main/index.ts`).
  */
 import { loggerService } from '@logger'
@@ -33,7 +33,7 @@ export async function bootstrapBuiltinAgents(): Promise<void> {
     logger.error('Failed to install built-in skills', error as Error)
   }
 
-  await Promise.all([initCherryClaw(), initCherryAssistant()])
+  await Promise.all([initModauiClaw(), initCherryAssistant()])
 }
 
 function clearRetry(agentId: string): void {
@@ -103,16 +103,16 @@ async function handleInitResult(
   scheduleRetry(agentId, label, initFn)
 }
 
-// ── CherryClaw ──────────────────────────────────────────────────────
+// ── ModauiClaw ──────────────────────────────────────────────────────
 
-async function initCherryClaw(): Promise<void> {
+async function initModauiClaw(): Promise<void> {
   try {
-    const result = await agentService.initDefaultCherryClawAgent()
-    await handleInitResult(CHERRY_CLAW_AGENT_ID, 'CherryClaw', result, initCherryClaw, async (agentId) => {
+    const result = await agentService.initDefaultModauiClawAgent()
+    await handleInitResult(CHERRY_CLAW_AGENT_ID, 'ModauiClaw', result, initModauiClaw, async (agentId) => {
       await schedulerService.ensureHeartbeatTask(agentId, 30)
     })
   } catch (error) {
-    logger.warn('Failed to init CherryClaw agent:', error as Error)
+    logger.warn('Failed to init ModauiClaw agent:', error as Error)
   }
 }
 

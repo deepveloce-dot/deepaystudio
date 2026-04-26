@@ -252,8 +252,8 @@ const PopupContainer: React.FC<Props> = ({ provider, resolve }) => {
             value={displayType}
             onChange={(value: string) => {
               setDisplayType(value)
-              // special case for cherryin-type, map to new-api internally
-              setType(value === 'cherryin-type' ? 'new-api' : (value as ProviderType))
+              // special case for modauiin-type, map to new-api internally
+              setType(value === 'modauiin-type' ? 'new-api' : (value as ProviderType))
             }}
             options={[
               { label: 'OpenAI', value: 'openai' },
@@ -262,7 +262,7 @@ const PopupContainer: React.FC<Props> = ({ provider, resolve }) => {
               { label: 'Anthropic', value: 'anthropic' },
               { label: 'Azure OpenAI', value: 'azure-openai' },
               { label: 'New API', value: 'new-api' },
-              { label: 'CherryIN', value: 'cherryin-type' },
+              { label: 'ModauiIN', value: 'modauiin-type' },
               { label: 'Ollama', value: 'ollama' }
             ]}
           />

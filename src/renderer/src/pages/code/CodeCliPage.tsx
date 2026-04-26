@@ -101,7 +101,7 @@ const CodeCliPage: FC = () => {
         return false
       }
 
-      if (m.provider === 'cherryai') {
+      if (m.provider === 'modauiai') {
         return false
       }
 

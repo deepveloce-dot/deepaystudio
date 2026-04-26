@@ -785,7 +785,7 @@ export class OpenClawService extends BaseService {
       const providerKey = `cherry-${provider.id}`
 
       // Determine the API type based on model, not provider type
-      // Mixed providers (cherryin, aihubmix, etc.) can have both OpenAI and Anthropic endpoints
+      // Mixed providers (modauiin, aihubmix, etc.) can have both OpenAI and Anthropic endpoints
       const apiType = this.determineApiType(provider, primaryModel)
       const baseUrl = this.getBaseUrlForApiType(provider, apiType)
 
@@ -1003,7 +1003,7 @@ export class OpenClawService extends BaseService {
 
   /**
    * Determine the API type based on model and provider
-   * This supports mixed providers (cherryin, aihubmix, new-api, etc.) that have both OpenAI and Anthropic endpoints
+   * This supports mixed providers (modauiin, aihubmix, new-api, etc.) that have both OpenAI and Anthropic endpoints
    *
    * Priority order:
    * 1. Provider type (anthropic, vertex-anthropic always use Anthropic API)

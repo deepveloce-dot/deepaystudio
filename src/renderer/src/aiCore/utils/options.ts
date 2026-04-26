@@ -195,7 +195,7 @@ export function buildProviderOptions(
     case SystemProviderIds.ollama:
       providerSpecificOptions = buildOllamaProviderOptions(assistant, model, capabilities)
       break
-    case 'cherryin':
+    case 'modauiin':
     case 'newapi':
     case 'aihubmix':
     case SystemProviderIds.gateway:
@@ -228,7 +228,7 @@ export function buildProviderOptions(
 
   /**
    * Get the actual AI SDK provider ID(s) from the already-built providerSpecificOptions.
-   * For proxy providers (cherryin, aihubmix, newapi), this will be the actual SDK provider (e.g., 'google', 'openai', 'anthropic')
+   * For proxy providers (modauiin, aihubmix, newapi), this will be the actual SDK provider (e.g., 'google', 'openai', 'anthropic')
    * For regular providers, this will be the provider itself
    */
   const actualAiSdkProviderIds = Object.keys(providerSpecificOptions)
@@ -250,11 +250,11 @@ export function buildProviderOptions(
    * 1. If key is in actualAiSdkProviderIds → merge directly (user knows the actual AI SDK provider ID)
    * 2. If key == rawProviderId:
    *    - If it's gateway/ollama → preserve (they need their own config for routing/options)
-   *    - Otherwise → map to primary (this is a proxy provider like cherryin)
+   *    - Otherwise → map to primary (this is a proxy provider like modauiin)
    * 3. Otherwise → treat as regular parameter, merge to primary provider
    *
    * Example:
-   * - User writes `cherryin: { opt: 'val' }` → mapped to `google: { opt: 'val' }` (case 2, proxy)
+   * - User writes `modauiin: { opt: 'val' }` → mapped to `google: { opt: 'val' }` (case 2, proxy)
    * - User writes `gateway: { order: [...] }` → stays as `gateway: { order: [...] }` (case 2, routing config)
    * - User writes `google: { opt: 'val' }` → stays as `google: { opt: 'val' }` (case 1)
    * - User writes `customKey: 'val'` → merged to `google: { customKey: 'val' }` (case 3)
@@ -282,7 +282,7 @@ export function buildProviderOptions(
           }
         }
       } else {
-        // Proxy provider (cherryin, etc.) - map to actual AI SDK provider
+        // Proxy provider (modauiin, etc.) - map to actual AI SDK provider
         providerSpecificOptions = {
           ...providerSpecificOptions,
           [primaryAiSdkProviderId]: {
@@ -561,10 +561,10 @@ function buildAIGatewayOptions(
   | GoogleGenerativeAIProviderOptions
   | Record<string, unknown>
 > {
-  // Proxy providers (CherryIN, NewAPI) may annotate model.endpoint_type to force a specific protocol.
+  // Proxy providers (ModauiIN, NewAPI) may annotate model.endpoint_type to force a specific protocol.
   // Keys here must stay aligned with the language-model class each SDK layer builds, otherwise
   // AI SDK drops the custom provider options. See:
-  //   - packages/ai-sdk-provider/src/cherryin-provider.ts (createChatModel)
+  //   - packages/ai-sdk-provider/src/modauiin-provider.ts (createChatModel)
   //   - src/renderer/src/aiCore/provider/custom/newapi-provider.ts (createChatModel)
   //
   //   endpoint_type      | SDK language-model class           | AI SDK providerOptions key

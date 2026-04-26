@@ -353,7 +353,7 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
           }
         // TODO: 支持 new-api类型
         case SystemProviderIds['new-api']:
-        case SystemProviderIds.cherryin: {
+        case SystemProviderIds.modauiin: {
           return {
             extra_body: {
               thinking: {

@@ -394,11 +394,11 @@ describe('useModelMutations', () => {
     const { result } = renderHook(() => useModelMutations())
 
     await act(async () => {
-      await result.current.deleteModel('cherryin', 'qwen/qwen3-vl-30b-a3b-thinking(free)')
+      await result.current.deleteModel('modauiin', 'qwen/qwen3-vl-30b-a3b-thinking(free)')
     })
 
     expect(deleteTrigger).toHaveBeenCalledWith({
-      params: { uniqueModelId: 'cherryin::qwen/qwen3-vl-30b-a3b-thinking(free)' }
+      params: { uniqueModelId: 'modauiin::qwen/qwen3-vl-30b-a3b-thinking(free)' }
     })
   })
 

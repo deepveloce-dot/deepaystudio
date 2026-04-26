@@ -21,10 +21,10 @@ import {
 import type { FetchFunction } from '@ai-sdk/provider-utils'
 import { loadApiKey, withoutTrailingSlash } from '@ai-sdk/provider-utils'
 
-export const CHERRYIN_PROVIDER_NAME = 'cherryin' as const
-export const DEFAULT_CHERRYIN_BASE_URL = 'https://open.cherryin.net/v1'
-export const DEFAULT_CHERRYIN_ANTHROPIC_BASE_URL = 'https://open.cherryin.net/v1'
-export const DEFAULT_CHERRYIN_GEMINI_BASE_URL = 'https://open.cherryin.net/v1beta/models'
+export const CHERRYIN_PROVIDER_NAME = 'modauiin' as const
+export const DEFAULT_CHERRYIN_BASE_URL = 'https://open.modauiin.net/v1'
+export const DEFAULT_CHERRYIN_ANTHROPIC_BASE_URL = 'https://open.modauiin.net/v1'
+export const DEFAULT_CHERRYIN_GEMINI_BASE_URL = 'https://open.modauiin.net/v1beta/models'
 
 const ANTHROPIC_PREFIX = /^anthropic\//i
 const GEMINI_PREFIX = /^google\//i
@@ -36,7 +36,7 @@ type HeadersInput = Record<string, HeaderValue> | (() => Record<string, HeaderVa
 
 export interface CherryInProviderSettings {
   /**
-   * CherryIN API key.
+   * ModauiIN API key.
    *
    * If omitted, the provider will read the `CHERRYIN_API_KEY` environment variable.
    */
@@ -46,21 +46,21 @@ export interface CherryInProviderSettings {
    */
   fetch?: FetchFunction
   /**
-   * Base URL for OpenAI-compatible CherryIN endpoints.
+   * Base URL for OpenAI-compatible ModauiIN endpoints.
    *
-   * Defaults to `https://open.cherryin.net/v1`.
+   * Defaults to `https://open.modauiin.net/v1`.
    */
   baseURL?: string
   /**
    * Base URL for Anthropic-compatible endpoints.
    *
-   * Defaults to `https://open.cherryin.net/anthropic`.
+   * Defaults to `https://open.modauiin.net/anthropic`.
    */
   anthropicBaseURL?: string
   /**
    * Base URL for Gemini-compatible endpoints.
    *
-   * Defaults to `https://open.cherryin.net/gemini/v1beta`.
+   * Defaults to `https://open.modauiin.net/gemini/v1beta`.
    */
   geminiBaseURL?: string
   /**
@@ -93,7 +93,7 @@ const resolveApiKey = (options: CherryInProviderSettings): string =>
   loadApiKey({
     apiKey: options.apiKey,
     environmentVariableName: 'CHERRYIN_API_KEY',
-    description: 'CherryIN'
+    description: 'ModauiIN'
   })
 
 const isAnthropicModel = (modelId: string) => ANTHROPIC_PREFIX.test(modelId)

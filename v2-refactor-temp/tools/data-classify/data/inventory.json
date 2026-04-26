@@ -1165,7 +1165,7 @@
       "defaultPaintingProvider": {
         "file": "src/renderer/src/store/settings.ts",
         "type": "unknown",
-        "defaultValue": "cherryin"
+        "defaultValue": "modauiin"
       },
       "s3": {
         "file": "src/renderer/src/store/settings.ts",

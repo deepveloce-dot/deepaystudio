@@ -71,14 +71,14 @@
 |----------|-------------|
 | [KnowledgeService](./references/knowledge/knowledge-service.md) | Concurrency control and workload management |
 
-### CherryClaw (Autonomous Agent)
+### ModauiClaw (Autonomous Agent)
 
 | Document | Description |
 |----------|-------------|
-| [CherryClaw Overview](./references/cherryclaw/overview.md) | Architecture, memory system, API |
-| [Channel System](./references/cherryclaw/channels.md) | IM integration (Telegram, etc.) |
-| [Claw MCP Server](./references/cherryclaw/mcp-claw.md) | Built-in MCP tools (cron, notify, skills, memory) |
-| [Scheduler](./references/cherryclaw/scheduler.md) | Task-based polling scheduler |
+| [ModauiClaw Overview](./references/modauiclaw/overview.md) | Architecture, memory system, API |
+| [Channel System](./references/modauiclaw/channels.md) | IM integration (Telegram, etc.) |
+| [Claw MCP Server](./references/modauiclaw/mcp-claw.md) | Built-in MCP tools (cron, notify, skills, memory) |
+| [Scheduler](./references/modauiclaw/scheduler.md) | Task-based polling scheduler |
 
 ### Components
 

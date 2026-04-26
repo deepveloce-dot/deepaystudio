@@ -125,7 +125,7 @@ const SUPPORT_URL_CONTEXT_PROVIDER_TYPES = [
 export const isSupportUrlContextProvider = (provider: Provider) => {
   return (
     SUPPORT_URL_CONTEXT_PROVIDER_TYPES.some((type) => type === provider.type) ||
-    provider.id === SystemProviderIds.cherryin
+    provider.id === SystemProviderIds.modauiin
   )
 }
 
@@ -137,7 +137,7 @@ export const isGeminiWebSearchProvider = (provider: Provider) => {
 }
 
 export const isNewApiProvider = (provider: Provider) => {
-  return ['new-api', 'cherryin', 'aionly'].includes(provider.id) || provider.type === 'new-api'
+  return ['new-api', 'modauiin', 'aionly'].includes(provider.id) || provider.type === 'new-api'
 }
 
 /**
@@ -161,7 +161,7 @@ export function isAwsBedrockProvider(provider: Provider): boolean {
 export {
   isAnthropicProvider,
   isAzureOpenAIProvider,
-  isCherryAIProvider,
+  isModauiAIProvider,
   isGeminiProvider,
   isOllamaProvider,
   isPerplexityProvider,

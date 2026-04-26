@@ -44,7 +44,7 @@ describe('McpServerMappings', () => {
         args: ['-y', 'some-package'],
         env: { API_KEY: 'key123' },
         headers: { Authorization: 'Bearer token' },
-        provider: 'CherryAI',
+        provider: 'ModauiAI',
         providerUrl: 'https://cherry.ai',
         logoUrl: 'https://cherry.ai/logo.png',
         tags: ['search', 'web'],

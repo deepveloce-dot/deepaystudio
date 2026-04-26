@@ -10,10 +10,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-const logger = loggerService.withContext('CherryINOAuth')
+const logger = loggerService.withContext('ModauiINOAuth')
 
-const CHERRYIN_OAUTH_SERVER = 'https://open.cherryin.ai'
-const CHERRYIN_TOPUP_URL = 'https://open.cherryin.ai/console/topup'
+const CHERRYIN_OAUTH_SERVER = 'https://open.modauiin.ai'
+const CHERRYIN_TOPUP_URL = 'https://open.modauiin.ai/console/topup'
 
 /**
  * Generate avatar initials from a name (first 2 characters)
@@ -29,11 +29,11 @@ interface BalanceInfo {
   balance: number
 }
 
-interface CherryINOAuthProps {
+interface ModauiINOAuthProps {
   providerId: string
 }
 
-const CherryINOAuth: FC<CherryINOAuthProps> = ({ providerId }) => {
+const ModauiINOAuth: FC<ModauiINOAuthProps> = ({ providerId }) => {
   const { updateProvider, provider } = useProvider(providerId)
   const { t } = useTranslation()
 
@@ -49,7 +49,7 @@ const CherryINOAuth: FC<CherryINOAuthProps> = ({ providerId }) => {
   const fetchData = useCallback(async () => {
     setIsLoadingData(true)
     try {
-      const balance = await window.api.cherryin.getBalance(CHERRYIN_OAUTH_SERVER)
+      const balance = await window.api.modauiin.getBalance(CHERRYIN_OAUTH_SERVER)
       setBalanceInfo(balance)
     } catch (error) {
       logger.warn('Failed to fetch balance:', error as Error)
@@ -61,7 +61,7 @@ const CherryINOAuth: FC<CherryINOAuthProps> = ({ providerId }) => {
 
   // Check if OAuth token exists
   useEffect(() => {
-    window.api.cherryin
+    window.api.modauiin
       .hasToken()
       .then((has) => {
         setHasOAuthToken(has)
@@ -107,7 +107,7 @@ const CherryINOAuth: FC<CherryINOAuthProps> = ({ providerId }) => {
         setIsLoggingOut(true)
 
         try {
-          await window.api.cherryin.logout(CHERRYIN_OAUTH_SERVER)
+          await window.api.modauiin.logout(CHERRYIN_OAUTH_SERVER)
           updateProvider({ apiKey: '' })
           setHasOAuthToken(false)
           setBalanceInfo(null)
@@ -187,14 +187,14 @@ const CherryINOAuth: FC<CherryINOAuthProps> = ({ providerId }) => {
           <LogOut size={14} />
         </LogoutCorner>
       )}
-      <ProviderLogoWrapper onClick={() => window.open('https://open.cherryin.ai', '_blank')}>
+      <ProviderLogoWrapper onClick={() => window.open('https://open.modauiin.ai', '_blank')}>
         <Cherryin.Avatar size={60} shape="circle" />
       </ProviderLogoWrapper>
       {renderContent()}
       <Description>
         {t('settings.provider.oauth.provided_by')}{' '}
-        <OfficialWebsite href="https://open.cherryin.ai" target="_blank" rel="noreferrer">
-          open.cherryin.ai
+        <OfficialWebsite href="https://open.modauiin.ai" target="_blank" rel="noreferrer">
+          open.modauiin.ai
         </OfficialWebsite>
         {t('settings.provider.oauth.provided_by_suffix')}
       </Description>
@@ -322,4 +322,4 @@ const OfficialWebsite = styled.a`
   color: var(--color-text-2);
 `
 
-export default CherryINOAuth
+export default ModauiINOAuth

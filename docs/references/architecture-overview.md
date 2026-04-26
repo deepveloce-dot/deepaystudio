@@ -183,7 +183,7 @@ modaui-studio
 | MCP (Tool Use) | `src/main/services/mcp/` | — |
 | Knowledge (RAG) | `src/main/knowledge/` | [KnowledgeService](./knowledge/knowledge-service.md) |
 | Message System | `src/renderer/src/store/` | [Message System](./messaging/message-system.md) |
-| CherryClaw (Agent) | `src/main/services/agents/` | [CherryClaw Overview](./cherryclaw/overview.md) |
+| ModauiClaw (Agent) | `src/main/services/agents/` | [ModauiClaw Overview](./modauiclaw/overview.md) |
 | API Server | `src/main/apiServer/` | [App Upgrade Config](./app-upgrade.md) |
 
 ## Window Architecture

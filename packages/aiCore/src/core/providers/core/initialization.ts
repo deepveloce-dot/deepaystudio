@@ -120,14 +120,14 @@ const AzureExtension = ProviderExtension.create({
 } as const satisfies ProviderExtensionConfig<AzureOpenAIProviderSettings, AzureOpenAIProvider, 'azure'>)
 
 const CherryInExtension = ProviderExtension.create({
-  name: 'cherryin',
+  name: 'modauiin',
   supportsImageGeneration: true,
   create: createCherryIn,
 
   variants: [
     {
       suffix: 'chat',
-      name: 'CherryIN Chat',
+      name: 'ModauiIN Chat',
       transform: (provider) =>
         customProvider({
           fallbackProvider: {
@@ -137,7 +137,7 @@ const CherryInExtension = ProviderExtension.create({
         })
     }
   ] as const
-} as const satisfies ProviderExtensionConfig<CherryInProviderSettings, CherryInProvider, 'cherryin'>)
+} as const satisfies ProviderExtensionConfig<CherryInProviderSettings, CherryInProvider, 'modauiin'>)
 
 const DeepSeekExtension = ProviderExtension.create({
   name: 'deepseek',

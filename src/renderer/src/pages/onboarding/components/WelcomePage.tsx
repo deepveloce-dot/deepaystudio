@@ -14,7 +14,7 @@ import ProviderPopup from './ProviderPopup'
 
 const logger = loggerService.withContext('WelcomePage')
 
-const CHERRYIN_OAUTH_SERVER = 'https://open.cherryin.ai'
+const CHERRYIN_OAUTH_SERVER = 'https://open.modauiin.ai'
 
 interface WelcomePageProps {
   setStep: (step: OnboardingStep) => void
@@ -23,7 +23,7 @@ interface WelcomePageProps {
 
 const WelcomePage: FC<WelcomePageProps> = ({ setStep, setCherryInLoggedIn }) => {
   const { t } = useTranslation()
-  const { provider, updateProvider, addModel } = useProvider('cherryin')
+  const { provider, updateProvider, addModel } = useProvider('modauiin')
   const store = useAppStore()
   const [isAddingModels, setIsAddingModels] = useState(false)
 
@@ -41,7 +41,7 @@ const WelcomePage: FC<WelcomePageProps> = ({ setStep, setCherryInLoggedIn }) => 
             const models = await fetchModels(updatedProvider)
             if (models.length > 0) {
               models.forEach((model) => addModel(model))
-              logger.info(`Auto-added ${models.length} models from CherryIN`)
+              logger.info(`Auto-added ${models.length} models from ModauiIN`)
             }
           } catch (fetchError) {
             logger.warn('Failed to auto-fetch models:', fetchError as Error)
@@ -86,7 +86,7 @@ const WelcomePage: FC<WelcomePageProps> = ({ setStep, setCherryInLoggedIn }) => 
             loading={isAddingModels}
             className="h-12 rounded-lg"
             onClick={handleCherryInLogin}>
-            {t('onboarding.welcome.login_cherryin')}
+            {t('onboarding.welcome.login_modauiin')}
           </Button>
 
           <Divider className="my-1!">

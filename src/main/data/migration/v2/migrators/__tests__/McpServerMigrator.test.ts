@@ -45,7 +45,7 @@ const SAMPLE_SERVERS = [
     name: '@cherry/fetch',
     type: 'inMemory',
     isActive: true,
-    provider: 'CherryAI',
+    provider: 'ModauiAI',
     installSource: 'builtin',
     isTrusted: true
   },

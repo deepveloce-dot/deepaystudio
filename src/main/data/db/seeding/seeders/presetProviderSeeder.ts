@@ -64,12 +64,12 @@ export class PresetProviderSeeder implements ISeeder {
 
     const newRows = rawProviders.filter((p) => !existingIds.has(p.id)).map(toDbRow)
 
-    // Always seed cherryai if not present
-    if (!existingIds.has('cherryai')) {
+    // Always seed modauiai if not present
+    if (!existingIds.has('modauiai')) {
       newRows.push({
-        providerId: 'cherryai',
-        presetProviderId: 'cherryai',
-        name: 'CherryAI',
+        providerId: 'modauiai',
+        presetProviderId: 'modauiai',
+        name: 'ModauiAI',
         endpointConfigs: {
           [ENDPOINT_TYPE.OPENAI_CHAT_COMPLETIONS]: {
             baseUrl: 'https://api.cherry-ai.com'

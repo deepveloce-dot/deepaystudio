@@ -54,8 +54,8 @@ import {
 } from '..'
 import ApiOptionsSettingsPopup from './ApiOptionsSettings/ApiOptionsSettingsPopup'
 import AwsBedrockSettings from './AwsBedrockSettings'
-import CherryINOAuth from './CherryINOAuth'
-import CherryINSettings from './CherryINSettings'
+import ModauiINOAuth from './ModauiINOAuth'
+import ModauiINSettings from './ModauiINSettings'
 import CustomHeaderPopup from './CustomHeaderPopup'
 import DMXAPISettings from './DMXAPISettings'
 import GithubCopilotSettings from './GithubCopilotSettings'
@@ -80,7 +80,7 @@ const ANTHROPIC_COMPATIBLE_PROVIDER_IDS = [
   SystemProviderIds.modelscope,
   SystemProviderIds.aihubmix,
   SystemProviderIds.grok,
-  SystemProviderIds.cherryin,
+  SystemProviderIds.modauiin,
   SystemProviderIds.longcat,
   SystemProviderIds.minimax,
   SystemProviderIds.silicon,
@@ -115,7 +115,7 @@ const ProviderSetting: FC<Props> = ({ providerId, isOnboarding = false }) => {
 
   const isAzureOpenAI = isAzureOpenAIProvider(provider)
   const isDmxapi = provider.id === 'dmxapi'
-  const isCherryIN = provider.id === 'cherryin'
+  const isModauiIN = provider.id === 'modauiin'
   const isChineseUser = i18n.language.startsWith('zh')
   const noAPIInputProviders = ['aws-bedrock'] as const satisfies SystemProviderId[]
   const hideApiInput = noAPIInputProviders.some((id) => id === provider.id)
@@ -398,7 +398,7 @@ const ProviderSetting: FC<Props> = ({ providerId, isOnboarding = false }) => {
   }, [provider.anthropicApiHost])
 
   const canConfigureAnthropicHost = useMemo(() => {
-    if (isCherryIN) {
+    if (isModauiIN) {
       return false
     }
     if (isNewApiProvider(provider)) {
@@ -407,7 +407,7 @@ const ProviderSetting: FC<Props> = ({ providerId, isOnboarding = false }) => {
     return (
       provider.type !== 'anthropic' && isSystemProviderId(provider.id) && isAnthropicCompatibleProviderId(provider.id)
     )
-  }, [isCherryIN, provider])
+  }, [isModauiIN, provider])
 
   const anthropicHostPreview = useMemo(() => {
     const rawHost = anthropicApiHost ?? provider.anthropicApiHost
@@ -478,7 +478,7 @@ const ProviderSetting: FC<Props> = ({ providerId, isOnboarding = false }) => {
       </SettingTitle>
       <Divider style={{ width: '100%', margin: '10px 0' }} />
       {isProviderSupportAuth(provider) && <ProviderOAuth providerId={provider.id} />}
-      {isCherryIN && <CherryINOAuth providerId={provider.id} />}
+      {isModauiIN && <ModauiINOAuth providerId={provider.id} />}
       {provider.id === 'openai' && <OpenAIAlert />}
       {provider.id === 'ovms' && <OVMSSettings />}
       {isDmxapi && <DMXAPISettings providerId={provider.id} />}
@@ -576,8 +576,8 @@ const ProviderSetting: FC<Props> = ({ providerId, isOnboarding = false }) => {
               </SettingSubtitle>
               {activeHostField === 'apiHost' && (
                 <>
-                  {isCherryIN && isChineseUser ? (
-                    <CherryINSettings providerId={provider.id} apiHost={apiHost} setApiHost={setApiHost} />
+                  {isModauiIN && isChineseUser ? (
+                    <ModauiINSettings providerId={provider.id} apiHost={apiHost} setApiHost={setApiHost} />
                   ) : (
                     <Space.Compact style={{ width: '100%', marginTop: 5 }}>
                       <Input

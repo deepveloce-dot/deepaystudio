@@ -66,7 +66,7 @@ export const CLAUDE_SUPPORTED_PROVIDERS = [
   'aihubmix',
   'dmxapi',
   'new-api',
-  'cherryin',
+  'modauiin',
   '302ai',
   ...CLAUDE_OFFICIAL_SUPPORTED_PROVIDERS
 ]

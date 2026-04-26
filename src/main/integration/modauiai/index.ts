@@ -1,5 +1,5 @@
 /**
- * CherryAI API request signature module.
+ * ModauiAI API request signature module.
  *
  * De-obfuscated from index.js per @kangfenmao's request.
  * TODO: This file should be re-obfuscated before release.

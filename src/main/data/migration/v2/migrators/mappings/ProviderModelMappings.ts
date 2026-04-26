@@ -86,7 +86,7 @@ const REASONING_FORMAT_MAP: Partial<Record<LegacyProvider['type'], ReasoningForm
 }
 
 const SYSTEM_PROVIDER_IDS = new Set([
-  'cherryin',
+  'modauiin',
   'silicon',
   'aihubmix',
   'ocoolai',
@@ -251,7 +251,7 @@ function buildAuthConfig(legacy: LegacyProvider, settings: OldLlmSettings): Auth
   }
 
   if (
-    legacy.id === 'cherryin' &&
+    legacy.id === 'modauiin' &&
     settings.cherryIn &&
     (settings.cherryIn.accessToken || settings.cherryIn.refreshToken)
   ) {

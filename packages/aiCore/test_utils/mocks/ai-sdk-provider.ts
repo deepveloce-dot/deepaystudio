@@ -13,7 +13,7 @@ export const createCherryIn = (_options?: CherryInProviderSettings) => ({
   // oxlint-disable-next-line no-unused-vars
   languageModel: (_modelId: string) => ({
     specificationVersion: 'v3',
-    provider: 'cherryin',
+    provider: 'modauiin',
     modelId: 'mock-model',
     supportedUrls: {},
     doGenerate: async () => ({ text: 'mock response' }),
@@ -22,7 +22,7 @@ export const createCherryIn = (_options?: CherryInProviderSettings) => ({
   // oxlint-disable-next-line no-unused-vars
   chat: (_modelId: string) => ({
     specificationVersion: 'v3',
-    provider: 'cherryin-chat',
+    provider: 'modauiin-chat',
     modelId: 'mock-model',
     supportedUrls: {},
     doGenerate: async () => ({ text: 'mock response' }),
@@ -31,7 +31,7 @@ export const createCherryIn = (_options?: CherryInProviderSettings) => ({
   // oxlint-disable-next-line no-unused-vars
   textEmbeddingModel: (_modelId: string) => ({
     specificationVersion: 'v3',
-    provider: 'cherryin',
+    provider: 'modauiin',
     modelId: 'mock-embedding-model'
   })
 })

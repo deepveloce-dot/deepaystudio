@@ -1,15 +1,15 @@
-# CherryClaw Architecture
+# ModauiClaw Architecture
 
 <p align="center">
-  <img src="../../assets/images/cherryclaw.png" width="200" alt="CherryClaw" />
+  <img src="../../assets/images/modauiclaw.png" width="200" alt="ModauiClaw" />
 </p>
 
-CherryClaw is an autonomous agent type in Modaui Studio, built on the Claude Agent SDK. Unlike standard claude-code agents, CherryClaw has an independent personality system, task-based scheduler, IM channel integration, and a set of self-management tools provided through an internal MCP server.
+ModauiClaw is an autonomous agent type in Modaui Studio, built on the Claude Agent SDK. Unlike standard claude-code agents, ModauiClaw has an independent personality system, task-based scheduler, IM channel integration, and a set of self-management tools provided through an internal MCP server.
 
 ## Architecture Overview
 
 ```
-CherryClawService
+ModauiClawService
   ├── PromptBuilder        — Assembles full system prompt from workspace files
   ├── HeartbeatReader      — Reads heartbeat file content (for pre-task prompt context)
   ├── ClawServer (MCP)     — Built-in MCP server providing cron / notify / skills / memory tools
@@ -22,21 +22,21 @@ CherryClawService
 
 ### AgentServiceRegistry Pattern
 
-`SessionMessageService` no longer hard-codes `ClaudeCodeService`. Instead, it uses `AgentServiceRegistry` to look up the corresponding service implementation by `AgentType`. CherryClaw delegates to claude-code for execution at runtime through the registry.
+`SessionMessageService` no longer hard-codes `ClaudeCodeService`. Instead, it uses `AgentServiceRegistry` to look up the corresponding service implementation by `AgentType`. ModauiClaw delegates to claude-code for execution at runtime through the registry.
 
 ```typescript
 // src/main/services/agents/services/AgentServiceRegistry.ts
 agentServiceRegistry.register('claude-code', new ClaudeCodeService())
-agentServiceRegistry.register('cherry-claw', new CherryClawService())
+agentServiceRegistry.register('modaui-claw', new ModauiClawService())
 ```
 
 ### Custom System Prompt (Replacing Claude Code Presets)
 
-CherryClaw does not use Claude Code's preset system prompts. `PromptBuilder` assembles a complete custom prompt from workspace files, passed via the `_systemPrompt` field to `ClaudeCodeService`. When this field is present, it serves as the complete system prompt rather than the preset + append mode.
+ModauiClaw does not use Claude Code's preset system prompts. `PromptBuilder` assembles a complete custom prompt from workspace files, passed via the `_systemPrompt` field to `ClaudeCodeService`. When this field is present, it serves as the complete system prompt rather than the preset + append mode.
 
 ### Disabling Inapplicable Built-in Tools
 
-CherryClaw disables a set of SDK built-in tools unsuitable for autonomous operation via `_disallowedTools`:
+ModauiClaw disables a set of SDK built-in tools unsuitable for autonomous operation via `_disallowedTools`:
 
 | Disabled Tool | Reason |
 |---|---|
@@ -49,7 +49,7 @@ CherryClaw disables a set of SDK built-in tools unsuitable for autonomous operat
 ## Invocation Flow
 
 ```
-CherryClawService.invoke()
+ModauiClawService.invoke()
   1. PromptBuilder.buildSystemPrompt(workspacePath)
      → Load system.md (optional override) + soul.md + user.md + memory/FACT.md
      → Assemble into complete system prompt
@@ -65,11 +65,11 @@ CherryClawService.invoke()
 
 ## Memory System
 
-CherryClaw uses an Anna-inspired three-file memory model, each file with an independent scope:
+ModauiClaw uses an Anna-inspired three-file memory model, each file with an independent scope:
 
 ```
 {workspace}/
-  system.md              — Optional system prompt override (replaces default CherryClaw identity)
+  system.md              — Optional system prompt override (replaces default ModauiClaw identity)
   soul.md                — Who you are: personality, tone, communication style
   user.md                — Who the user is: name, preferences, personal context
   memory/
@@ -90,7 +90,7 @@ Key rules:
 
 ## Database
 
-CherryClaw uses Drizzle ORM + LibSQL (SQLite) for task data storage:
+ModauiClaw uses Drizzle ORM + LibSQL (SQLite) for task data storage:
 
 | Table | Purpose |
 |---|---|
@@ -115,9 +115,9 @@ Both tables are associated with the agents table via foreign key cascades.
 
 | File | Description |
 |---|---|
-| `src/main/services/agents/services/cherryclaw/index.ts` | CherryClawService entry point |
-| `src/main/services/agents/services/cherryclaw/prompt.ts` | PromptBuilder system prompt assembly |
-| `src/main/services/agents/services/cherryclaw/heartbeat.ts` | HeartbeatReader heartbeat file reading |
+| `src/main/services/agents/services/modauiclaw/index.ts` | ModauiClawService entry point |
+| `src/main/services/agents/services/modauiclaw/prompt.ts` | PromptBuilder system prompt assembly |
+| `src/main/services/agents/services/modauiclaw/heartbeat.ts` | HeartbeatReader heartbeat file reading |
 | `src/main/services/agents/services/AgentServiceRegistry.ts` | Agent service registry |
 | `src/main/services/agents/services/TaskService.ts` | Task CRUD + scheduling calculation |
 | `src/main/services/agents/services/SchedulerService.ts` | Polling scheduler |

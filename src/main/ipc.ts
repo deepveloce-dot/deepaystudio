@@ -5,7 +5,7 @@ import path from 'node:path'
 import { application } from '@application'
 import { loggerService } from '@logger'
 import { isMac, isWin } from '@main/constant'
-import { generateSignature } from '@main/integration/cherryai'
+import { generateSignature } from '@main/integration/modauiai'
 import { anthropicService } from '@main/services/AnthropicService'
 import { getIpCountry } from '@main/utils/ipService'
 import {
@@ -28,7 +28,7 @@ import { agentMessageRepository } from './services/agents/database'
 import { skillService } from './services/agents/skills/SkillService'
 import { appService } from './services/AppService'
 import BackupManager from './services/BackupManager'
-import { cherryINOAuthService } from './services/CherryINOAuthService'
+import { cherryINOAuthService } from './services/ModauiINOAuthService'
 import { ConfigKeys, configManager } from './services/ConfigManager'
 import { copilotService } from './services/CopilotService'
 import DxtService from './services/DxtService'
@@ -570,13 +570,13 @@ export async function registerIpc() {
   ipcMain.handle(IpcChannel.Copilot_Logout, copilotService.logout.bind(copilotService))
   ipcMain.handle(IpcChannel.Copilot_GetUser, copilotService.getUser.bind(copilotService))
 
-  // CherryIN OAuth
-  ipcMain.handle(IpcChannel.CherryIN_SaveToken, cherryINOAuthService.saveToken.bind(cherryINOAuthService))
-  ipcMain.handle(IpcChannel.CherryIN_HasToken, cherryINOAuthService.hasToken.bind(cherryINOAuthService))
-  ipcMain.handle(IpcChannel.CherryIN_GetBalance, cherryINOAuthService.getBalance.bind(cherryINOAuthService))
-  ipcMain.handle(IpcChannel.CherryIN_Logout, cherryINOAuthService.logout.bind(cherryINOAuthService))
-  ipcMain.handle(IpcChannel.CherryIN_StartOAuthFlow, cherryINOAuthService.startOAuthFlow.bind(cherryINOAuthService))
-  ipcMain.handle(IpcChannel.CherryIN_ExchangeToken, cherryINOAuthService.exchangeToken.bind(cherryINOAuthService))
+  // ModauiIN OAuth
+  ipcMain.handle(IpcChannel.ModauiIN_SaveToken, cherryINOAuthService.saveToken.bind(cherryINOAuthService))
+  ipcMain.handle(IpcChannel.ModauiIN_HasToken, cherryINOAuthService.hasToken.bind(cherryINOAuthService))
+  ipcMain.handle(IpcChannel.ModauiIN_GetBalance, cherryINOAuthService.getBalance.bind(cherryINOAuthService))
+  ipcMain.handle(IpcChannel.ModauiIN_Logout, cherryINOAuthService.logout.bind(cherryINOAuthService))
+  ipcMain.handle(IpcChannel.ModauiIN_StartOAuthFlow, cherryINOAuthService.startOAuthFlow.bind(cherryINOAuthService))
+  ipcMain.handle(IpcChannel.ModauiIN_ExchangeToken, cherryINOAuthService.exchangeToken.bind(cherryINOAuthService))
 
   // Obsidian service
   ipcMain.handle(IpcChannel.Obsidian_GetVaults, () => {
@@ -631,7 +631,7 @@ export async function registerIpc() {
   // Condition logic must stay in sync with OvmsManager's @Conditional(onPlatform('win32'), onCpuVendor('intel'))
   ipcMain.handle(IpcChannel.Ovms_IsSupported, () => isWin && getCpuName().toLowerCase().includes('intel'))
 
-  // CherryAI
+  // ModauiAI
   ipcMain.handle(IpcChannel.Cherryai_GetSignature, (_, params) => generateSignature(params))
 
   // Global Skills

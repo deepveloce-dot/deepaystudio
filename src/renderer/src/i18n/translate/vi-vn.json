@@ -268,7 +268,7 @@
         "title": "Các Tác Vụ Đã Lên Lịch"
       },
       "warning": {
-        "bypassPermissions": "Các tác nhân CherryClaw hoạt động ở chế độ Tự động hoàn toàn theo mặc định. Mọi công cụ đều thực thi mà không yêu cầu phê duyệt."
+        "bypassPermissions": "Các tác nhân ModauiClaw hoạt động ở chế độ Tự động hoàn toàn theo mặc định. Mọi công cụ đều thực thi mà không yêu cầu phê duyệt."
       }
     },
     "delete": {
@@ -2909,15 +2909,15 @@
     },
     "skip": "Bỏ qua",
     "toast": {
-      "connected": "Đã kết nối thành công với CherryIN"
+      "connected": "Đã kết nối thành công với ModauiIN"
     },
     "welcome": {
-      "login_cherryin": "Đăng nhập bằng CherryIN",
+      "login_modauiin": "Đăng nhập bằng ModauiIN",
       "or_continue_with": "HOẶC TIẾP TỤC VỚI",
       "other_provider": "Chọn Nhà Cung Cấp Khác",
       "select_other_provider": "Chọn Nhà Cung Cấp Khác",
       "setup_hint": "Vui lòng cấu hình ít nhất một nhà cung cấp để có trải nghiệm tốt nhất",
-      "subtitle": "Tận hưởng các dịch vụ AI hàng đầu với CherryIN",
+      "subtitle": "Tận hưởng các dịch vụ AI hàng đầu với ModauiIN",
       "title": "Chào mừng bạn đến với Modaui Studio"
     }
   },
@@ -3398,7 +3398,7 @@
     "burncloud": "BurnCloud",
     "cephalon": "cephalon",
     "cerebras": "Cerebras AI",
-    "cherryin": "CherryIN",
+    "modauiin": "ModauiIN",
     "copilot": "GitHub Copilot",
     "dashscope": "Alibaba Cloud",
     "deepseek": "DeepSeek",
@@ -5445,7 +5445,7 @@
         "balance": "Cân bằng",
         "button": "Iniciar sesión con {{provider}}",
         "cherryIn": {
-          "description": "Đăng nhập vào CherryIN bằng OAuth 2.0",
+          "description": "Đăng nhập vào ModauiIN bằng OAuth 2.0",
           "logged_in": "Đã đăng nhập qua OAuth",
           "login_button": "Đăng nhập bằng OAuth",
           "logout_button": "Keluar",

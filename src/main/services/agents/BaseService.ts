@@ -247,10 +247,10 @@ export abstract class BaseService {
     }
 
     // Normalize legacy agent type values to the unified type
-    if (deserialized.type === 'cherry-claw') {
+    if (deserialized.type === 'modaui-claw') {
       deserialized.type = 'claude-code'
     }
-    if (deserialized.agent_type === 'cherry-claw') {
+    if (deserialized.agent_type === 'modaui-claw') {
       deserialized.agent_type = 'claude-code'
     }
 

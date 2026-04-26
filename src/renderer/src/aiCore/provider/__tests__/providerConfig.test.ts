@@ -94,13 +94,13 @@ const createWindowKeyv = () => {
 interface WindowMockApi {
   copilot?: { getToken: ReturnType<typeof vi.fn> }
   anthropic_oauth?: { getAccessToken: ReturnType<typeof vi.fn> }
-  cherryai?: { generateSignature: ReturnType<typeof vi.fn> }
+  modauiai?: { generateSignature: ReturnType<typeof vi.fn> }
 }
 
 const setupWindowMock = (options?: {
   withCopilotToken?: boolean
   withAnthropicOAuth?: boolean
-  withCherryAI?: boolean
+  withModauiAI?: boolean
 }) => {
   const api: WindowMockApi = {}
   if (options?.withCopilotToken) {
@@ -113,8 +113,8 @@ const setupWindowMock = (options?: {
       getAccessToken: vi.fn().mockResolvedValue('mock-oauth-token')
     }
   }
-  if (options?.withCherryAI) {
-    api.cherryai = {
+  if (options?.withModauiAI) {
+    api.modauiai = {
       generateSignature: vi.fn().mockResolvedValue({ 'X-Signature': 'mock-sig' })
     }
   }
@@ -256,22 +256,22 @@ describe('formatProviderApiHost', () => {
     })
   })
 
-  describe('CherryAI provider', () => {
+  describe('ModauiAI provider', () => {
     it('formats apiHost without appending version', () => {
       const provider = makeProvider({
-        id: 'cherryai',
+        id: 'modauiai',
         type: 'openai',
-        apiHost: 'https://api.cherryai.com'
+        apiHost: 'https://api.modauiai.com'
       })
 
       const result = formatProviderApiHost(provider)
 
-      expect(result.apiHost).toBe('https://api.cherryai.com')
+      expect(result.apiHost).toBe('https://api.modauiai.com')
     })
 
     it('handles empty apiHost gracefully', () => {
       const provider = makeProvider({
-        id: 'cherryai',
+        id: 'modauiai',
         type: 'openai',
         apiHost: ''
       })
@@ -565,7 +565,7 @@ describe('adaptProvider', () => {
 
 describe('providerToAiSdkConfig', () => {
   beforeEach(() => {
-    setupWindowMock({ withCopilotToken: true, withAnthropicOAuth: true, withCherryAI: true })
+    setupWindowMock({ withCopilotToken: true, withAnthropicOAuth: true, withModauiAI: true })
     setupStoreMock()
     vi.clearAllMocks()
   })
@@ -606,19 +606,19 @@ describe('providerToAiSdkConfig', () => {
     })
   })
 
-  describe('CherryAI builder', () => {
+  describe('ModauiAI builder', () => {
     it('returns openai-compatible with custom fetch for signature', async () => {
       const provider = makeProvider({
-        id: 'cherryai',
+        id: 'modauiai',
         type: 'openai',
-        apiHost: 'https://api.cherryai.com'
+        apiHost: 'https://api.modauiai.com'
       })
 
-      const config = await providerToAiSdkConfig(provider, makeModel('gpt-4', 'cherryai'))
+      const config = await providerToAiSdkConfig(provider, makeModel('gpt-4', 'modauiai'))
 
       expect(config.providerId).toBe('openai-compatible')
       const settings = config.providerSettings as OpenAICompatibleProviderSettings
-      expect(settings.name).toBe('cherryai')
+      expect(settings.name).toBe('modauiai')
       expect(typeof settings.fetch).toBe('function')
     })
   })
@@ -829,22 +829,22 @@ describe('providerToAiSdkConfig', () => {
   })
 
   describe('Cherryin builder', () => {
-    it('includes anthropic and gemini base URLs from cherryin provider config', async () => {
-      const cherryinProvider = makeProvider({
-        id: 'cherryin',
+    it('includes anthropic and gemini base URLs from modauiin provider config', async () => {
+      const modauiinProvider = makeProvider({
+        id: 'modauiin',
         type: 'openai',
-        apiHost: 'https://api.cherryin.com',
-        anthropicApiHost: 'https://anthropic.cherryin.com'
+        apiHost: 'https://api.modauiin.com',
+        anthropicApiHost: 'https://anthropic.modauiin.com'
       })
 
-      vi.mocked(getProviderById).mockReturnValue(cherryinProvider)
+      vi.mocked(getProviderById).mockReturnValue(modauiinProvider)
 
-      const config = await providerToAiSdkConfig(cherryinProvider, makeModel('gpt-4', 'cherryin'))
+      const config = await providerToAiSdkConfig(modauiinProvider, makeModel('gpt-4', 'modauiin'))
 
-      expect(config.providerId).toBe('cherryin')
+      expect(config.providerId).toBe('modauiin')
       const settings = config.providerSettings as CherryInProviderSettings
-      expect(settings.anthropicBaseURL).toBe('https://anthropic.cherryin.com/v1')
-      expect(settings.geminiBaseURL).toBe('https://api.cherryin.com/v1beta')
+      expect(settings.anthropicBaseURL).toBe('https://anthropic.modauiin.com/v1')
+      expect(settings.geminiBaseURL).toBe('https://api.modauiin.com/v1beta')
     })
   })
 

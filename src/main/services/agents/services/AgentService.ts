@@ -25,7 +25,7 @@ import {
 import { type AgentModelField, AgentModelValidationError } from '../errors'
 import { skillService } from '../skills/SkillService'
 import { CHERRY_CLAW_AGENT_ID, isBuiltinAgentId } from './builtin/BuiltinAgentIds'
-import { seedWorkspaceTemplates } from './cherryclaw/seedWorkspace'
+import { seedWorkspaceTemplates } from './modauiclaw/seedWorkspace'
 
 const logger = loggerService.withContext('AgentService')
 
@@ -319,18 +319,18 @@ export class AgentService extends BaseService {
   }
 
   /**
-   * Initialize the built-in CherryClaw agent with a fixed ID.
+   * Initialize the built-in ModauiClaw agent with a fixed ID.
    * Called once at app startup. Safe to call multiple times — skips if the agent already exists.
    * Returns the agent ID if created or already present, or null if no compatible model is available yet.
    */
-  async initDefaultCherryClawAgent(): Promise<BuiltinAgentInitResult> {
+  async initDefaultModauiClawAgent(): Promise<BuiltinAgentInitResult> {
     const id = AgentService.DEFAULT_AGENT_ID
     try {
       const database = await this.getDatabase()
       const existing = await this.findAgentRow(id, { includeDeleted: true })
 
       if (existing?.deletedAt) {
-        logger.info('Default CherryClaw agent was deleted by user — skipping recreation', { id })
+        logger.info('Default ModauiClaw agent was deleted by user — skipping recreation', { id })
         return { agentId: null, skippedReason: 'deleted' }
       }
 
@@ -341,7 +341,7 @@ export class AgentService extends BaseService {
       const modelsRes = await modelsService.getModels({ providerType: 'anthropic', limit: 1 })
       const firstModel = modelsRes.data?.[0]
       if (!firstModel) {
-        logger.info('No Anthropic-compatible models available yet — skipping default CherryClaw creation')
+        logger.info('No Anthropic-compatible models available yet — skipping default ModauiClaw creation')
         return { agentId: null, skippedReason: 'no_model' }
       }
 
@@ -360,7 +360,7 @@ export class AgentService extends BaseService {
       const req: CreateAgentRequest = {
         type: 'claude-code',
         name: 'Cherry Claw',
-        description: 'Default autonomous CherryClaw agent',
+        description: 'Default autonomous ModauiClaw agent',
         model: firstModel.id,
         accessible_paths: [],
         configuration
@@ -374,7 +374,7 @@ export class AgentService extends BaseService {
       const insertData: InsertAgentRow = {
         id,
         type: req.type,
-        name: req.name || 'CherryClaw',
+        name: req.name || 'ModauiClaw',
         description: req.description,
         instructions: 'You are a helpful assistant.',
         model: req.model,
@@ -397,22 +397,22 @@ export class AgentService extends BaseService {
       try {
         await skillService.initSkillsForAgent(id, workspace)
       } catch (error) {
-        logger.warn('Failed to seed builtin skills for CherryClaw agent', {
+        logger.warn('Failed to seed builtin skills for ModauiClaw agent', {
           agentId: id,
           error: error instanceof Error ? error.message : String(error)
         })
       }
 
-      logger.info('Created default CherryClaw agent', { id })
+      logger.info('Created default ModauiClaw agent', { id })
       return { agentId: id }
     } catch (error) {
       // Only swallow model-validation failures (no compatible model yet).
       // Other failures must bubble up — silently dropping them hid real bugs.
       if (error instanceof AgentModelValidationError) {
-        logger.warn('Skipping default CherryClaw agent: no compatible model', error)
+        logger.warn('Skipping default ModauiClaw agent: no compatible model', error)
         return { agentId: null, skippedReason: 'no_model' }
       }
-      logger.error('Failed to init default CherryClaw agent', error as Error)
+      logger.error('Failed to init default ModauiClaw agent', error as Error)
       throw error
     }
   }

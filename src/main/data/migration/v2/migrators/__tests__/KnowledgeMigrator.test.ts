@@ -313,8 +313,8 @@ describe('KnowledgeMigrator dimensions resolution', () => {
               {
                 id: 'kb-dangling-model',
                 name: 'Dangling KB',
-                model: { id: 'qwen', name: 'qwen', provider: 'cherryai' },
-                rerankModel: { id: 'rerank', name: 'rerank', provider: 'cherryai' },
+                model: { id: 'qwen', name: 'qwen', provider: 'modauiai' },
+                rerankModel: { id: 'rerank', name: 'rerank', provider: 'modauiai' },
                 items: []
               }
             ]

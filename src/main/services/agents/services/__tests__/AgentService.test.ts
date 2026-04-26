@@ -91,14 +91,14 @@ describe('AgentService built-in agent lifecycle', () => {
   it('skips recreating a built-in agent that was soft-deleted by the user', async () => {
     const database = {
       select: vi.fn(() =>
-        createSelectQuery([{ id: 'cherry-assistant-default', deletedAt: '2026-04-15T00:00:00.000Z' }])
+        createSelectQuery([{ id: 'modaui-assistant-default', deletedAt: '2026-04-15T00:00:00.000Z' }])
       )
     }
 
     vi.spyOn(service as never, 'getDatabase').mockResolvedValue(database as never)
 
     const result = await service.initBuiltinAgent({
-      id: 'cherry-assistant-default',
+      id: 'modaui-assistant-default',
       builtinRole: 'assistant',
       provisionWorkspace: vi.fn()
     })
@@ -114,7 +114,7 @@ describe('AgentService built-in agent lifecycle', () => {
     const txUpdateSet = vi.fn(() => ({ where: updateWhere }))
     const txUpdate = vi.fn(() => ({ set: txUpdateSet }))
     const database = {
-      select: vi.fn(() => createSelectQuery([{ id: 'cherry-claw-default', deleted_at: null }])),
+      select: vi.fn(() => createSelectQuery([{ id: 'modaui-claw-default', deleted_at: null }])),
       transaction: vi.fn(async (callback: (tx: unknown) => Promise<void>) =>
         callback({ delete: txDelete, update: txUpdate })
       ),
@@ -123,7 +123,7 @@ describe('AgentService built-in agent lifecycle', () => {
 
     vi.spyOn(service as never, 'getDatabase').mockResolvedValue(database as never)
 
-    const deleted = await service.deleteAgent('cherry-claw-default')
+    const deleted = await service.deleteAgent('modaui-claw-default')
 
     expect(deleted).toBe(true)
     expect(database.transaction).toHaveBeenCalledTimes(1)

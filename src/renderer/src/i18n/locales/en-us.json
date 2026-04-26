@@ -268,7 +268,7 @@
         "title": "Scheduled Tasks"
       },
       "warning": {
-        "bypassPermissions": "CherryClaw agents run with Full Auto Mode by default. All tools execute without asking for approval."
+        "bypassPermissions": "ModauiClaw agents run with Full Auto Mode by default. All tools execute without asking for approval."
       }
     },
     "delete": {
@@ -2792,15 +2792,15 @@
     },
     "skip": "Skip",
     "toast": {
-      "connected": "Successfully connected to CherryIN"
+      "connected": "Successfully connected to ModauiIN"
     },
     "welcome": {
-      "login_cherryin": "Login with CherryIN",
+      "login_modauiin": "Login with ModauiIN",
       "or_continue_with": "OR CONTINUE WITH",
       "other_provider": "Choose Other Providers",
       "select_other_provider": "Select Other Provider",
       "setup_hint": "Please configure at least one provider for the best experience",
-      "subtitle": "Enjoy top-tier AI services with CherryIN",
+      "subtitle": "Enjoy top-tier AI services with ModauiIN",
       "title": "Welcome to Modaui Studio"
     }
   },
@@ -3281,7 +3281,7 @@
     "burncloud": "BurnCloud",
     "cephalon": "Cephalon",
     "cerebras": "Cerebras AI",
-    "cherryin": "CherryIN",
+    "modauiin": "ModauiIN",
     "copilot": "GitHub Copilot",
     "dashscope": "Alibaba Cloud",
     "deepseek": "DeepSeek",
@@ -5359,7 +5359,7 @@
         "balance": "Balance",
         "button": "Login with {{provider}}",
         "cherryIn": {
-          "description": "Login to CherryIN using OAuth 2.0",
+          "description": "Login to ModauiIN using OAuth 2.0",
           "logged_in": "Logged in via OAuth",
           "login_button": "Login with OAuth",
           "logout_button": "Logout",

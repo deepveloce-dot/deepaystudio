@@ -1,8 +1,8 @@
 {
   "name": "@modauistudio/ai-sdk-provider",
   "version": "0.1.6",
-  "description": "Modaui Studio AI SDK provider bundle with CherryIN routing.",
-  "keywords": ["ai-sdk", "provider", "cherryin", "vercel-ai-sdk", "modaui-studio"],
+  "description": "Modaui Studio AI SDK provider bundle with ModauiIN routing.",
+  "keywords": ["ai-sdk", "provider", "modauiin", "vercel-ai-sdk", "modaui-studio"],
   "author": "Modaui Studio",
   "license": "MIT",
   "homepage": "https://github.com/CherryHQ/modaui-studio",

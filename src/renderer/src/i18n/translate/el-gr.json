@@ -268,7 +268,7 @@
         "title": "Προγραμματισμένες εργασίες"
       },
       "warning": {
-        "bypassPermissions": "Οι πράκτορες CherryClaw εκτελούνται σε πλήρη αυτόματη λειτουργία από προεπιλογή. Όλα τα εργαλεία εκτελούνται χωρίς να ζητούν έγκριση."
+        "bypassPermissions": "Οι πράκτορες ModauiClaw εκτελούνται σε πλήρη αυτόματη λειτουργία από προεπιλογή. Όλα τα εργαλεία εκτελούνται χωρίς να ζητούν έγκριση."
       }
     },
     "delete": {
@@ -2792,15 +2792,15 @@
     },
     "skip": "Παράλειψη",
     "toast": {
-      "connected": "Συνδέθηκε επιτυχώς με το CherryIN"
+      "connected": "Συνδέθηκε επιτυχώς με το ModauiIN"
     },
     "welcome": {
-      "login_cherryin": "Σύνδεση με CherryIN",
+      "login_modauiin": "Σύνδεση με ModauiIN",
       "or_continue_with": "Ή ΣΥΝΕΧΕΙΑ ΜΕ",
       "other_provider": "Επιλέξτε Άλλους Παρόχους",
       "select_other_provider": "Επιλέξτε Άλλο Πάροχο",
       "setup_hint": "Παρακαλούμε ρυθμίστε τουλάχιστον έναν πάροχο για την καλύτερη εμπειρία",
-      "subtitle": "Απολαύστε κορυφαίες υπηρεσίες τεχνητής νοημοσύνης με την CherryIN",
+      "subtitle": "Απολαύστε κορυφαίες υπηρεσίες τεχνητής νοημοσύνης με την ModauiIN",
       "title": "Καλώς ήρθατε στο Modaui Studio"
     }
   },
@@ -3281,7 +3281,7 @@
     "burncloud": "BurnCloud",
     "cephalon": "Cephalon",
     "cerebras": "Cerebras AI",
-    "cherryin": "CherryIN",
+    "modauiin": "ModauiIN",
     "copilot": "GitHub Copilot",
     "dashscope": "AliCloud Bailian",
     "deepseek": "Βαθιά Αναζήτηση",

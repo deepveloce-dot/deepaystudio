@@ -268,7 +268,7 @@
         "title": "Tareas programadas"
       },
       "warning": {
-        "bypassPermissions": "Los agentes CherryClaw se ejecutan en modo automático completo por defecto. Todas las herramientas se ejecutan sin pedir aprobación."
+        "bypassPermissions": "Los agentes ModauiClaw se ejecutan en modo automático completo por defecto. Todas las herramientas se ejecutan sin pedir aprobación."
       }
     },
     "delete": {
@@ -2792,15 +2792,15 @@
     },
     "skip": "Saltar",
     "toast": {
-      "connected": "Conectado con éxito a CherryIN"
+      "connected": "Conectado con éxito a ModauiIN"
     },
     "welcome": {
-      "login_cherryin": "Iniciar sesión con CherryIN",
+      "login_modauiin": "Iniciar sesión con ModauiIN",
       "or_continue_with": "O CONTINUAR CON",
       "other_provider": "Elegir Otros Proveedores",
       "select_other_provider": "Seleccionar Otro Proveedor",
       "setup_hint": "Por favor, configura al menos un proveedor para obtener la mejor experiencia.",
-      "subtitle": "Disfruta de servicios de IA de primer nivel con CherryIN",
+      "subtitle": "Disfruta de servicios de IA de primer nivel con ModauiIN",
       "title": "Bienvenido a Modaui Studio"
     }
   },
@@ -3281,7 +3281,7 @@
     "burncloud": "BurnCloud",
     "cephalon": "Cephalon",
     "cerebras": "Cerebras AI",
-    "cherryin": "CherryIN",
+    "modauiin": "ModauiIN",
     "copilot": "GitHub Copiloto",
     "dashscope": "Álibaba Nube BaiLiàn",
     "deepseek": "Profundo Buscar",

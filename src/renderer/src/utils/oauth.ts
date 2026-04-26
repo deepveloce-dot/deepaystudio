@@ -199,7 +199,7 @@ export interface NewApiOAuthConfig {
 }
 
 /**
- * CherryIN OAuth flow using Authorization Code with PKCE
+ * ModauiIN OAuth flow using Authorization Code with PKCE
  * PKCE generation and token exchange happen in the main process for security
  * @param setKey - Callback to set the API key
  * @param config - OAuth configuration (oauthServer, apiHost)
@@ -208,7 +208,7 @@ export const oauthWithCherryIn = async (setKey: (key: string) => void, config: N
   const { oauthServer, apiHost } = config
 
   // Start OAuth flow in main process (generates PKCE params and returns auth URL)
-  const { authUrl, state } = await window.api.cherryin.startOAuthFlow(oauthServer, apiHost)
+  const { authUrl, state } = await window.api.modauiin.startOAuthFlow(oauthServer, apiHost)
 
   logger.debug('Opening authorization URL')
 
@@ -260,7 +260,7 @@ export const oauthWithCherryIn = async (setKey: (key: string) => void, config: N
         logger.debug('Exchanging code for token via main process')
 
         // Exchange code for tokens in main process (has PKCE code_verifier)
-        const { apiKeys } = await window.api.cherryin.exchangeToken(code, state)
+        const { apiKeys } = await window.api.modauiin.exchangeToken(code, state)
 
         if (apiKeys) {
           logger.debug('Successfully obtained API keys')

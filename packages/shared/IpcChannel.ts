@@ -129,13 +129,13 @@ export enum IpcChannel {
   Copilot_Logout = 'copilot:logout',
   Copilot_GetUser = 'copilot:get-user',
 
-  // CherryIN OAuth
-  CherryIN_SaveToken = 'cherryin:save-token',
-  CherryIN_HasToken = 'cherryin:has-token',
-  CherryIN_GetBalance = 'cherryin:get-balance',
-  CherryIN_Logout = 'cherryin:logout',
-  CherryIN_StartOAuthFlow = 'cherryin:start-oauth-flow',
-  CherryIN_ExchangeToken = 'cherryin:exchange-token',
+  // ModauiIN OAuth
+  ModauiIN_SaveToken = 'modauiin:save-token',
+  ModauiIN_HasToken = 'modauiin:has-token',
+  ModauiIN_GetBalance = 'modauiin:get-balance',
+  ModauiIN_Logout = 'modauiin:logout',
+  ModauiIN_StartOAuthFlow = 'modauiin:start-oauth-flow',
+  ModauiIN_ExchangeToken = 'modauiin:exchange-token',
 
   // obsidian
   Obsidian_GetVaults = 'obsidian:get-vaults',
@@ -416,8 +416,8 @@ export enum IpcChannel {
   Ovms_RunOVMS = 'ovms:run-ovms',
   Ovms_StopOVMS = 'ovms:stop-ovms',
 
-  // CherryAI
-  Cherryai_GetSignature = 'cherryai:get-signature',
+  // ModauiAI
+  Cherryai_GetSignature = 'modauiai:get-signature',
 
   // Global Skills
   Skill_List = 'skill:list',

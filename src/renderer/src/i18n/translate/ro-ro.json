@@ -268,7 +268,7 @@
         "title": "Sarcini programate"
       },
       "warning": {
-        "bypassPermissions": "Agenții CherryClaw rulează în mod automat complet în mod implicit. Toate instrumentele se execută fără a solicita aprobare."
+        "bypassPermissions": "Agenții ModauiClaw rulează în mod automat complet în mod implicit. Toate instrumentele se execută fără a solicita aprobare."
       }
     },
     "delete": {
@@ -2792,15 +2792,15 @@
     },
     "skip": "Sariți",
     "toast": {
-      "connected": "Conectat cu succes la CherryIN"
+      "connected": "Conectat cu succes la ModauiIN"
     },
     "welcome": {
-      "login_cherryin": "Conectare cu CherryIN",
+      "login_modauiin": "Conectare cu ModauiIN",
       "or_continue_with": "SAU CONTINUAȚI CU",
       "other_provider": "Alegeți alți furnizori",
       "select_other_provider": "Selectați alt furnizor",
       "setup_hint": "Vă rugăm să configurați cel puțin un furnizor pentru cea mai bună experiență",
-      "subtitle": "Bucurați-vă de servicii AI de top cu CherryIN",
+      "subtitle": "Bucurați-vă de servicii AI de top cu ModauiIN",
       "title": "Bun venit la Modaui Studio"
     }
   },
@@ -3281,7 +3281,7 @@
     "burncloud": "BurnCloud",
     "cephalon": "Cephalon",
     "cerebras": "Cerebras AI",
-    "cherryin": "CherryIN",
+    "modauiin": "ModauiIN",
     "copilot": "GitHub Copilot",
     "dashscope": "Alibaba Cloud",
     "deepseek": "DeepSeek",

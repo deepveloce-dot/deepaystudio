@@ -245,7 +245,7 @@ describe('ChatMigrator model reference sanitization', () => {
         searchableText: null,
         status: 'success',
         siblingsGroupId: 0,
-        modelId: 'cherryai::qwen',
+        modelId: 'modauiai::qwen',
         modelSnapshot: null,
         traceId: null,
         stats: null,

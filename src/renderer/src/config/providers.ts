@@ -5,8 +5,8 @@ import { TOKENFLUX_HOST } from './constant'
 import { qwenModel, SYSTEM_MODELS } from './models'
 
 export const CHERRYAI_PROVIDER: SystemProvider = {
-  id: 'cherryai' as SystemProviderId,
-  name: 'CherryAI',
+  id: 'modauiai' as SystemProviderId,
+  name: 'ModauiAI',
   type: 'openai',
   apiKey: '',
   apiHost: 'https://api.cherry-ai.com',
@@ -16,13 +16,13 @@ export const CHERRYAI_PROVIDER: SystemProvider = {
 }
 
 export const SYSTEM_PROVIDERS_CONFIG: Record<SystemProviderId, SystemProvider> = {
-  cherryin: {
-    id: 'cherryin',
-    name: 'CherryIN',
+  modauiin: {
+    id: 'modauiin',
+    name: 'ModauiIN',
     type: 'openai',
     apiKey: '',
-    apiHost: 'https://open.cherryin.cc',
-    anthropicApiHost: 'https://open.cherryin.cc',
+    apiHost: 'https://open.modauiin.cc',
+    anthropicApiHost: 'https://open.modauiin.cc',
     models: [],
     isSystem: true,
     enabled: true
@@ -694,15 +694,15 @@ type ProviderUrls = {
 }
 
 export const PROVIDER_URLS: Record<SystemProviderId, ProviderUrls> = {
-  cherryin: {
+  modauiin: {
     api: {
-      url: 'https://open.cherryin.net'
+      url: 'https://open.modauiin.net'
     },
     websites: {
-      official: 'https://open.cherryin.ai',
-      apiKey: 'https://open.cherryin.ai/console/token',
-      docs: 'https://open.cherryin.ai',
-      models: 'https://open.cherryin.ai/pricing'
+      official: 'https://open.modauiin.ai',
+      apiKey: 'https://open.modauiin.ai/console/token',
+      docs: 'https://open.modauiin.ai',
+      models: 'https://open.modauiin.ai/pricing'
     }
   },
   ph8: {

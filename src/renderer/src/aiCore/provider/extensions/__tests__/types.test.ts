@@ -75,7 +75,7 @@ describe('Auto-Extracted Type System', () => {
         'xai',
         'openai-compatible',
         'openrouter',
-        'cherryin'
+        'modauiin'
       ]
 
       // 运行时验证（确保类型存在）

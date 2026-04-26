@@ -22,7 +22,7 @@ import {
 import {
   isAnthropicProvider,
   isAzureOpenAIProvider,
-  isCherryAIProvider,
+  isModauiAIProvider,
   isGeminiProvider,
   isOllamaProvider,
   isPerplexityProvider,
@@ -82,7 +82,7 @@ export function formatProviderApiHost(provider: Provider): Provider {
       match: (p) => p.id === SystemProviderIds.copilot || p.id === SystemProviderIds.github,
       format: (p) => formatApiHost(p.apiHost, false)
     },
-    { match: isCherryAIProvider, format: (p) => formatApiHost(p.apiHost, false) },
+    { match: isModauiAIProvider, format: (p) => formatApiHost(p.apiHost, false) },
     { match: isPerplexityProvider, format: (p) => formatApiHost(p.apiHost, false) },
     { match: isOllamaProvider, format: (p) => formatOllamaApiHost(p.apiHost) },
     { match: isGeminiProvider, format: (p, av) => formatApiHost(p.apiHost, av, 'v1beta') },
@@ -122,13 +122,13 @@ export function providerToAiSdkConfig(
 
   const builders: ConfigBuilderEntry[] = [
     { match: (p) => p.id === SystemProviderIds.copilot, build: buildCopilotConfig },
-    { match: (p) => p.id === 'cherryai', build: buildCherryAIConfig },
+    { match: (p) => p.id === 'modauiai', build: buildModauiAIConfig },
     { match: (p) => p.id === 'anthropic' && p.authType === 'oauth', build: buildAnthropicConfig },
     { match: (p) => isOllamaProvider(p), build: buildOllamaConfig },
     { match: (p) => isAzureOpenAIProvider(p), build: buildAzureConfig },
     { match: (_, id) => id === 'bedrock', build: buildBedrockConfig },
     { match: (_, id) => id === 'google-vertex', build: buildVertexConfig },
-    { match: (_, id) => id === 'cherryin', build: buildCherryinConfig },
+    { match: (_, id) => id === 'modauiin', build: buildCherryinConfig },
     { match: (_, id) => id === 'newapi', build: buildNewApiConfig },
     { match: (_, id) => id === 'aihubmix', build: buildAiHubMixConfig }
   ]
@@ -250,23 +250,23 @@ function buildVertexConfig(
   } as ProviderConfig<'google-vertex'> | ProviderConfig<'google-vertex-anthropic'>
 }
 
-function buildCherryinConfig(ctx: BuilderContext): ProviderConfig<'cherryin'> {
-  const cherryinProvider = getProviderById(SystemProviderIds.cherryin)
+function buildCherryinConfig(ctx: BuilderContext): ProviderConfig<'modauiin'> {
+  const modauiinProvider = getProviderById(SystemProviderIds.modauiin)
 
   return {
-    providerId: 'cherryin',
+    providerId: 'modauiin',
     endpoint: ctx.endpoint,
     providerSettings: {
       ...ctx.baseConfig,
       endpointType: ctx.model.endpoint_type,
-      anthropicBaseURL: cherryinProvider ? cherryinProvider.anthropicApiHost + '/v1' : undefined,
-      geminiBaseURL: cherryinProvider ? cherryinProvider.apiHost + '/v1beta' : undefined,
+      anthropicBaseURL: modauiinProvider ? modauiinProvider.anthropicApiHost + '/v1' : undefined,
+      geminiBaseURL: modauiinProvider ? modauiinProvider.apiHost + '/v1beta' : undefined,
       headers: { ...defaultAppHeaders(), ...ctx.actualProvider.extra_headers }
     }
   }
 }
 
-async function buildCherryAIConfig(ctx: BuilderContext): Promise<ProviderConfig<'openai-compatible'>> {
+async function buildModauiAIConfig(ctx: BuilderContext): Promise<ProviderConfig<'openai-compatible'>> {
   return {
     providerId: 'openai-compatible',
     endpoint: ctx.endpoint,
@@ -275,7 +275,7 @@ async function buildCherryAIConfig(ctx: BuilderContext): Promise<ProviderConfig<
       name: ctx.actualProvider.id,
       headers: { ...defaultAppHeaders(), ...ctx.actualProvider.extra_headers },
       fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
-        const signature = await window.api.cherryai.generateSignature({
+        const signature = await window.api.modauiai.generateSignature({
           method: 'POST',
           path: '/chat/completions',
           query: '',

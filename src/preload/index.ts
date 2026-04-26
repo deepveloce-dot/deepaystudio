@@ -481,15 +481,15 @@ const api = {
     logout: () => ipcRenderer.invoke(IpcChannel.Copilot_Logout),
     getUser: (token: string) => ipcRenderer.invoke(IpcChannel.Copilot_GetUser, token)
   },
-  cherryin: {
+  modauiin: {
     saveToken: (accessToken: string, refreshToken?: string) =>
-      ipcRenderer.invoke(IpcChannel.CherryIN_SaveToken, accessToken, refreshToken),
-    hasToken: (): Promise<boolean> => ipcRenderer.invoke(IpcChannel.CherryIN_HasToken),
-    getBalance: (apiHost: string) => ipcRenderer.invoke(IpcChannel.CherryIN_GetBalance, apiHost),
-    logout: (apiHost: string) => ipcRenderer.invoke(IpcChannel.CherryIN_Logout, apiHost),
+      ipcRenderer.invoke(IpcChannel.ModauiIN_SaveToken, accessToken, refreshToken),
+    hasToken: (): Promise<boolean> => ipcRenderer.invoke(IpcChannel.ModauiIN_HasToken),
+    getBalance: (apiHost: string) => ipcRenderer.invoke(IpcChannel.ModauiIN_GetBalance, apiHost),
+    logout: (apiHost: string) => ipcRenderer.invoke(IpcChannel.ModauiIN_Logout, apiHost),
     startOAuthFlow: (oauthServer: string, apiHost?: string) =>
-      ipcRenderer.invoke(IpcChannel.CherryIN_StartOAuthFlow, oauthServer, apiHost),
-    exchangeToken: (code: string, state: string) => ipcRenderer.invoke(IpcChannel.CherryIN_ExchangeToken, code, state)
+      ipcRenderer.invoke(IpcChannel.ModauiIN_StartOAuthFlow, oauthServer, apiHost),
+    exchangeToken: (code: string, state: string) => ipcRenderer.invoke(IpcChannel.ModauiIN_ExchangeToken, code, state)
   },
   // Binary related APIs
   isBinaryExist: (name: string) => ipcRenderer.invoke(IpcChannel.App_IsBinaryExist, name),
@@ -802,7 +802,7 @@ const api = {
       ipcRenderer.invoke(IpcChannel.OCR_ocr, file, provider),
     listProviders: (): Promise<string[]> => ipcRenderer.invoke(IpcChannel.OCR_ListProviders)
   },
-  cherryai: {
+  modauiai: {
     generateSignature: (params: { method: string; path: string; query: string; body: Record<string, any> }) =>
       ipcRenderer.invoke(IpcChannel.Cherryai_GetSignature, params)
   },

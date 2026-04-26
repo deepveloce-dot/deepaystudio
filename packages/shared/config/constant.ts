@@ -513,10 +513,10 @@ export interface GitBashPathInfo {
   source: GitBashPathSource | null
 }
 
-// CherryIN OAuth configuration
+// ModauiIN OAuth configuration
 export const CHERRYIN_CONFIG = {
   CLIENT_ID: '2a348c87-bae1-4756-a62f-b2e97200fd6d',
-  ALLOWED_HOSTS: ['https://open.cherryin.ai', 'https://open.cherryin.dev'],
+  ALLOWED_HOSTS: ['https://open.modauiin.ai', 'https://open.modauiin.dev'],
   REDIRECT_URI: 'modauistudio://oauth/callback',
   SCOPES: 'openid profile email offline_access balance:read usage:read tokens:read tokens:write'
 }

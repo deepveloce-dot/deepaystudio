@@ -2,18 +2,18 @@ import { loggerService } from '@logger'
 import { AgentModelValidationError, agentService, sessionService } from '@main/services/agents'
 import { channelManager } from '@main/services/agents/services/channels'
 import { schedulerService } from '@main/services/agents/services/SchedulerService'
-import type { CherryClawConfiguration, ListAgentsResponse, ReplaceAgentRequest, UpdateAgentRequest } from '@types'
+import type { ModauiClawConfiguration, ListAgentsResponse, ReplaceAgentRequest, UpdateAgentRequest } from '@types'
 import type { Request, Response } from 'express'
 
 import type { ValidationRequest } from '../validators/zodValidator'
 
 const logger = loggerService.withContext('ApiServerAgentsHandlers')
 
-const getCherryClawConfig = (agent: { configuration?: unknown }): CherryClawConfiguration =>
-  (agent.configuration ?? {}) as CherryClawConfiguration
+const getModauiClawConfig = (agent: { configuration?: unknown }): ModauiClawConfiguration =>
+  (agent.configuration ?? {}) as ModauiClawConfiguration
 
 function syncSchedulerIfNeeded(agentId: string, agent: { configuration?: unknown }): void {
-  const config = getCherryClawConfig(agent)
+  const config = getModauiClawConfig(agent)
   if (!config.heartbeat_enabled && !config.scheduler_enabled) return
 
   void schedulerService.syncScheduler()
@@ -82,7 +82,7 @@ export const createAgent = async (req: Request, res: Response): Promise<Response
       logger.info('Default session created for agent', { agentId: agent.id })
 
       // Create heartbeat task if heartbeat is enabled
-      const createConfig = getCherryClawConfig(agent)
+      const createConfig = getModauiClawConfig(agent)
       if (createConfig.heartbeat_enabled) {
         await schedulerService.ensureHeartbeatTask(agent.id, createConfig.heartbeat_interval ?? 30)
       }

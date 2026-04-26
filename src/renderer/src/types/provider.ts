@@ -139,7 +139,7 @@ export type Provider = {
 }
 
 export const SystemProviderIdSchema = z.enum([
-  'cherryin',
+  'modauiin',
   'silicon',
   'aihubmix',
   'ocoolai',
@@ -211,7 +211,7 @@ export const isSystemProviderId = (id: string): id is SystemProviderId => {
 }
 
 export const SystemProviderIds = {
-  cherryin: 'cherryin',
+  modauiin: 'modauiin',
   silicon: 'silicon',
   aihubmix: 'aihubmix',
   ocoolai: 'ocoolai',

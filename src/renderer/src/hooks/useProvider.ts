@@ -50,7 +50,7 @@ const selectUserProviders = createSelector(selectProviders, (providers) =>
 
 const selectAllProviders = createSelector(selectProviders, (providers) => providers.map(normalizeProvider))
 
-const selectAllProvidersWithCherryAI = createSelector(selectProviders, (providers) =>
+const selectAllProvidersWithModauiAI = createSelector(selectProviders, (providers) =>
   [...providers, CHERRYAI_PROVIDER].map(normalizeProvider)
 )
 
@@ -80,7 +80,7 @@ export function useAllProviders() {
 }
 
 export function useProvider(id: string) {
-  const allProviders = useAppSelector(selectAllProvidersWithCherryAI)
+  const allProviders = useAppSelector(selectAllProvidersWithModauiAI)
   const provider = useMemo(() => allProviders.find((p) => p.id === id) || getDefaultProvider(), [allProviders, id])
   const dispatch = useAppDispatch()
 

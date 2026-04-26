@@ -160,10 +160,10 @@ describe('resolveLegacyModelReference', () => {
 
   it('returns dangling for a legacy model that was not migrated', () => {
     expect(
-      resolveLegacyModelReference({ id: 'qwen', provider: 'cherryai' }, undefined, new Set(['openai::gpt-4']))
+      resolveLegacyModelReference({ id: 'qwen', provider: 'modauiai' }, undefined, new Set(['openai::gpt-4']))
     ).toEqual({
       kind: 'dangling',
-      modelId: 'cherryai::qwen'
+      modelId: 'modauiai::qwen'
     })
   })
 

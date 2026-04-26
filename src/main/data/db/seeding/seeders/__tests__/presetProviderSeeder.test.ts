@@ -13,7 +13,7 @@ import { setupTestDatabase } from '@test-helpers/db'
 import { describe, expect, it, vi } from 'vitest'
 
 // Fake registry providers — two preset providers: 'openai' and 'anthropic'.
-// The seeder always also adds 'cherryai' as a built-in.
+// The seeder always also adds 'modauiai' as a built-in.
 vi.mock('@modauistudio/provider-registry/node', () => {
   class RegistryLoader {
     loadProviders() {
@@ -46,7 +46,7 @@ vi.mock('@modauistudio/provider-registry', async () => {
 describe('PresetProviderSeeder.run — insert-only behavior', () => {
   const dbh = setupTestDatabase()
 
-  it('should insert all preset providers (plus cherryai) when DB is empty', async () => {
+  it('should insert all preset providers (plus modauiai) when DB is empty', async () => {
     const seed = new PresetProviderSeeder()
     await seed.run(dbh.db)
 
@@ -54,7 +54,7 @@ describe('PresetProviderSeeder.run — insert-only behavior', () => {
     const ids = rows.map((r) => r.providerId)
     expect(ids).toContain('openai')
     expect(ids).toContain('anthropic')
-    expect(ids).toContain('cherryai')
+    expect(ids).toContain('modauiai')
   })
 
   it('should NOT re-insert openai when it already exists in DB', async () => {
@@ -70,14 +70,14 @@ describe('PresetProviderSeeder.run — insert-only behavior', () => {
 
     const ids = rows.map((r) => r.providerId)
     expect(ids).toContain('anthropic')
-    expect(ids).toContain('cherryai')
+    expect(ids).toContain('modauiai')
   })
 
-  it('should not insert anything when all providers (including cherryai) already exist', async () => {
+  it('should not insert anything when all providers (including modauiai) already exist', async () => {
     await dbh.db.insert(userProviderTable).values([
       { providerId: 'openai', name: 'OpenAI' },
       { providerId: 'anthropic', name: 'Anthropic' },
-      { providerId: 'cherryai', name: 'CherryAI' }
+      { providerId: 'modauiai', name: 'ModauiAI' }
     ])
     const before = await dbh.db.select().from(userProviderTable)
 

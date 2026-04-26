@@ -334,7 +334,7 @@ describe('ClawServer', () => {
 
     const agentWithConfig = {
       id: 'agent_1',
-      name: 'CherryClaw',
+      name: 'ModauiClaw',
       model: 'claude-sonnet-4-20250514',
       configuration: {
         soul_enabled: true,
@@ -345,7 +345,7 @@ describe('ClawServer', () => {
 
     const agentNoConfig = {
       id: 'agent_1',
-      name: 'CherryClaw',
+      name: 'ModauiClaw',
       model: 'claude-sonnet-4-20250514',
       configuration: { soul_enabled: false },
       accessible_paths: ['/workspace/test']

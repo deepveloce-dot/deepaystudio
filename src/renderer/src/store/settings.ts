@@ -429,7 +429,7 @@ export const initialState: SettingsState = {
   localBackupSyncInterval: 0,
   localBackupMaxBackups: 0,
   localBackupSkipBackupFile: false,
-  defaultPaintingProvider: 'cherryin',
+  defaultPaintingProvider: 'modauiin',
   s3: {
     endpoint: '',
     region: '',

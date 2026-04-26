@@ -1,11 +1,11 @@
 # Claw MCP Server
 
-The Claw MCP server is a built-in MCP (Model Context Protocol) server automatically injected into every CherryClaw session. It provides four self-management tools for the agent: `cron` (task scheduling), `notify` (notifications), `skills` (skill management), and `memory` (memory management).
+The Claw MCP server is a built-in MCP (Model Context Protocol) server automatically injected into every ModauiClaw session. It provides four self-management tools for the agent: `cron` (task scheduling), `notify` (notifications), `skills` (skill management), and `memory` (memory management).
 
 ## Architecture
 
 ```
-CherryClawService.invoke()
+ModauiClawService.invoke()
   → Create ClawServer instance (one new instance per invocation)
   → Inject as in-memory MCP server:
       _internalMcpServers = { claw: { type: 'inmem', instance: clawServer.mcpServer } }
@@ -13,11 +13,11 @@ CherryClawService.invoke()
   → SDK auto-discovers tools: mcp__claw__cron, mcp__claw__notify, mcp__claw__skills, mcp__claw__memory
 ```
 
-ClawServer uses the `@modelcontextprotocol/sdk` `McpServer` class, running in memory mode (no HTTP transport). A new instance is created per CherryClaw session invocation, bound to the current agent's ID.
+ClawServer uses the `@modelcontextprotocol/sdk` `McpServer` class, running in memory mode (no HTTP transport). A new instance is created per ModauiClaw session invocation, bound to the current agent's ID.
 
 ## Tool Whitelist
 
-When an agent has an explicit `allowed_tools` whitelist, `CherryClawService` automatically appends the `mcp__claw__*` wildcard to ensure the SDK doesn't filter out internal MCP tools. When `allowed_tools` is undefined (unrestricted), all tools are already available.
+When an agent has an explicit `allowed_tools` whitelist, `ModauiClawService` automatically appends the `mcp__claw__*` wildcard to ensure the SDK doesn't filter out internal MCP tools. When `allowed_tools` is undefined (unrestricted), all tools are already available.
 
 ---
 
@@ -121,7 +121,7 @@ No parameters. Returns all installed skills for the current agent, including `na
 
 ## memory Tool
 
-Manage persistent cross-session memory. This is the write interface for CherryClaw's memory system (reading is done via inline content in the system prompt).
+Manage persistent cross-session memory. This is the write interface for ModauiClaw's memory system (reading is done via inline content in the system prompt).
 
 ### Design Principle
 
@@ -180,4 +180,4 @@ All tool calls execute within an internal try-catch. On error, returns an `{ isE
 |---|---|
 | `src/main/mcpServers/claw.ts` | ClawServer complete implementation (4 tools + helpers) |
 | `src/main/mcpServers/__tests__/claw.test.ts` | 37 unit tests |
-| `src/main/services/agents/services/cherryclaw/index.ts` | MCP server injection logic |
+| `src/main/services/agents/services/modauiclaw/index.ts` | MCP server injection logic |

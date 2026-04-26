@@ -49,9 +49,9 @@ export const CLI_TOOLS = [
   { value: codeCLI.openCode, label: 'OpenCode', icon: OpenCode }
 ] as const satisfies ReadonlyArray<{ value: codeCLI; label: string; icon: IconComponent }>
 
-export const GEMINI_SUPPORTED_PROVIDERS = ['aihubmix', 'dmxapi', 'new-api', 'cherryin']
+export const GEMINI_SUPPORTED_PROVIDERS = ['aihubmix', 'dmxapi', 'new-api', 'modauiin']
 
-export const OPENAI_CODEX_SUPPORTED_PROVIDERS = ['openai', 'openrouter', 'aihubmix', 'new-api', 'cherryin']
+export const OPENAI_CODEX_SUPPORTED_PROVIDERS = ['openai', 'openrouter', 'aihubmix', 'new-api', 'modauiin']
 
 // Provider 过滤映射
 export const CLI_TOOL_PROVIDER_MAP: Record<string, (providers: Provider[]) => Provider[]> = {

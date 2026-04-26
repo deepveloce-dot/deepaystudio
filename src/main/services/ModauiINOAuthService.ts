@@ -6,7 +6,7 @@ import * as z from 'zod'
 
 import { reduxService } from './ReduxService'
 
-const logger = loggerService.withContext('CherryINOAuthService')
+const logger = loggerService.withContext('ModauiINOAuthService')
 
 // Zod schemas for API response validation
 const BalanceDataSchema = z.object({
@@ -55,13 +55,13 @@ export interface TokenExchangeResult {
   apiKeys: string
 }
 
-class CherryINOAuthServiceError extends Error {
+class ModauiINOAuthServiceError extends Error {
   constructor(
     message: string,
     public readonly cause?: unknown
   ) {
     super(message)
-    this.name = 'CherryINOAuthServiceError'
+    this.name = 'ModauiINOAuthServiceError'
   }
 }
 
@@ -85,13 +85,13 @@ function cleanupExpiredFlows(): void {
   }
 }
 
-class CherryINOAuthService {
+class ModauiINOAuthService {
   /**
    * Validate API host against allowlist to prevent SSRF attacks
    */
   private validateApiHost(apiHost: string): void {
     if (!CHERRYIN_CONFIG.ALLOWED_HOSTS.includes(apiHost)) {
-      throw new CherryINOAuthServiceError(`Unauthorized API host: ${apiHost}`)
+      throw new ModauiINOAuthServiceError(`Unauthorized API host: ${apiHost}`)
     }
   }
 
@@ -121,7 +121,7 @@ class CherryINOAuthService {
 
   /**
    * Start OAuth flow - generates PKCE params and returns auth URL
-   * @param oauthServer - OAuth server URL (e.g., https://open.cherryin.ai)
+   * @param oauthServer - OAuth server URL (e.g., https://open.modauiin.ai)
    * @param apiHost - API host URL (defaults to oauthServer)
    * @returns authUrl to open in browser and state for later verification
    */
@@ -183,7 +183,7 @@ class CherryINOAuthService {
     // Retrieve stored code_verifier and config
     const flowData = pendingOAuthFlows.get(state)
     if (!flowData) {
-      throw new CherryINOAuthServiceError('OAuth flow expired or not found')
+      throw new ModauiINOAuthServiceError('OAuth flow expired or not found')
     }
     pendingOAuthFlows.delete(state)
 
@@ -210,7 +210,7 @@ class CherryINOAuthService {
       if (!tokenResponse.ok) {
         const errorText = await tokenResponse.text()
         logger.error(`Token exchange failed: ${tokenResponse.status} ${errorText}`)
-        throw new CherryINOAuthServiceError(`Failed to exchange code for token: ${tokenResponse.status}`)
+        throw new ModauiINOAuthServiceError(`Failed to exchange code for token: ${tokenResponse.status}`)
       }
 
       const tokenJson = await tokenResponse.json()
@@ -234,7 +234,7 @@ class CherryINOAuthService {
       if (!apiKeysResponse.ok) {
         const errorText = await apiKeysResponse.text()
         logger.error(`Failed to fetch API keys: ${apiKeysResponse.status} ${errorText}`)
-        throw new CherryINOAuthServiceError(`Failed to fetch API keys: ${apiKeysResponse.status}`)
+        throw new ModauiINOAuthServiceError(`Failed to fetch API keys: ${apiKeysResponse.status}`)
       }
 
       const apiKeysJson = await apiKeysResponse.json()
@@ -244,7 +244,7 @@ class CherryINOAuthService {
       const apiKeys = keysArray.filter(Boolean).join(',')
 
       if (!apiKeys) {
-        throw new CherryINOAuthServiceError('No API keys received')
+        throw new ModauiINOAuthServiceError('No API keys received')
       }
 
       logger.debug('Successfully obtained API keys')
@@ -252,7 +252,7 @@ class CherryINOAuthService {
     } catch (error) {
       if (error instanceof z.ZodError) {
         logger.error('Invalid response format:', error.issues)
-        throw new CherryINOAuthServiceError('Invalid response format from server', error)
+        throw new ModauiINOAuthServiceError('Invalid response format from server', error)
       }
       throw error
     }
@@ -272,7 +272,7 @@ class CherryINOAuthService {
       type: 'llm/setCherryInTokens',
       payload
     })
-    logger.debug('Successfully saved CherryIN OAuth tokens to Redux')
+    logger.debug('Successfully saved ModauiIN OAuth tokens to Redux')
   }
 
   /**
@@ -289,7 +289,7 @@ class CherryINOAuthService {
       await this.saveTokenInternal(accessToken, refreshToken)
     } catch (error) {
       logger.error('Failed to save token:', error as Error)
-      throw new CherryINOAuthServiceError('Failed to save OAuth token', error)
+      throw new ModauiINOAuthServiceError('Failed to save OAuth token', error)
     }
   }
 
@@ -386,7 +386,7 @@ class CherryINOAuthService {
   ): Promise<Response> => {
     const token = await this.getToken()
     if (!token) {
-      throw new CherryINOAuthServiceError('No OAuth token found')
+      throw new ModauiINOAuthServiceError('No OAuth token found')
     }
 
     const makeRequest = async (accessToken: string): Promise<Response> => {
@@ -415,7 +415,7 @@ class CherryINOAuthService {
   }
 
   /**
-   * Get user balance from CherryIN API
+   * Get user balance from ModauiIN API
    */
   public getBalance = async (_: Electron.IpcMainInvokeEvent, apiHost: string): Promise<BalanceResponse> => {
     this.validateApiHost(apiHost)
@@ -432,7 +432,7 @@ class CherryINOAuthService {
       const parsed = BalanceResponseSchema.parse(json)
 
       if (!parsed.success) {
-        throw new CherryINOAuthServiceError('API returned success: false')
+        throw new ModauiINOAuthServiceError('API returned success: false')
       }
 
       const { quota } = parsed.data
@@ -446,10 +446,10 @@ class CherryINOAuthService {
     } catch (error) {
       if (error instanceof z.ZodError) {
         logger.error('Invalid balance response format:', error.issues)
-        throw new CherryINOAuthServiceError('Invalid response format from server', error)
+        throw new ModauiINOAuthServiceError('Invalid response format from server', error)
       }
       logger.error('Failed to get balance:', error as Error)
-      throw new CherryINOAuthServiceError('Failed to get balance', error)
+      throw new ModauiINOAuthServiceError('Failed to get balance', error)
     }
   }
 
@@ -486,12 +486,12 @@ class CherryINOAuthService {
       await reduxService.dispatch({
         type: 'llm/clearCherryInTokens'
       })
-      logger.debug('Successfully cleared CherryIN OAuth tokens from Redux')
+      logger.debug('Successfully cleared ModauiIN OAuth tokens from Redux')
     } catch (error) {
       logger.error('Failed to logout:', error as Error)
-      throw new CherryINOAuthServiceError('Failed to logout', error)
+      throw new ModauiINOAuthServiceError('Failed to logout', error)
     }
   }
 }
 
-export const cherryINOAuthService = new CherryINOAuthService()
+export const cherryINOAuthService = new ModauiINOAuthService()

@@ -268,7 +268,7 @@
         "title": "Geplante Aufgaben"
       },
       "warning": {
-        "bypassPermissions": "CherryClaw-Agenten laufen standardmäßig im Vollautomatikmodus. Alle Tools werden ohne Genehmigungsanfrage ausgeführt."
+        "bypassPermissions": "ModauiClaw-Agenten laufen standardmäßig im Vollautomatikmodus. Alle Tools werden ohne Genehmigungsanfrage ausgeführt."
       }
     },
     "delete": {
@@ -2792,15 +2792,15 @@
     },
     "skip": "Überspringen",
     "toast": {
-      "connected": "Erfolgreich mit CherryIN verbunden"
+      "connected": "Erfolgreich mit ModauiIN verbunden"
     },
     "welcome": {
-      "login_cherryin": "Mit CherryIN anmelden",
+      "login_modauiin": "Mit ModauiIN anmelden",
       "or_continue_with": "ODER WEITER MIT",
       "other_provider": "Andere Anbieter auswählen",
       "select_other_provider": "Wählen Sie einen anderen Anbieter",
       "setup_hint": "Bitte konfigurieren Sie mindestens einen Anbieter für die beste Erfahrung.",
-      "subtitle": "Genießen Sie erstklassige KI-Dienste mit CherryIN",
+      "subtitle": "Genießen Sie erstklassige KI-Dienste mit ModauiIN",
       "title": "Willkommen bei Modaui Studio"
     }
   },
@@ -3281,7 +3281,7 @@
     "burncloud": "BurnCloud",
     "cephalon": "Cephalon",
     "cerebras": "Cerebras AI",
-    "cherryin": "CherryIN",
+    "modauiin": "ModauiIN",
     "copilot": "GitHub Copilot",
     "dashscope": "Alibaba Cloud Bailian",
     "deepseek": "DeepSeek",
