@@ -1,6 +1,6 @@
 # Fuzzy Search for File List
 
-This document describes the fuzzy search implementation for file listing in Cherry Studio.
+This document describes the fuzzy search implementation for file listing in Modaui Studio.
 
 ## Overview
 

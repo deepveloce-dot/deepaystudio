@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { isMac } from '@renderer/config/constant'
 import useMacTransparentWindow from '@renderer/hooks/useMacTransparentWindow'
 import { cn, uuid } from '@renderer/utils'

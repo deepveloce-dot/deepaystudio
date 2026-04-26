@@ -1,5 +1,5 @@
 /**
- * Cherry Studio AI Core Package
+ * Modaui Studio AI Core Package
  * 基于 Vercel AI SDK 的统一 AI Provider 接口
  */
 

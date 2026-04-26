@@ -453,7 +453,7 @@ describe('parseUpdateStatus', () => {
       input: [
         'OpenClaw update status',
         '┌──────────┬─────────────────────────────────┐',
-        '│ Install  │ binary (~/.cherrystudio/bin)     │',
+        '│ Install  │ binary (~/.modauistudio/bin)     │',
         '│ Channel  │ stable (default)                 │',
         '│ Update   │ available · binary · 2026.3.12   │',
         '└──────────┴─────────────────────────────────┘',
@@ -477,7 +477,7 @@ describe('parseUpdateStatus', () => {
       input: [
         'OpenClaw update status',
         '┌──────────┬─────────────────────────────────┐',
-        '│ Install  │ binary (~/.cherrystudio/bin)     │',
+        '│ Install  │ binary (~/.modauistudio/bin)     │',
         '│ Channel  │ stable (default)                 │',
         '│ Update   │ available · pkg · npm update 2026.3.11 │',
         '└──────────┴─────────────────────────────────┘',

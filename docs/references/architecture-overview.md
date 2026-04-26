@@ -2,11 +2,11 @@
 
 > **Note**: The v2 branch is undergoing a major architecture refactoring. This document will be continuously updated as the refactoring progresses. Some sections may describe the target architecture rather than the current state.
 
-This document provides a high-level overview of Cherry Studio's architecture, covering the Electron process model, key subsystems, data flow, and monorepo structure.
+This document provides a high-level overview of Modaui Studio's architecture, covering the Electron process model, key subsystems, data flow, and monorepo structure.
 
 ## Process Model
 
-Cherry Studio is an Electron application with three process types:
+Modaui Studio is an Electron application with three process types:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -81,7 +81,7 @@ User Input (React UI)
 
 ## Four Data Systems
 
-Cherry Studio uses four data systems, each optimized for different data characteristics:
+Modaui Studio uses four data systems, each optimized for different data characteristics:
 
 | System | Storage | Timing | Use Case |
 |--------|---------|--------|----------|
@@ -135,7 +135,7 @@ See [AI Core Architecture](./ai-core-architecture.md) for the complete data flow
 ## Monorepo Structure
 
 ```
-cherry-studio
+modaui-studio
 ├── src/
 │   ├── main/                    # Main process (Node.js)
 │   │   ├── core/                #   Lifecycle, Application, paths
@@ -159,8 +159,8 @@ cherry-studio
 │
 ├── packages/
 │   ├── shared/                  #   Shared types, schemas, constants
-│   ├── ui/                      #   @cherrystudio/ui (Shadcn + Tailwind)
-│   ├── aiCore/                  #   @cherrystudio/ai-core
+│   ├── ui/                      #   @modauistudio/ui (Shadcn + Tailwind)
+│   ├── aiCore/                  #   @modauistudio/ai-core
 │   ├── ai-sdk-provider/         #   Custom AI SDK providers
 │   ├── provider-registry/       #   Provider registry
 │   ├── mcp-trace/               #   OpenTelemetry tracing
@@ -188,7 +188,7 @@ cherry-studio
 
 ## Window Architecture
 
-Cherry Studio runs multiple windows, each with its own renderer entry point:
+Modaui Studio runs multiple windows, each with its own renderer entry point:
 
 | Window | Purpose |
 |--------|---------|

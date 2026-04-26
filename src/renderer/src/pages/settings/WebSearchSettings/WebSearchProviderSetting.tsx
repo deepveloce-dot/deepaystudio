@@ -1,5 +1,5 @@
 import { CheckOutlined, ExportOutlined, LoadingOutlined } from '@ant-design/icons'
-import { Button, Flex, InfoTooltip, RowFlex, Tooltip } from '@cherrystudio/ui'
+import { Button, Flex, InfoTooltip, RowFlex, Tooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import ApiKeyListPopup from '@renderer/components/Popups/ApiKeyListPopup/popup'
 import {

@@ -23,7 +23,7 @@ src/main/data/migration/v2/
 > **⚠️ WARNING: Not using predefined paths may cause user data loss.**
 >
 > v1 users may have configured a custom userData directory via
-> `~/.cherrystudio/config/config.json`. If migration code calls
+> `~/.modauistudio/config/config.json`. If migration code calls
 > `app.getPath('userData')` or `new Store()` directly, on the first v2
 > launch it will read from the Electron default path instead of the
 > user's actual data directory — causing migration to be silently
@@ -36,9 +36,9 @@ paths with `path.join()` from scratch inside migration code.
 | Correct ✅ | Wrong ❌ |
 |-----------|---------|
 | `ctx.paths.userData` | `app.getPath('userData')` |
-| `ctx.paths.databaseFile` | `path.join(app.getPath('userData'), 'cherrystudio.sqlite')` |
+| `ctx.paths.databaseFile` | `path.join(app.getPath('userData'), 'modauistudio.sqlite')` |
 | `ctx.paths.knowledgeBaseDir` | `path.join(app.getPath('userData'), 'Data', 'KnowledgeBase')` |
-| `ctx.paths.legacyConfigFile` | `path.join(os.homedir(), '.cherrystudio', 'config', 'config.json')` |
+| `ctx.paths.legacyConfigFile` | `path.join(os.homedir(), '.modauistudio', 'config', 'config.json')` |
 | `new Store({ cwd: ctx.paths.userData })` | `new Store()` |
 
 `MigrationPaths` is resolved once at the migration gate entry by

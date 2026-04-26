@@ -1,5 +1,5 @@
-import { Button, PageSidePanel } from '@cherrystudio/ui'
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { Button, PageSidePanel } from '@modauistudio/ui'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { Check, Cpu, Play, Sparkles, Terminal as TerminalIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'

@@ -1,4 +1,4 @@
-import { Button, Switch, Tooltip } from '@cherrystudio/ui'
+import { Button, Switch, Tooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { DeleteIcon } from '@renderer/components/Icons'

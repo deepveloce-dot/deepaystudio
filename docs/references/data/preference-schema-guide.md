@@ -1,6 +1,6 @@
 # Preference Schema Guide
 
-This guide explains how to add new preference keys to Cherry Studio.
+This guide explains how to add new preference keys to Modaui Studio.
 
 ## Key Naming Conventions
 

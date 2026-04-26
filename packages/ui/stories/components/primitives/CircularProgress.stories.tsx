@@ -1,4 +1,4 @@
-import { CircularProgress, Slider } from '@cherrystudio/ui'
+import { CircularProgress, Slider } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
 

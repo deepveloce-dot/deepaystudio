@@ -55,7 +55,7 @@ for arg in "$@"; do
 done
 
 # ─── 1. pre-flight checks ─────────────────────────────────────────────────────
-echo -e "\n${BOLD}Cherry Studio – Auto Full-Stack Deploy${RESET}\n"
+echo -e "\n${BOLD}Modaui Studio – Auto Full-Stack Deploy${RESET}\n"
 
 log "Checking prerequisites…"
 

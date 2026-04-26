@@ -159,52 +159,52 @@ afterEach(() => {
 describe('getNormalizedExecutablePath', () => {
   it('macOS: returns app.getPath("exe") verbatim', async () => {
     stubConstants({ isLinux: false, isWin: false, isPortable: false })
-    stubElectron({ exePath: '/Applications/Cherry Studio.app/Contents/MacOS/Cherry Studio' })
+    stubElectron({ exePath: '/Applications/Modaui Studio.app/Contents/MacOS/Modaui Studio' })
     stubBootConfig()
     stubFs()
     const { getNormalizedExecutablePath } = await loadModule()
-    expect(getNormalizedExecutablePath()).toBe('/Applications/Cherry Studio.app/Contents/MacOS/Cherry Studio')
+    expect(getNormalizedExecutablePath()).toBe('/Applications/Modaui Studio.app/Contents/MacOS/Modaui Studio')
   })
 
   it('Linux without APPIMAGE env: returns app.getPath("exe") verbatim', async () => {
     vi.stubEnv('APPIMAGE', '')
     stubConstants({ isLinux: true, isWin: false, isPortable: false })
-    stubElectron({ exePath: '/usr/bin/cherry-studio' })
+    stubElectron({ exePath: '/usr/bin/modaui-studio' })
     stubBootConfig()
     stubFs()
     const { getNormalizedExecutablePath } = await loadModule()
-    expect(getNormalizedExecutablePath()).toBe('/usr/bin/cherry-studio')
+    expect(getNormalizedExecutablePath()).toBe('/usr/bin/modaui-studio')
   })
 
   it('Linux with APPIMAGE env: returns normalized AppImage path', async () => {
-    vi.stubEnv('APPIMAGE', '/home/alice/Applications/CherryStudio-1.0.0.AppImage')
+    vi.stubEnv('APPIMAGE', '/home/alice/Applications/ModauiStudio-1.0.0.AppImage')
     stubConstants({ isLinux: true, isWin: false, isPortable: false })
-    stubElectron({ exePath: '/tmp/.mount_xxxx/usr/bin/cherry-studio' })
+    stubElectron({ exePath: '/tmp/.mount_xxxx/usr/bin/modaui-studio' })
     stubBootConfig()
     stubFs()
     const { getNormalizedExecutablePath } = await loadModule()
     // path.join is globally mocked to args.join('/'); path.dirname is real.
-    expect(getNormalizedExecutablePath()).toBe('/home/alice/Applications/cherry-studio.appimage')
+    expect(getNormalizedExecutablePath()).toBe('/home/alice/Applications/modaui-studio.appimage')
   })
 
   it('Windows non-portable: returns app.getPath("exe") verbatim', async () => {
     stubConstants({ isLinux: false, isWin: true, isPortable: false })
-    stubElectron({ exePath: 'C:\\Program Files\\Cherry Studio\\Cherry Studio.exe' })
+    stubElectron({ exePath: 'C:\\Program Files\\Modaui Studio\\Modaui Studio.exe' })
     stubBootConfig()
     stubFs()
     const { getNormalizedExecutablePath } = await loadModule()
-    expect(getNormalizedExecutablePath()).toBe('C:\\Program Files\\Cherry Studio\\Cherry Studio.exe')
+    expect(getNormalizedExecutablePath()).toBe('C:\\Program Files\\Modaui Studio\\Modaui Studio.exe')
   })
 
-  it('Windows portable: returns PORTABLE_EXECUTABLE_DIR/cherry-studio-portable.exe', async () => {
-    vi.stubEnv('PORTABLE_EXECUTABLE_DIR', 'D:\\PortableApps\\CherryStudio')
+  it('Windows portable: returns PORTABLE_EXECUTABLE_DIR/modaui-studio-portable.exe', async () => {
+    vi.stubEnv('PORTABLE_EXECUTABLE_DIR', 'D:\\PortableApps\\ModauiStudio')
     stubConstants({ isLinux: false, isWin: true, isPortable: true })
-    stubElectron({ exePath: 'D:\\PortableApps\\CherryStudio\\Cherry Studio.exe' })
+    stubElectron({ exePath: 'D:\\PortableApps\\ModauiStudio\\Modaui Studio.exe' })
     stubBootConfig()
     stubFs()
     const { getNormalizedExecutablePath } = await loadModule()
     // path.join is globally mocked to args.join('/').
-    expect(getNormalizedExecutablePath()).toBe('D:\\PortableApps\\CherryStudio/cherry-studio-portable.exe')
+    expect(getNormalizedExecutablePath()).toBe('D:\\PortableApps\\ModauiStudio/modaui-studio-portable.exe')
   })
 })
 
@@ -271,14 +271,14 @@ describe('resolveUserDataLocation', () => {
     })
 
     it('BootConfig empty + isPortable=true: setPath called with portableDir/data', async () => {
-      vi.stubEnv('PORTABLE_EXECUTABLE_DIR', 'D:\\PortableApps\\CherryStudio')
+      vi.stubEnv('PORTABLE_EXECUTABLE_DIR', 'D:\\PortableApps\\ModauiStudio')
       stubConstants({ isLinux: false, isWin: true, isPortable: true })
-      stubElectron({ exePath: 'D:\\PortableApps\\CherryStudio\\Cherry Studio.exe' })
+      stubElectron({ exePath: 'D:\\PortableApps\\ModauiStudio\\Modaui Studio.exe' })
       stubBootConfig({ 'app.user_data_path': {} })
       stubFs()
       const { resolveUserDataLocation } = await loadModule()
       resolveUserDataLocation()
-      expect(setPathMock).toHaveBeenCalledWith('userData', 'D:\\PortableApps\\CherryStudio/data')
+      expect(setPathMock).toHaveBeenCalledWith('userData', 'D:\\PortableApps\\ModauiStudio/data')
       expect(setPathMock).toHaveBeenCalledTimes(1)
     })
 
@@ -293,13 +293,13 @@ describe('resolveUserDataLocation', () => {
     })
 
     it('AppImage normalized key matches in BootConfig: setPath called', async () => {
-      vi.stubEnv('APPIMAGE', '/home/alice/Apps/CherryStudio-1.0.0.AppImage')
+      vi.stubEnv('APPIMAGE', '/home/alice/Apps/ModauiStudio-1.0.0.AppImage')
       stubConstants({ isLinux: true, isWin: false, isPortable: false })
-      stubElectron({ exePath: '/tmp/.mount_abc/usr/bin/cherry-studio' })
+      stubElectron({ exePath: '/tmp/.mount_abc/usr/bin/modaui-studio' })
       // Key matches the *normalized* path, not raw exe.
       stubBootConfig({
         'app.user_data_path': {
-          '/home/alice/Apps/cherry-studio.appimage': '/home/alice/cherry-data'
+          '/home/alice/Apps/modaui-studio.appimage': '/home/alice/cherry-data'
         }
       })
       stubFs({ existsSyncImpl: () => true, accessSyncImpl: () => undefined })
@@ -309,12 +309,12 @@ describe('resolveUserDataLocation', () => {
     })
 
     it('Windows portable normalized key matches in BootConfig: setPath called', async () => {
-      vi.stubEnv('PORTABLE_EXECUTABLE_DIR', 'D:\\PortableApps\\CherryStudio')
+      vi.stubEnv('PORTABLE_EXECUTABLE_DIR', 'D:\\PortableApps\\ModauiStudio')
       stubConstants({ isLinux: false, isWin: true, isPortable: true })
-      stubElectron({ exePath: 'D:\\PortableApps\\CherryStudio\\Cherry Studio.exe' })
+      stubElectron({ exePath: 'D:\\PortableApps\\ModauiStudio\\Modaui Studio.exe' })
       stubBootConfig({
         'app.user_data_path': {
-          'D:\\PortableApps\\CherryStudio/cherry-studio-portable.exe': 'D:\\Data\\Cherry'
+          'D:\\PortableApps\\ModauiStudio/modaui-studio-portable.exe': 'D:\\Data\\Cherry'
         }
       })
       stubFs({ existsSyncImpl: () => true, accessSyncImpl: () => undefined })

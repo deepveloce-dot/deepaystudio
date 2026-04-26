@@ -17,7 +17,7 @@ export class AppService {
     } else if (isLinux) {
       try {
         const autostartDir = path.join(os.homedir(), '.config', 'autostart')
-        const desktopFile = path.join(autostartDir, isDev ? 'cherry-studio-dev.desktop' : 'cherry-studio.desktop')
+        const desktopFile = path.join(autostartDir, isDev ? 'modaui-studio-dev.desktop' : 'modaui-studio.desktop')
 
         if (isLaunchOnBoot) {
           // Ensure autostart directory exists
@@ -37,10 +37,10 @@ export class AppService {
           // Create desktop file content
           const desktopContent = `[Desktop Entry]
   Type=Application
-  Name=Cherry Studio
+  Name=Modaui Studio
   Comment=A powerful AI assistant for producer.
   Exec=${executablePath}
-  Icon=cherrystudio
+  Icon=modauistudio
   Terminal=false
   StartupNotify=false
   Categories=Development;Utility;

@@ -1,5 +1,5 @@
 import { CheckOutlined, FolderOutlined, LoadingOutlined, SyncOutlined } from '@ant-design/icons'
-import { Button, RowFlex, Switch, WarnTooltip } from '@cherrystudio/ui'
+import { Button, RowFlex, Switch, WarnTooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import NutstorePathPopup from '@renderer/components/Popups/NutsorePathPopup'
 import Selector from '@renderer/components/Selector'
@@ -71,8 +71,8 @@ const NutstoreSettings: FC = () => {
           setNutstoreUsername(decrypted.username)
           setNutstorePass(decrypted.access_token)
           if (!nutstorePath) {
-            void setNutstorePath('/cherry-studio')
-            // setStoragePath('/cherry-studio')
+            void setNutstorePath('/modaui-studio')
+            // setStoragePath('/modaui-studio')
           }
         }
       }

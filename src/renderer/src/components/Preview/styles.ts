@@ -1,4 +1,4 @@
-import { Flex } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
 import { styled } from 'styled-components'
 
 export const PreviewError = styled.div`

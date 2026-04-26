@@ -44,7 +44,7 @@ function getUserBinDir(): string {
 }
 
 /**
- * Extract bundled rtk binary to ~/.cherrystudio/bin/ if not already present or outdated.
+ * Extract bundled rtk binary to ~/.modauistudio/bin/ if not already present or outdated.
  * Invoked during agent subsystem bootstrap.
  */
 export async function extractRtkBinaries(): Promise<void> {

@@ -1,5 +1,5 @@
 import { CheckCircleFilled, CloseCircleFilled, ExclamationCircleFilled, LoadingOutlined } from '@ant-design/icons'
-import { Flex, Tooltip } from '@cherrystudio/ui'
+import { Flex, Tooltip } from '@modauistudio/ui'
 import { HealthStatus } from '@renderer/types/healthCheck'
 import { Typography } from 'antd'
 import React, { memo, useCallback } from 'react'

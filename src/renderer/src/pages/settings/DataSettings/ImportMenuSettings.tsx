@@ -1,4 +1,4 @@
-import { RowFlex } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
 import ImportPopup from '@renderer/components/Popups/ImportPopup'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { Button } from 'antd'

@@ -1,4 +1,4 @@
-import { Button, SpaceBetweenRowFlex } from '@cherrystudio/ui'
+import { Button, SpaceBetweenRowFlex } from '@modauistudio/ui'
 import CodeEditor from '@renderer/components/CodeEditor'
 import type { RichEditorRef } from '@renderer/components/RichEditor/types'
 import { usePromptProcessor } from '@renderer/hooks/usePromptProcessor'

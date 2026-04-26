@@ -84,7 +84,7 @@ Use `.ts` files (not JSON):
 
 A preset file should contain both type definitions and preset data:
 
-> **Note:** The `Provider` example below is for illustration purposes only and does not represent the actual provider implementation in Cherry Studio. Your actual data structure will vary based on your specific requirements.
+> **Note:** The `Provider` example below is for illustration purposes only and does not represent the actual provider implementation in Modaui Studio. Your actual data structure will vary based on your specific requirements.
 
 ```typescript
 // packages/shared/data/presets/providers.ts

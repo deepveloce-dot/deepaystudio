@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons'
-import { ColFlex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { ColFlex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import useScrollPosition from '@renderer/hooks/useScrollPosition'
 import { selectAllTopics } from '@renderer/store/assistants'
 import type { Topic } from '@renderer/types'

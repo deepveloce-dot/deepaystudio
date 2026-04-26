@@ -1,5 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons'
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import Ellipsis from '@renderer/components/Ellipsis'
 import VideoPopup from '@renderer/components/Popups/VideoPopup'

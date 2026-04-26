@@ -696,7 +696,7 @@
     },
     "authHeaderText": "Use in Authorization header:",
     "configuration": "Configuration",
-    "description": "Expose Cherry Studio's AI capabilities through OpenAI-compatible HTTP APIs",
+    "description": "Expose Modaui Studio's AI capabilities through OpenAI-compatible HTTP APIs",
     "documentation": {
       "title": "API Documentation"
     },
@@ -2801,12 +2801,12 @@
       "select_other_provider": "Select Other Provider",
       "setup_hint": "Please configure at least one provider for the best experience",
       "subtitle": "Enjoy top-tier AI services with CherryIN",
-      "title": "Welcome to Cherry Studio"
+      "title": "Welcome to Modaui Studio"
     }
   },
   "openclaw": {
     "checking_installation": "Checking OpenClaw installation...",
-    "description": "Use Cherry Studio providers to power OpenClaw, your personal AI assistant that works across WhatsApp, Telegram, Slack, Discord and more.",
+    "description": "Use Modaui Studio providers to power OpenClaw, your personal AI assistant that works across WhatsApp, Telegram, Slack, Discord and more.",
     "error": {
       "select_provider_model": "Please select a provider and model first"
     },
@@ -2915,7 +2915,7 @@
       "stop": "Stop OVMS",
       "stopping": "Stopping"
     },
-    "description": "<div><p>1. Download OV Models.</p><p>2. Add Models in 'Manager'.</p><p>Support Windows Only!</p><p>OVMS Install Path: '%USERPROFILE%\\.cherrystudio\\ovms' .</p><p>Please refer to <a href=https://github.com/openvinotoolkit/model_server/blob/c55551763d02825829337b62c2dcef9339706f79/docs/deploying_server_baremetal.md>Intel OVMS Guide</a></p></dev>",
+    "description": "<div><p>1. Download OV Models.</p><p>2. Add Models in 'Manager'.</p><p>Support Windows Only!</p><p>OVMS Install Path: '%USERPROFILE%\\.modauistudio\\ovms' .</p><p>Please refer to <a href=https://github.com/openvinotoolkit/model_server/blob/c55551763d02825829337b62c2dcef9339706f79/docs/deploying_server_baremetal.md>Intel OVMS Guide</a></p></dev>",
     "download": {
       "button": "Download",
       "error": "Download Error",
@@ -3674,7 +3674,7 @@
           },
           "description": {
             "0": "Selection Assistant requires <strong>Accessibility Permission</strong> to work properly.",
-            "1": "Please click \"<strong>Go to Settings</strong>\" and click the \"<strong>Open System Settings</strong>\" button in the permission request popup that appears later. Then find \"<strong>Cherry Studio</strong>\" in the application list that appears later and turn on the permission switch.",
+            "1": "Please click \"<strong>Go to Settings</strong>\" and click the \"<strong>Open System Settings</strong>\" button in the permission request popup that appears later. Then find \"<strong>Modaui Studio</strong>\" in the application list that appears later and turn on the permission switch.",
             "2": "After completing the settings, please reopen the selection assistant."
           },
           "title": "Accessibility Permission"
@@ -3686,7 +3686,7 @@
         "title": "Application Filter List",
         "user_tips": {
           "mac": "Please enter the Bundle ID of the application, one per line, case insensitive, can be fuzzy matched. For example: com.google.Chrome, com.apple.mail, etc.",
-          "windows": "Please enter the executable file name of the application, one per line, case insensitive, can be fuzzy matched. For example: chrome.exe, weixin.exe, Cherry Studio.exe, etc."
+          "windows": "Please enter the executable file name of the application, one per line, case insensitive, can be fuzzy matched. For example: chrome.exe, weixin.exe, Modaui Studio.exe, etc."
         }
       },
       "linux": {
@@ -3698,7 +3698,7 @@
         "wayland_checklist_subtitle": "Ensure the following conditions are met to optimize the Wayland experience:",
         "wayland_description": "You are in a Wayland session. Due to system limitations, the toolbar may only appear at the center of the screen instead of following the selected text on some desktop environments. It is recommended to switch to an X11 session for the full experience.",
         "wayland_title": "Wayland Session Notice",
-        "xwayland_fail": "Not enabled, please launch Cherry Studio with the `--ozone-platform=x11` flag",
+        "xwayland_fail": "Not enabled, please launch Modaui Studio with the `--ozone-platform=x11` flag",
         "xwayland_label": "XWayland mode: ",
         "xwayland_pass": "Enabled"
       },
@@ -3991,14 +3991,14 @@
             "test_message_received": "Received pong from {{device}}",
             "test_message_sent": "Sent hello world test payload"
           },
-          "idle_hint": "Scan paused. Start scanning to find Cherry Studio peers on your LAN.",
+          "idle_hint": "Scan paused. Start scanning to find Modaui Studio peers on your LAN.",
           "ip_addresses": "IP addresses",
           "last_seen": "Last seen at {{time}}",
           "metadata": "Metadata",
-          "no_connection_warning": "Please open LAN Transfer on Cherry Studio mobile",
+          "no_connection_warning": "Please open LAN Transfer on Modaui Studio mobile",
           "no_devices": "No LAN peers found yet",
           "scan_devices": "Scan devices",
-          "scanning_hint": "Scanning your local network for Cherry Studio peers...",
+          "scanning_hint": "Scanning your local network for Modaui Studio peers...",
           "send_file": "Send File",
           "status": {
             "completed": "Transfer completed",
@@ -4348,7 +4348,7 @@
         },
         "root": {
           "label": "Backup Directory (Optional)",
-          "placeholder": "e.g: /cherry-studio"
+          "placeholder": "e.g: /modaui-studio"
         },
         "secretAccessKey": {
           "label": "Secret Access Key",
@@ -4384,7 +4384,7 @@
           "title": "Connection Check"
         },
         "root_path": "Siyuan Note Root Path",
-        "root_path_placeholder": "e.g.: /CherryStudio",
+        "root_path_placeholder": "e.g.: /ModauiStudio",
         "title": "Siyuan Note Configuration",
         "token": {
           "help": "Get Siyuan Note Token",
@@ -4782,7 +4782,7 @@
       },
       "oauth": {
         "callback": {
-          "message": "You can close this page and return to Cherry Studio",
+          "message": "You can close this page and return to Modaui Studio",
           "title": "Authentication Successful"
         }
       },
@@ -5771,7 +5771,9 @@
     "paintings": "Paintings",
     "settings": "Settings",
     "store": "Assistant Library",
-    "translate": "Translate"
+    "translate": "Translate",
+    "fashion": "AI Fashion Design",
+    "deepay": "Deepay Store"
   },
   "trace": {
     "backList": "Back To List",
@@ -5942,5 +5944,34 @@
     "quit": "Quit",
     "show_window": "Show Window",
     "visualization": "Visualization"
+  },
+  "fashion": {
+    "title": "AI Fashion Design",
+    "subtitle": "Describe → AI Generate → Open Store",
+    "category": "Category",
+    "style": "Style",
+    "market": "Target Market",
+    "ai_modify": "AI Tweaks",
+    "generate": "Generate Collection",
+    "regenerate": "Regenerate",
+    "open_shop": "Open Store",
+    "select_hint": "Select a design, AI auto-generates product info"
+  },
+  "deepay": {
+    "title": "Deepay Store",
+    "subtitle": "Design → Store → Sell, end-to-end pipeline",
+    "tab": {
+      "create": "Open Store",
+      "shops": "My Stores",
+      "admin": "Admin"
+    },
+    "create_shop": "Create Store",
+    "creating": "Creating…",
+    "shop_created": "Store created successfully!",
+    "no_shops": "No stores yet",
+    "admin": {
+      "title": "Deepay Admin",
+      "welcome": "Welcome back, select a module to manage"
+    }
   }
 }

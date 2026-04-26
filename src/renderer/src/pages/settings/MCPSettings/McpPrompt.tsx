@@ -1,5 +1,5 @@
-import { ColFlex, Flex } from '@cherrystudio/ui'
-import { Tooltip } from '@cherrystudio/ui'
+import { ColFlex, Flex } from '@modauistudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { MCPPrompt } from '@renderer/types'
 import { Collapse, Descriptions, Empty, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'

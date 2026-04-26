@@ -1,4 +1,4 @@
-import { ColFlex, Flex } from '@cherrystudio/ui'
+import { ColFlex, Flex } from '@modauistudio/ui'
 import type { MCPResource } from '@renderer/types'
 import { Collapse, Descriptions, Empty, Tag, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'

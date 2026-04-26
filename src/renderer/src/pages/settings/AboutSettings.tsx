@@ -1,4 +1,4 @@
-import { Badge, Button, CircularProgress, Divider, RadioGroup, RadioGroupItem, Switch, Tooltip } from '@cherrystudio/ui'
+import { Badge, Button, CircularProgress, Divider, RadioGroup, RadioGroupItem, Switch, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import LogoAvatar from '@renderer/components/Icons/LogoAvatar'
 import IndicatorLight from '@renderer/components/IndicatorLight'
@@ -80,9 +80,9 @@ const AboutSettings: FC = () => {
   const showReleases = async () => {
     const { appPath } = await window.api.getAppInfo()
     openSmartMinapp({
-      id: 'cherrystudio-releases',
+      id: 'modauistudio-releases',
       name: t('settings.about.releases.title'),
-      url: `file://${appPath}/resources/cherry-studio/releases.html?theme=${theme === ThemeMode.dark ? 'dark' : 'light'}`,
+      url: `file://${appPath}/resources/modaui-studio/releases.html?theme=${theme === ThemeMode.dark ? 'dark' : 'light'}`,
       logo: AppLogo
     })
   }
@@ -173,7 +173,7 @@ const AboutSettings: FC = () => {
           <div>{t('settings.about.title')}</div>
           <button
             type="button"
-            onClick={() => onOpenWebsite('https://github.com/CherryHQ/cherry-studio')}
+            onClick={() => onOpenWebsite('https://github.com/CherryHQ/modaui-studio')}
             className="inline-flex items-center justify-center rounded-md p-1 text-(--color-text) transition-colors hover:bg-(--color-background-mute)">
             <Github className="size-5" />
           </button>
@@ -185,7 +185,7 @@ const AboutSettings: FC = () => {
           <div className="flex min-w-0 flex-1 items-center gap-4">
             <button
               type="button"
-              onClick={() => onOpenWebsite('https://github.com/CherryHQ/cherry-studio')}
+              onClick={() => onOpenWebsite('https://github.com/CherryHQ/modaui-studio')}
               className="relative cursor-pointer">
               {appUpdateState.downloadProgress > 0 && (
                 <div className="-top-0.5 -left-0.5 pointer-events-none absolute">
@@ -207,7 +207,7 @@ const AboutSettings: FC = () => {
               <div className="text-(--color-text-2) text-sm">{t('settings.about.description')}</div>
               <button
                 type="button"
-                onClick={() => onOpenWebsite('https://github.com/CherryHQ/cherry-studio/releases')}
+                onClick={() => onOpenWebsite('https://github.com/CherryHQ/modaui-studio/releases')}
                 className="mt-2">
                 <Badge className="cursor-pointer rounded-[10px] border border-cyan-500/40 bg-cyan-500/10 px-3 py-1 font-medium text-cyan-500 text-sm transition-colors hover:bg-cyan-500/15">
                   v{version}
@@ -324,7 +324,7 @@ const AboutSettings: FC = () => {
           icon={<Github className="size-4.5" />}
           title={t('settings.about.feedback.title')}
           actionLabel={t('settings.about.feedback.button')}
-          onAction={() => onOpenWebsite('https://github.com/CherryHQ/cherry-studio/issues/new/choose')}
+          onAction={() => onOpenWebsite('https://github.com/CherryHQ/modaui-studio/issues/new/choose')}
         />
         <Divider className="my-4" />
         <AboutActionRow

@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { Assistant } from '@renderer/types'
 import { Drawer } from 'antd'
 import { t } from 'i18next'

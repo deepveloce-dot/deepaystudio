@@ -3,7 +3,7 @@
  * ⚠️ NOTICE: this type need be refactored after FileSystem is designed
  * --------------------------------------------------------------------------
  */
-import type OpenAI from '@cherrystudio/openai'
+import type OpenAI from '@modauistudio/openai'
 import * as z from 'zod'
 
 export const FILE_TYPE = {

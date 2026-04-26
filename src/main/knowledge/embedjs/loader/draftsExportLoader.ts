@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
 
-import { JsonLoader } from '@cherrystudio/embedjs'
+import { JsonLoader } from '@modauistudio/embedjs'
 
 /**
  * Drafts 应用导出的笔记文件加载器

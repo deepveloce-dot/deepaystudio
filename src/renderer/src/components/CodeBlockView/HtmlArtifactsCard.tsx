@@ -1,5 +1,5 @@
 import { CodeOutlined } from '@ant-design/icons'
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { extractHtmlTitle, getFileNameFromHtmlTitle } from '@renderer/utils/formats'

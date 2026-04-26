@@ -489,7 +489,7 @@ export class SkillService {
   private async installFromClawhub(slug: string): Promise<InstalledSkill> {
     const detailUrl = `https://api.clawhub.ai/api/v1/skills/${slug}`
     const detailResp = await net.fetch(detailUrl, {
-      headers: { 'User-Agent': 'CherryStudio' }
+      headers: { 'User-Agent': 'ModauiStudio' }
     })
 
     if (!detailResp.ok) {
@@ -498,7 +498,7 @@ export class SkillService {
 
     const downloadUrl = `https://api.clawhub.ai/api/v1/skills/${slug}/download`
     const downloadResp = await net.fetch(downloadUrl, {
-      headers: { 'User-Agent': 'CherryStudio' }
+      headers: { 'User-Agent': 'ModauiStudio' }
     })
 
     if (!downloadResp.ok) {

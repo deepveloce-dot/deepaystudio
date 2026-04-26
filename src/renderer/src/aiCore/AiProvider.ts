@@ -1,5 +1,5 @@
-import { createExecutor } from '@cherrystudio/ai-core'
-import type { generateImageResult } from '@cherrystudio/ai-core/core/runtime/types'
+import { createExecutor } from '@modauistudio/ai-core'
+import type { generateImageResult } from '@modauistudio/ai-core/core/runtime/types'
 import { cacheService } from '@data/CacheService'
 import { preferenceService } from '@data/PreferenceService'
 import { loggerService } from '@logger'

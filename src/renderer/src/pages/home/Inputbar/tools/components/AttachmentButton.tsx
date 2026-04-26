@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { ActionIconButton } from '@renderer/components/Buttons'
 import { QuickPanelReservedSymbol, useQuickPanel } from '@renderer/components/QuickPanel'
 import { useKnowledgeBases } from '@renderer/hooks/useKnowledge'

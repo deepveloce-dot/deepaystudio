@@ -1,4 +1,4 @@
-# Cherry Studio 快捷键系统重构设计
+# Modaui Studio 快捷键系统重构设计
 
 > 版本：v2.0
 > 更新日期：2026-04-14

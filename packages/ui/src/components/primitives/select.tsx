@@ -1,4 +1,4 @@
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import * as SelectPrimitive from '@radix-ui/react-select'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'

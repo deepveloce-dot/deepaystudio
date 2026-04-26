@@ -24,7 +24,7 @@ async function getLatestVersion(timeoutMs = API_TIMEOUT_MS) {
       GITHUB_API_LATEST_RELEASE,
       {
         headers: {
-          'User-Agent': 'cherry-studio-installer',
+          'User-Agent': 'modaui-studio-installer',
           Accept: 'application/vnd.github.v3+json'
         },
         timeout: timeoutMs
@@ -135,7 +135,7 @@ async function downloadOpenClawBinary(platform, arch, version = DEFAULT_VERSION,
     return 101
   }
 
-  const binDir = path.join(os.homedir(), '.cherrystudio', 'bin')
+  const binDir = path.join(os.homedir(), '.modauistudio', 'bin')
   fs.mkdirSync(binDir, { recursive: true })
 
   const tempdir = os.tmpdir()

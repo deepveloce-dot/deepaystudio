@@ -1,4 +1,4 @@
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import * as React from 'react'
 import { Drawer as DrawerPrimitive } from 'vaul'
 

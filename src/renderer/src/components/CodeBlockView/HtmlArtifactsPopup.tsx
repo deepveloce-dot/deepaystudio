@@ -1,5 +1,5 @@
-import { CodeEditor, type CodeEditorHandles } from '@cherrystudio/ui'
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { CodeEditor, type CodeEditorHandles } from '@modauistudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { CopyIcon, FilePngIcon } from '@renderer/components/Icons'
 import { isMac } from '@renderer/config/constant'
 import { useTemporaryValue } from '@renderer/hooks/useTemporaryValue'

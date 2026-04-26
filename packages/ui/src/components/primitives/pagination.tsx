@@ -1,6 +1,6 @@
-import type { Button } from '@cherrystudio/ui/components/primitives/button'
-import { buttonVariants } from '@cherrystudio/ui/components/primitives/button'
-import { cn } from '@cherrystudio/ui/lib/utils'
+import type { Button } from '@modauistudio/ui/components/primitives/button'
+import { buttonVariants } from '@modauistudio/ui/components/primitives/button'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 import * as React from 'react'
 

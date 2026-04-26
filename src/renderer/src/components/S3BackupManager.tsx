@@ -1,5 +1,5 @@
 import { DeleteOutlined, ExclamationCircleOutlined, ReloadOutlined } from '@ant-design/icons'
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { restoreFromS3 } from '@renderer/services/BackupService'
 import type { S3Config } from '@renderer/types'
 import { formatFileSize } from '@renderer/utils'

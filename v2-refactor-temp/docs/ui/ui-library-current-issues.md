@@ -1,8 +1,8 @@
-# Cherry Studio UI Library Current Issues
+# Modaui Studio UI Library Current Issues
 
 > 更新日期：2026-04-16
 > 范围：`packages/ui`
-> 目的：记录 `@cherrystudio/ui` 当前已识别出的架构问题，作为后续 v2 UI 收口与拆分的依据。
+> 目的：记录 `@modauistudio/ui` 当前已识别出的架构问题，作为后续 v2 UI 收口与拆分的依据。
 
 ## 背景
 
@@ -16,7 +16,7 @@
 
 这让它在 monorepo 内部可以继续承担“迁移缓冲区”的角色，但也导致对外边界、发布契约和技术栈约束都不够稳定。
 
-当前最核心的问题不是某一个组件实现有缺陷，而是 `@cherrystudio/ui` 还没有从“内部迁移目录”真正收敛为“边界稳定的 UI 库”。
+当前最核心的问题不是某一个组件实现有缺陷，而是 `@modauistudio/ui` 还没有从“内部迁移目录”真正收敛为“边界稳定的 UI 库”。
 
 ## 核心问题
 
@@ -44,13 +44,13 @@
 
 结论：
 
-`@cherrystudio/ui` 现在更像“源码别名入口”，而不是“可独立发布的包”。
+`@modauistudio/ui` 现在更像“源码别名入口”，而不是“可独立发布的包”。
 
 ### 2. 组件库边界仍然混入旧技术栈
 
 虽然 v2 的方向是：
 
-1. `@cherrystudio/ui`
+1. `@modauistudio/ui`
 2. Tailwind CSS
 3. shadcn / Radix
 
@@ -142,7 +142,7 @@
 
 ### 6. 内部实现路径被当成公共依赖使用
 
-包内部大量通过 `@cherrystudio/ui/lib/utils` 引用 `cn` 等内部工具。
+包内部大量通过 `@modauistudio/ui/lib/utils` 引用 `cn` 等内部工具。
 
 这类自引用在 monorepo 中短期可用，但会带来几个问题：
 
@@ -281,7 +281,7 @@
 
 目标：
 
-让 `@cherrystudio/ui` 先成为一个“入口稳定、对外契约清晰”的包。
+让 `@modauistudio/ui` 先成为一个“入口稳定、对外契约清晰”的包。
 
 主要工作：
 
@@ -370,9 +370,9 @@ CSS 变量分层约定：
 
 外部消费规则：
 
-1. 普通业务包默认只依赖 `@cherrystudio/ui/styles/theme.css`
+1. 普通业务包默认只依赖 `@modauistudio/ui/styles/theme.css`
 2. 普通业务包优先使用 `--color-*` 等公开 contract，不直接绑定 `--cs-brand-500` 这类 primitive token
-3. 只有明确需要 token 层能力的设计系统配套包，才允许直接依赖 `@cherrystudio/ui/styles/tokens.css`
+3. 只有明确需要 token 层能力的设计系统配套包，才允许直接依赖 `@modauistudio/ui/styles/tokens.css`
 4. 运行时主题逻辑只允许写入 `--cs-theme-*` 这类受控入口变量，不直接写派生后的 `--color-*` 结果变量
 
 阶段产出：
@@ -533,7 +533,7 @@ CSS 变量分层约定：
 
 优化完成后，至少应满足以下标准：
 
-1. `@cherrystudio/ui` 的所有公开入口都具备稳定 contract
+1. `@modauistudio/ui` 的所有公开入口都具备稳定 contract
 2. renderer 不再通过源码路径使用 UI 包
 3. 正式导出组件不再依赖 `antd` / `styled-components`
 4. 主题变量区分出 public contract 和 internal-only contract

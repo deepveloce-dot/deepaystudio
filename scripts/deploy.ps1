@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Cherry Studio - Windows 自动全栈部署脚本
+    Modaui Studio - Windows 自动全栈部署脚本
 
 .DESCRIPTION
-    一键完成 Cherry Studio 的 Windows 版本构建与发布流程：
+    一键完成 Modaui Studio 的 Windows 版本构建与发布流程：
       1. 环境检查  (Node.js, pnpm, Git)
       2. 安装/更新依赖
       3. 质量检查  (lint + format + typecheck + test)
@@ -51,7 +51,7 @@ function Write-Err    { Write-Host "[deploy] $args" -ForegroundColor Red; exit 1
 
 # ─── 1. 环境预检 ──────────────────────────────────────────────────────────────
 Write-Host ""
-Write-Host "  Cherry Studio — Windows 自动全栈部署" -ForegroundColor White -BackgroundColor DarkBlue
+Write-Host "  Modaui Studio — Windows 自动全栈部署" -ForegroundColor White -BackgroundColor DarkBlue
 Write-Host ""
 
 Write-Log "检查运行环境..."

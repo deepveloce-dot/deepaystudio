@@ -1,5 +1,5 @@
 import { CopyOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { FileMetadata, KnowledgeSearchResult } from '@renderer/types'
 import { Typography } from 'antd'
 import React from 'react'

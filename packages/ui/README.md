@@ -1,10 +1,10 @@
-# @cherrystudio/ui
+# @modauistudio/ui
 
-Cherry Studio UI component library for React applications.
+Modaui Studio UI component library for React applications.
 
 ## ✨ Features
 
-- 🎨 **Design System**: Full Cherry Studio design tokens with 17 color families, 11 shades, and semantic theme mappings
+- 🎨 **Design System**: Full Modaui Studio design tokens with 17 color families, 11 shades, and semantic theme mappings
 - 🌓 **Dark Mode**: Built-in light and dark theme support
 - 🚀 **Tailwind v4**: Built on top of the latest Tailwind CSS v4
 - 📦 **Flexible Imports**: Two style integration modes for different adoption paths
@@ -18,33 +18,33 @@ Cherry Studio UI component library for React applications.
 ### Install
 
 ```bash
-npm install @cherrystudio/ui
+npm install @modauistudio/ui
 # peer dependencies
 npm install framer-motion react react-dom tailwindcss
 ```
 
 > The recommended integration style in this repository is to use the package export entry points:
-> `@cherrystudio/ui`
-> `@cherrystudio/ui/components`
-> `@cherrystudio/ui/icons`
-> `@cherrystudio/ui/utils`
-> `@cherrystudio/ui/styles/*`
+> `@modauistudio/ui`
+> `@modauistudio/ui/components`
+> `@modauistudio/ui/icons`
+> `@modauistudio/ui/utils`
+> `@modauistudio/ui/styles/*`
 >
 ### Two Integration Modes
 
 #### Mode 1: Full Theme Contract ✨
 
-Use the full Cherry Studio design system so Tailwind theme tokens resolve to Cherry Studio values.
+Use the full Modaui Studio design system so Tailwind theme tokens resolve to Modaui Studio values.
 
 ```css
 /* app.css */
-@import '@cherrystudio/ui/styles/theme.css';
+@import '@modauistudio/ui/styles/theme.css';
 ```
 
 **Characteristics:**
 
 - ✅ Use standard Tailwind utility names directly (`bg-primary`, `bg-red-500`, `p-md`, `rounded-lg`)
-- ✅ Colors resolve to Cherry Studio design values
+- ✅ Colors resolve to Modaui Studio design values
 - ✅ Includes the extended spacing scale (`p-5xs` through `p-8xl`, 16 semantic sizes)
 - ✅ Includes the extended radius scale (`rounded-4xs` through `rounded-3xl`, plus `rounded-round`)
 - ⚠️ Overrides the default Tailwind theme contract for the imported app bundle
@@ -53,8 +53,8 @@ Use the full Cherry Studio design system so Tailwind theme tokens resolve to Che
 
 ```tsx
 <Button className="bg-primary text-red-500 p-md rounded-lg">
-  {/* bg-primary -> Cherry Studio brand color */}
-  {/* text-red-500 -> Cherry Studio red-500 */}
+  {/* bg-primary -> Modaui Studio brand color */}
+  {/* text-red-500 -> Modaui Studio red-500 */}
   {/* p-md -> semantic spacing token */}
   {/* rounded-lg -> semantic radius token */}
 </Button>
@@ -82,13 +82,13 @@ Import only the design tokens and decide which theme mappings your app wants to 
 ```css
 /* app.css */
 @import 'tailwindcss';
-@import '@cherrystudio/ui/styles/tokens.css';
+@import '@modauistudio/ui/styles/tokens.css';
 
 /* Re-export only the parts you need */
 @theme {
-  --color-primary: var(--cs-primary); /* Use the Cherry Studio primary color */
+  --color-primary: var(--cs-primary); /* Use the Modaui Studio primary color */
   --color-red-500: oklch(...); /* Keep your own red scale */
-  --spacing-md: var(--cs-size-md); /* Reuse Cherry Studio spacing */
+  --spacing-md: var(--cs-size-md); /* Reuse Modaui Studio spacing */
   --radius-lg: 1rem; /* Keep your own radius */
 }
 ```
@@ -96,16 +96,16 @@ Import only the design tokens and decide which theme mappings your app wants to 
 **Characteristics:**
 
 - ✅ Does not override the full Tailwind theme
-- ✅ Gives access to all Cherry Studio design tokens through CSS variables (`var(--cs-primary)`, `var(--cs-red-500)`)
+- ✅ Gives access to all Modaui Studio design tokens through CSS variables (`var(--cs-primary)`, `var(--cs-red-500)`)
 - ✅ Lets you choose what to adopt and what to keep
-- ✅ Works well when you already have a design system and only want selected Cherry Studio tokens
+- ✅ Works well when you already have a design system and only want selected Modaui Studio tokens
 
 **Example:**
 
 ```tsx
-{/* Use Cherry Studio tokens directly via CSS variables */}
+{/* Use Modaui Studio tokens directly via CSS variables */}
 <button style={{ backgroundColor: 'var(--cs-primary)' }}>
-  Use the Cherry Studio brand color
+  Use the Modaui Studio brand color
 </button>
 
 {/* Keep your original Tailwind theme untouched */}
@@ -135,9 +135,9 @@ To avoid mixing tokens, theme mappings, and runtime overrides, use the following
 
 Default consumption rules:
 
-1. Regular application packages should depend on `@cherrystudio/ui/styles/theme.css` by default
+1. Regular application packages should depend on `@modauistudio/ui/styles/theme.css` by default
 2. Regular application packages should prefer public contracts such as `--color-*` and should not bind directly to primitive tokens like `--cs-brand-500`
-3. Only design-system-adjacent packages that explicitly need token-level access should depend on `@cherrystudio/ui/styles/tokens.css`
+3. Only design-system-adjacent packages that explicitly need token-level access should depend on `@modauistudio/ui/styles/tokens.css`
 4. Runtime theme logic should only write to controlled entry variables such as `--cs-theme-*`, not directly to derived `--color-*` variables
 
 ## Usage
@@ -145,7 +145,7 @@ Default consumption rules:
 ### Basic Components
 
 ```tsx
-import { Button, Input } from '@cherrystudio/ui'
+import { Button, Input } from '@modauistudio/ui'
 
 function App() {
   return (
@@ -165,10 +165,10 @@ function App() {
 
 ```tsx
 // Components only
-import { Button } from '@cherrystudio/ui/components'
+import { Button } from '@modauistudio/ui/components'
 
 // Utilities only
-import { cn, formatFileSize } from '@cherrystudio/ui/utils'
+import { cn, formatFileSize } from '@modauistudio/ui/utils'
 ```
 
 ## Development

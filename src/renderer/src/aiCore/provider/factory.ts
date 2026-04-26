@@ -1,4 +1,4 @@
-import { extensionRegistry } from '@cherrystudio/ai-core/provider'
+import { extensionRegistry } from '@modauistudio/ai-core/provider'
 import { loggerService } from '@logger'
 import { type Provider, SystemProviderIds } from '@renderer/types'
 import { isAzureOpenAIProvider, isAzureResponsesEndpoint } from '@renderer/utils/provider'

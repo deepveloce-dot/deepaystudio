@@ -1,4 +1,4 @@
-import { RowFlex } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { NavbarCenter, NavbarHeader, NavbarRight } from '@renderer/components/app/Navbar'
 import BaseNavbarIcon from '@renderer/components/NavbarIcon'

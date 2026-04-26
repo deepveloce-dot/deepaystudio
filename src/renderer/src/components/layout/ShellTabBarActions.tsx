@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { isLinux, isWin } from '@renderer/config/constant'
 import { useTheme } from '@renderer/context/ThemeProvider'

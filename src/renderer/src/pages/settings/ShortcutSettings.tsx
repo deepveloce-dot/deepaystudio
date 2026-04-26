@@ -1,5 +1,5 @@
 import { UndoOutlined } from '@ant-design/icons'
-import { Button, Input, RowFlex, Switch, Tooltip } from '@cherrystudio/ui'
+import { Button, Input, RowFlex, Switch, Tooltip } from '@modauistudio/ui'
 import { preferenceService } from '@data/PreferenceService'
 import { loggerService } from '@logger'
 import { isMac } from '@renderer/config/constant'

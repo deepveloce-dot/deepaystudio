@@ -1,5 +1,5 @@
-import { ColFlex, RowFlex, Switch } from '@cherrystudio/ui'
-import { InfoTooltip } from '@cherrystudio/ui'
+import { ColFlex, RowFlex, Switch } from '@modauistudio/ui'
+import { InfoTooltip } from '@modauistudio/ui'
 import { useProvider } from '@renderer/hooks/useProvider'
 import { type AnthropicCacheControlSettings, type Provider } from '@renderer/types'
 import { isSupportAnthropicPromptCacheProvider } from '@renderer/utils/provider'

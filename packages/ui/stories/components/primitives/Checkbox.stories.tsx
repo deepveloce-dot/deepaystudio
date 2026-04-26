@@ -1,4 +1,4 @@
-import { Checkbox, type CheckedState } from '@cherrystudio/ui'
+import { Checkbox, type CheckedState } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Bell, Check, FileText, Mail, Shield, Star } from 'lucide-react'
 import { useState } from 'react'

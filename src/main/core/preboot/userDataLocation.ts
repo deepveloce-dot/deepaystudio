@@ -21,7 +21,7 @@ const logger = loggerService.withContext('Preboot')
  * It does NOT mean "user data" in the colloquial Chinese sense (用户数据).
  * The Electron userData directory contains BOTH:
  *
- *   - User content    (cherrystudio.sqlite, Data/Files, Data/KnowledgeBase,
+ *   - User content    (modauistudio.sqlite, Data/Files, Data/KnowledgeBase,
  *                      Data/Notes, Cookies, etc.)
  *   - Chromium runtime state  (Network/, Partitions/webview/Network/,
  *                              IndexedDB, Local Storage, Service Worker, ...)
@@ -62,10 +62,10 @@ type PendingRelocation = Extract<UserDataRelocationState, { status: 'pending' }>
  */
 export function getNormalizedExecutablePath(): string {
   if (isLinux && process.env.APPIMAGE) {
-    return path.join(path.dirname(process.env.APPIMAGE), 'cherry-studio.appimage')
+    return path.join(path.dirname(process.env.APPIMAGE), 'modaui-studio.appimage')
   }
   if (isWin && isPortable) {
-    return path.join(process.env.PORTABLE_EXECUTABLE_DIR || '', 'cherry-studio-portable.exe')
+    return path.join(process.env.PORTABLE_EXECUTABLE_DIR || '', 'modaui-studio-portable.exe')
   }
   return app.getPath('exe')
 }

@@ -1,16 +1,16 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import '@cherrystudio/ui/styles/theme.css';
+@import '@modauistudio/ui/styles/theme.css';
 @import './legacy-vars.css';
 
 @source '../../../../../packages/ui/src/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Application-side Tailwind bridge for @cherrystudio/ui.
+ * Application-side Tailwind bridge for @modauistudio/ui.
  *
  * Organization guidelines:
- * 1. Keep shared design-system tokens in `@cherrystudio/ui/styles/*`.
+ * 1. Keep shared design-system tokens in `@modauistudio/ui/styles/*`.
  * 2. Keep renderer-only shell tokens in this file.
  * 3. Place global element resets in `@layer base`.
  * 4. Add renderer-only reusable patterns in `@layer components` when needed.
@@ -18,7 +18,7 @@
  *
  * TODO(v2-ui): Gradually remove the legacy compatibility variables in this file
  * as renderer surfaces migrate from old `var(--color-*)` usage to the shared
- * `@cherrystudio/ui` theme contract and Tailwind semantic utilities.
+ * `@modauistudio/ui` theme contract and Tailwind semantic utilities.
  */
 
 /* App shell tokens: light mode */

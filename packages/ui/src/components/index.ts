@@ -32,7 +32,7 @@ export { PageSidePanel, type PageSidePanelPlacement, type PageSidePanelProps } f
 export { default as Scrollbar } from './composites/Scrollbar'
 export { SelectDropdown, type SelectDropdownProps } from './composites/SelectDropdown'
 
-// Icon Components — import from '@cherrystudio/ui/icons' path
+// Icon Components — import from '@modauistudio/ui/icons' path
 export type { CompoundIcon, IconAvatarProps, IconComponent, IconMeta, IconProps } from './icons/types'
 
 /* Additional Composite Components */

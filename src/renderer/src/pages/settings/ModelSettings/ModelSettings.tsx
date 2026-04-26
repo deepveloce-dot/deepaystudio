@@ -1,5 +1,5 @@
 import { RedoOutlined } from '@ant-design/icons'
-import { Button, InfoTooltip, RowFlex, Tooltip } from '@cherrystudio/ui'
+import { Button, InfoTooltip, RowFlex, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import ModelSelector from '@renderer/components/ModelSelector'
 import { isEmbeddingModel, isRerankModel, isTextToImageModel } from '@renderer/config/models'

@@ -1,6 +1,6 @@
 import { MessageOutlined } from '@ant-design/icons'
-import { RowFlex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import SearchPopup from '@renderer/components/Popups/SearchPopup'
 import { MessageEditingProvider } from '@renderer/context/MessageEditingContext'

@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, Button, RowFlex, Tooltip } from '@cherrystudio/ui'
+import { Avatar, AvatarFallback, Button, RowFlex, Tooltip } from '@modauistudio/ui'
 import { showErrorDetailPopup } from '@renderer/components/ErrorDetailModal'
 import { FreeTrialModelTag } from '@renderer/components/FreeTrialModelTag'
 import { type HealthResult, HealthStatusIndicator } from '@renderer/components/HealthStatusIndicator'

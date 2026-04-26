@@ -4,7 +4,7 @@ import React from 'react'
 import type { CSSProp } from 'styled-components'
 import styled from 'styled-components'
 
-export { Divider as SettingDivider } from '@cherrystudio/ui'
+export { Divider as SettingDivider } from '@modauistudio/ui'
 
 export const SettingContainer = styled.div<{ theme?: ThemeMode }>`
   display: flex;

@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { cn } from '@renderer/utils'
 import { PlusIcon } from 'lucide-react'
 

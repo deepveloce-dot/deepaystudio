@@ -1,5 +1,5 @@
 import { CopyOutlined } from '@ant-design/icons'
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { DEFAULT_LANGUAGES, getHighlighter, getShiki } from '@renderer/utils/shiki'
 import { NodeViewContent, NodeViewWrapper, type ReactNodeViewProps, ReactNodeViewRenderer } from '@tiptap/react'
 import { Select } from 'antd'

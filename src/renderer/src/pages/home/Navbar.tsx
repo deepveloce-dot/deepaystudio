@@ -1,4 +1,4 @@
-import { RowFlex, Tooltip } from '@cherrystudio/ui'
+import { RowFlex, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { Navbar, NavbarCenter, NavbarLeft, NavbarRight } from '@renderer/components/app/Navbar'
 import SearchPopup from '@renderer/components/Popups/SearchPopup'

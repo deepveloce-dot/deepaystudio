@@ -1,6 +1,6 @@
 import '@renderer/pages/home/Inputbar/tools'
 
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { DropResult } from '@hello-pangea/dnd'
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 import { ActionIconButton } from '@renderer/components/Buttons'

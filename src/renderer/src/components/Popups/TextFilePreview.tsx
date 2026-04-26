@@ -1,4 +1,4 @@
-import { CodeEditor } from '@cherrystudio/ui'
+import { CodeEditor } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { useCodeStyle } from '@renderer/context/CodeStyleProvider'
 import { Modal } from 'antd'

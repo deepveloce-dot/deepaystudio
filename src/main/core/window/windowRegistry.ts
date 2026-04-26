@@ -294,7 +294,7 @@ export const WINDOW_TYPE_REGISTRY: Partial<Record<WindowType, WindowTypeMetadata
       // per-show `!isSelf` branch that additionally sets
       // `skipTransformProcessType: true`; it MUST stay there, because one-shot
       // sinking that flag here would break the self / non-self distinction
-      // (Cherry Studio as the frontmost app needs the flag off, others need it on).
+      // (Modaui Studio as the frontmost app needs the flag off, others need it on).
       visibleOnAllWorkspaces: { enabled: true, visibleOnFullScreen: true },
       macShowInDock: false
     },

@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { Row } from 'antd'
 import { Plus } from 'lucide-react'
 import { memo } from 'react'

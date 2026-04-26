@@ -12,7 +12,7 @@ export type BuiltinShortcutCategory = 'general' | 'chat' | 'topic' | 'feature.qu
  */
 export type ShortcutCategory = BuiltinShortcutCategory | `plugin.${string}`
 
-/** Desktop platforms actually supported by Cherry Studio */
+/** Desktop platforms actually supported by Modaui Studio */
 export type SupportedPlatform = Extract<NodeJS.Platform, 'darwin' | 'win32' | 'linux'>
 
 export type ShortcutPreferenceKey = Extract<PreferenceKeyType, `shortcut.${string}`>

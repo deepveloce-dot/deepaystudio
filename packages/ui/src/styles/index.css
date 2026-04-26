@@ -2,8 +2,8 @@
  * Deprecated compatibility alias for `tokens.css`.
  *
  * Canonical entry points:
- * - `@cherrystudio/ui/styles/tokens.css`: design tokens only
- * - `@cherrystudio/ui/styles/theme.css`: public theme contract
+ * - `@modauistudio/ui/styles/tokens.css`: design tokens only
+ * - `@modauistudio/ui/styles/theme.css`: public theme contract
  *
  * Keep this file during migration so existing imports keep working.
  */

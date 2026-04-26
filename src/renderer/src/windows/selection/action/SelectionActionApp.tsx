@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { isMac } from '@renderer/config/constant'
 import { useWindowInitData } from '@renderer/core/hooks/useWindowInitData'

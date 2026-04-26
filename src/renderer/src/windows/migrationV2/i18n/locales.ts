@@ -42,7 +42,7 @@ export const zhCN = {
     },
     introduction: {
       title: '将数据迁移到新的架构中',
-      description_1: 'Cherry Studio对数据的存储和使用方式进行了重大重构，在新的架构下，效率和安全性将会得到极大提升。',
+      description_1: 'Modaui Studio对数据的存储和使用方式进行了重大重构，在新的架构下，效率和安全性将会得到极大提升。',
       description_2: '数据必须进行迁移，才能在新版本中使用。',
       description_3: '我们会指导你完成迁移，迁移过程不会损坏原来的数据，你随时可以取消迁移，并继续使用旧版本。'
     },
@@ -84,7 +84,7 @@ export const zhCN = {
     },
     version_incompatible: {
       title: '版本升级提示',
-      preamble: 'Cherry Studio 对数据存储进行了重大重构，为了保证旧数据的安全迁移，我们对升级顺序有严格要求。',
+      preamble: 'Modaui Studio 对数据存储进行了重大重构，为了保证旧数据的安全迁移，我们对升级顺序有严格要求。',
       no_version_log:
         '无法确定您之前使用的版本。请先安装 {{requiredVersion}} 版本并运行一次，然后再安装此版本进行数据迁移。',
       v1_too_old:
@@ -137,7 +137,7 @@ export const enUS = {
     introduction: {
       title: 'Migrate Data to New Architecture',
       description_1:
-        'Cherry Studio has undergone a major refactoring of data storage and usage. The new architecture will greatly improve efficiency and security.',
+        'Modaui Studio has undergone a major refactoring of data storage and usage. The new architecture will greatly improve efficiency and security.',
       description_2: 'Data migration is required to use the new version.',
       description_3:
         'We will guide you through the migration process. The migration will not damage your original data, and you can cancel at any time and continue using the old version.'
@@ -183,7 +183,7 @@ export const enUS = {
     version_incompatible: {
       title: 'Version Upgrade Required',
       preamble:
-        'Cherry Studio has undergone a major data storage refactoring. To ensure safe migration of your data, we have strict requirements on the upgrade order.',
+        'Modaui Studio has undergone a major data storage refactoring. To ensure safe migration of your data, we have strict requirements on the upgrade order.',
       no_version_log:
         'Cannot determine your previous version. Please install version {{requiredVersion}} first and run it at least once, then install this version to complete the data migration.',
       v1_too_old:

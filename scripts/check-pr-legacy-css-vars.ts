@@ -177,7 +177,7 @@ export function buildPullRequestLegacyVarsComment(findings: PullRequestLegacyFin
     '## Legacy CSS Variables Detected',
     '',
     `This PR adds new usages of deprecated renderer legacy CSS variables in ${uniqueFiles} file(s).`,
-    'Please migrate these changes to `@cherrystudio/ui` theme contract variables or Tailwind semantic utilities when possible.',
+    'Please migrate these changes to `@modauistudio/ui` theme contract variables or Tailwind semantic utilities when possible.',
     '',
     '**Usage summary**',
     ...summaryLines,

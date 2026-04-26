@@ -192,7 +192,7 @@ function printResults(findings: Finding[]): void {
 
   console.warn('')
   console.warn(
-    'Prefer @cherrystudio/ui theme contract variables and Tailwind semantic utilities instead of adding new legacy var usages.'
+    'Prefer @modauistudio/ui theme contract variables and Tailwind semantic utilities instead of adding new legacy var usages.'
   )
 }
 

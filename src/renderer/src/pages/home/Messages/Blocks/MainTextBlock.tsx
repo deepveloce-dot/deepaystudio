@@ -1,4 +1,4 @@
-import { Flex } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { getModelUniqId } from '@renderer/services/ModelService'
 import type { RootState } from '@renderer/store'

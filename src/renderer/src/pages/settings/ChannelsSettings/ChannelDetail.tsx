@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, FileTextOutlined, PlusOutlined } from '@ant-design/icons'
-import { Switch } from '@cherrystudio/ui'
+import { Switch } from '@modauistudio/ui'
 import CopyButton from '@renderer/components/CopyButton'
 import Scrollbar from '@renderer/components/Scrollbar'
 import { useAgents } from '@renderer/hooks/agents/useAgents'

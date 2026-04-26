@@ -9,7 +9,7 @@ vi.mock('node:fs', async () => {
 
 const mockFs = vi.mocked(fs)
 
-const CONFIG_PATH = '/mock/home/.cherrystudio/config/config.json'
+const CONFIG_PATH = '/mock/home/.modauistudio/config/config.json'
 // tests/main.setup.ts mocks app.getPath() to only handle 'userData' / 'temp' /
 // 'logs' explicitly; everything else (including 'exe') falls through to '/mock/unknown'.
 const MOCK_EXE = '/mock/unknown'
@@ -132,8 +132,8 @@ describe('LegacyHomeConfigReader', () => {
       mockFs.readFileSync.mockReturnValue(
         JSON.stringify({
           appDataPath: [
-            { executablePath: '/Applications/Cherry Studio.app/exe', dataPath: '/Volumes/Ext1/Data' },
-            { executablePath: '/Applications/Cherry Studio Dev.app/exe', dataPath: '/Volumes/Ext2/DevData' }
+            { executablePath: '/Applications/Modaui Studio.app/exe', dataPath: '/Volumes/Ext1/Data' },
+            { executablePath: '/Applications/Modaui Studio Dev.app/exe', dataPath: '/Volumes/Ext2/DevData' }
           ]
         })
       )
@@ -141,8 +141,8 @@ describe('LegacyHomeConfigReader', () => {
       const reader = await createReader()
 
       expect(reader.getUserDataPath()).toEqual({
-        '/Applications/Cherry Studio.app/exe': '/Volumes/Ext1/Data',
-        '/Applications/Cherry Studio Dev.app/exe': '/Volumes/Ext2/DevData'
+        '/Applications/Modaui Studio.app/exe': '/Volumes/Ext1/Data',
+        '/Applications/Modaui Studio Dev.app/exe': '/Volumes/Ext2/DevData'
       })
     })
 

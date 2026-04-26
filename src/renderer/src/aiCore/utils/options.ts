@@ -236,7 +236,7 @@ export function buildProviderOptions(
 
   // For openai-compatible providers, auto-convert reasoning_effort (snake_case) to reasoningEffort (camelCase).
   // The AI SDK's openai-compatible provider overwrites reasoning_effort to undefined,
-  // but accepts reasoningEffort. See: https://github.com/CherryHQ/cherry-studio/issues/11987
+  // but accepts reasoningEffort. See: https://github.com/CherryHQ/modaui-studio/issues/11987
   if (primaryAiSdkProviderId === 'openai-compatible' && 'reasoning_effort' in providerParams) {
     if (!('reasoningEffort' in providerParams)) {
       providerParams.reasoningEffort = providerParams.reasoning_effort

@@ -28,12 +28,12 @@ const MANUAL_BOOT_CONFIG_ITEMS = [
       'Conceptually a single setting ("where user data lives"); stored as a',
       'Record so the same machine can host multiple installations (stable / dev /',
       "portable) with independent user data locations — matching the v1 behavior",
-      "of ~/.cherrystudio/config/config.json's `appDataPath` array.",
+      "of ~/.modauistudio/config/config.json's `appDataPath` array.",
       '',
       "Key: executable path (matches Electron's `app.getPath('exe')`).",
       'Value: absolute path to the chosen userData directory.',
       '',
-      'Migrated from v1 ~/.cherrystudio/config/config.json on first v1→v2 run',
+      'Migrated from v1 ~/.modauistudio/config/config.json on first v1→v2 run',
       "via the 'configfile' source in BootConfigMigrator."
     ]
   },

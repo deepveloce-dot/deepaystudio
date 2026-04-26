@@ -39,7 +39,7 @@ import {
 import { ResponseManager } from './responseManager'
 import type { ActiveFileTransfer, ConnectionContext, FileTransferContext } from './types'
 
-const DISCOVERY_SERVICE_TYPE = 'cherrystudio'
+const DISCOVERY_SERVICE_TYPE = 'modauistudio'
 const DISCOVERY_SERVICE_PROTOCOL = 'tcp' as const
 const DEFAULT_HANDSHAKE_TIMEOUT_MS = 10_000
 

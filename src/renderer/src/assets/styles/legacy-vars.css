@@ -5,7 +5,7 @@
  * renderer styles and styled-components usage.
  *
  * Do not add new product code that depends on this file.
- * Prefer `@cherrystudio/ui/styles/theme.css` contract variables and Tailwind
+ * Prefer `@modauistudio/ui/styles/theme.css` contract variables and Tailwind
  * semantic utilities instead.
  *
  * TODO(v2-ui): Delete entries from this file after the corresponding renderer

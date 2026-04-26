@@ -1,4 +1,4 @@
-import { InfoTooltip } from '@cherrystudio/ui'
+import { InfoTooltip } from '@modauistudio/ui'
 import { useWebSearchSettings } from '@renderer/hooks/useWebSearchProviders'
 import { SettingRow, SettingRowTitle } from '@renderer/pages/settings'
 import { DEFAULT_WEB_SEARCH_CUTOFF_LIMIT } from '@shared/data/types/webSearch'

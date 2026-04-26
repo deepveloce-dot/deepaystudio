@@ -1,4 +1,4 @@
-import { Dmxapi } from '@cherrystudio/ui/icons'
+import { Dmxapi } from '@modauistudio/ui/icons'
 import { useProvider } from '@renderer/hooks/useProvider'
 import type { RadioChangeEvent } from 'antd'
 import { Radio, Space } from 'antd'

@@ -1,5 +1,5 @@
 import { CloseOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { CSSProperties, FC, MouseEventHandler } from 'react'
 import { memo, useMemo } from 'react'
 import styled from 'styled-components'

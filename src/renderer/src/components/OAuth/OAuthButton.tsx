@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { getProviderLabel } from '@renderer/i18n/label'
 import type { Provider } from '@renderer/types'
 import {

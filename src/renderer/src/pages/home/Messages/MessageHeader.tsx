@@ -1,5 +1,5 @@
-import { RowFlex } from '@cherrystudio/ui'
-import { Avatar, AvatarFallback, AvatarImage, EmojiAvatar, Tooltip } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Avatar, AvatarFallback, AvatarImage, EmojiAvatar, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import UserPopup from '@renderer/components/Popups/UserPopup'
 import { APP_NAME, AppLogo, isLocalAi } from '@renderer/config/env'

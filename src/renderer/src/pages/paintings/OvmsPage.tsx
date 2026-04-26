@@ -1,6 +1,6 @@
 import { PlusOutlined, RedoOutlined } from '@ant-design/icons'
-import { Button, RowFlex, Switch, Tooltip } from '@cherrystudio/ui'
-import { resolveProviderIcon } from '@cherrystudio/ui/icons'
+import { Button, RowFlex, Switch, Tooltip } from '@modauistudio/ui'
+import { resolveProviderIcon } from '@modauistudio/ui/icons'
 import { useCache } from '@data/hooks/useCache'
 import { loggerService } from '@logger'
 import { Navbar, NavbarCenter, NavbarRight } from '@renderer/components/app/Navbar'

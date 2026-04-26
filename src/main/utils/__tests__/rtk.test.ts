@@ -35,7 +35,7 @@ vi.mock('@logger', () => ({
 }))
 
 vi.mock('@shared/config/constant', () => ({
-  HOME_CHERRY_DIR: '.cherrystudio'
+  HOME_CHERRY_DIR: '.modauistudio'
 }))
 
 vi.mock('electron', () => ({
@@ -101,9 +101,9 @@ describe('rtk utils', () => {
       mockFs.existsSync.mockImplementation((p: fs.PathLike) => {
         const filePath = String(p)
         if (filePath.includes('resources/binaries')) return true
-        if (filePath.includes('rtk') && filePath.includes('.cherrystudio')) return false
+        if (filePath.includes('rtk') && filePath.includes('.modauistudio')) return false
         if (filePath.includes('.rtk-version') && filePath.includes('resources')) return true
-        if (filePath.includes('.rtk-version') && filePath.includes('.cherrystudio')) return false
+        if (filePath.includes('.rtk-version') && filePath.includes('.modauistudio')) return false
         return true
       })
       mockFs.readFileSync.mockReturnValue('0.30.1')

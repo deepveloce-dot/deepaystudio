@@ -1,5 +1,5 @@
 import { PlusOutlined, RedoOutlined } from '@ant-design/icons'
-import { Switch } from '@cherrystudio/ui'
+import { Switch } from '@modauistudio/ui'
 import { useCache } from '@data/hooks/useCache'
 import { loggerService } from '@logger'
 import IcImageUp from '@renderer/assets/images/paintings/ic_ImageUp.svg'

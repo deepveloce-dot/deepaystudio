@@ -1,4 +1,4 @@
-import { IndicatorLight } from '@cherrystudio/ui'
+import { IndicatorLight } from '@modauistudio/ui'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { useApiServer } from '@renderer/hooks/useApiServer'
 import { formatErrorMessage } from '@renderer/utils/error'

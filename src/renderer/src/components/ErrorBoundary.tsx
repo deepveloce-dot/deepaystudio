@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { formatErrorMessage } from '@renderer/utils/error'
 import { Alert, Space } from 'antd'
 import type { ComponentType, ReactNode } from 'react'

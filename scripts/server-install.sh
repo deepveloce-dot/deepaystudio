@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 # scripts/server-install.sh
 #
-# Cherry Studio – One-shot Ubuntu Server Setup
+# Modaui Studio – One-shot Ubuntu Server Setup
 #
 # Usage:
 #   sudo ./scripts/server-install.sh
 #   sudo ./scripts/server-install.sh --ip 51.38.123.49 --api-key sk-mysecret
-#   sudo ./scripts/server-install.sh --ip 51.38.123.49 --api-key sk-mysecret --port 23333 --user cherrystudio
+#   sudo ./scripts/server-install.sh --ip 51.38.123.49 --api-key sk-mysecret --port 23333 --user modauistudio
 #
 # What this script does
 # ─────────────────────
 #   1. Installs system dependencies (Xvfb, Nginx, sqlite3, etc.)
 #   2. Creates a dedicated service user
-#   3. Downloads & installs the latest Cherry Studio Linux .deb
+#   3. Downloads & installs the latest Modaui Studio Linux .deb
 #   4. Starts the app once to initialise the SQLite database (migrations)
 #   5. Configures the CSaaS API server via sqlite3
 #      – enabled=true, host=0.0.0.0, port=<PORT>, api_key=<KEY>
-#   6. Creates and enables systemd services (xvfb, cherry-studio)
+#   6. Creates and enables systemd services (xvfb, modaui-studio)
 #   7. Generates a self-signed TLS certificate for the server IP
 #   8. Configures Nginx as an HTTPS reverse proxy → localhost:<PORT>
 #
@@ -44,7 +44,7 @@ die()     { echo -e "${RED}[install]${RESET} $*" >&2; exit 1; }
 # ─── defaults ────────────────────────────────────────────────────────────────
 SERVER_IP=""
 CSAAS_PORT=23333
-SERVICE_USER="cherrystudio"
+SERVICE_USER="modauistudio"
 API_KEY=""
 GITHUB_REPO="deepveloce-dot/deepaystudio"
 DEB_FILE=""   # supply a local .deb path to skip download
@@ -65,7 +65,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # ─── pre-flight ───────────────────────────────────────────────────────────────
-echo -e "\n${BOLD}Cherry Studio – Server Install${RESET}\n"
+echo -e "\n${BOLD}Modaui Studio – Server Install${RESET}\n"
 
 [[ "$EUID" -eq 0 ]] || die "Please run as root:  sudo $0 $*"
 
@@ -116,8 +116,8 @@ else
 fi
 
 SERVICE_HOME=$(getent passwd "$SERVICE_USER" | cut -d: -f6)
-USERDATA_DIR="${SERVICE_HOME}/.config/Cherry Studio"
-DB_PATH="${USERDATA_DIR}/cherrystudio.sqlite"
+USERDATA_DIR="${SERVICE_HOME}/.config/Modaui Studio"
+DB_PATH="${USERDATA_DIR}/modauistudio.sqlite"
 
 # ─── 3. download / install .deb ───────────────────────────────────────────────
 if [[ -z "$DEB_FILE" ]]; then
@@ -135,7 +135,7 @@ if [[ -z "$DEB_FILE" ]]; then
          Build one first with:  pnpm build:linux  or trigger the auto-deploy workflow."
   fi
 
-  DEB_FILE="/tmp/cherry-studio-latest.deb"
+  DEB_FILE="/tmp/modaui-studio-latest.deb"
   log "Downloading: ${DEB_URL}"
   wget -q -O "$DEB_FILE" "$DEB_URL"
   success "Downloaded .deb ✓"
@@ -146,26 +146,26 @@ fi
 
 log "Installing .deb package…"
 dpkg -i "$DEB_FILE" || apt-get install -f -y -qq
-success "Cherry Studio installed ✓"
+success "Modaui Studio installed ✓"
 
 # Resolve the binary (electron-builder puts a symlink in /usr/bin)
-CS_BIN=$(command -v CherryStudio 2>/dev/null || command -v cherry-studio 2>/dev/null \
-         || dpkg -L cherry-studio 2>/dev/null | grep '/usr/bin/' | head -1 \
-         || find /usr/lib -name 'CherryStudio' -type f 2>/dev/null | head -1 \
+CS_BIN=$(command -v ModauiStudio 2>/dev/null || command -v modaui-studio 2>/dev/null \
+         || dpkg -L modaui-studio 2>/dev/null | grep '/usr/bin/' | head -1 \
+         || find /usr/lib -name 'ModauiStudio' -type f 2>/dev/null | head -1 \
          || true)
-[[ -n "$CS_BIN" ]] || die "Cannot locate the CherryStudio binary. Check the .deb installation."
+[[ -n "$CS_BIN" ]] || die "Cannot locate the ModauiStudio binary. Check the .deb installation."
 log "Binary: ${CS_BIN}"
 
 # ─── 4. initialise SQLite DB (first-run) ─────────────────────────────────────
 if [[ ! -f "$DB_PATH" ]]; then
-  log "First run: starting Cherry Studio to initialise the database…"
+  log "First run: starting Modaui Studio to initialise the database…"
 
   # Start a temporary Xvfb
   Xvfb :98 -screen 0 1280x720x24 -ac &
   XVFB_PID=$!
   sleep 2
 
-  # Start Cherry Studio as the service user; give it up to 20 s to init
+  # Start Modaui Studio as the service user; give it up to 20 s to init
   sudo -u "$SERVICE_USER" DISPLAY=:98 HOME="$SERVICE_HOME" \
     "$CS_BIN" --no-sandbox &>/tmp/cs-init.log &
   CS_PID=$!
@@ -202,9 +202,9 @@ success "CSaaS preferences written ✓"
 
 # ─── 6. Xvfb systemd service ─────────────────────────────────────────────────
 log "Installing xvfb systemd service…"
-cat > /etc/systemd/system/xvfb-cherrystudio.service <<UNIT
+cat > /etc/systemd/system/xvfb-modauistudio.service <<UNIT
 [Unit]
-Description=X Virtual Frame Buffer (Cherry Studio)
+Description=X Virtual Frame Buffer (Modaui Studio)
 After=network.target
 
 [Service]
@@ -218,20 +218,20 @@ WantedBy=multi-user.target
 UNIT
 success "Xvfb service installed ✓"
 
-# ─── 7. Cherry Studio systemd service ────────────────────────────────────────
-log "Installing cherry-studio systemd service…"
-cat > /etc/systemd/system/cherry-studio.service <<UNIT
+# ─── 7. Modaui Studio systemd service ────────────────────────────────────────
+log "Installing modaui-studio systemd service…"
+cat > /etc/systemd/system/modaui-studio.service <<UNIT
 [Unit]
-Description=Cherry Studio AI Service
-After=network.target xvfb-cherrystudio.service
-Requires=xvfb-cherrystudio.service
+Description=Modaui Studio AI Service
+After=network.target xvfb-modauistudio.service
+Requires=xvfb-modauistudio.service
 
 [Service]
 Type=simple
 User=${SERVICE_USER}
 Environment=DISPLAY=:99
 Environment=HOME=${SERVICE_HOME}
-Environment=CHERRY_STUDIO_DATA_DIR=${SERVICE_HOME}/.config/Cherry Studio
+Environment=CHERRY_STUDIO_DATA_DIR=${SERVICE_HOME}/.config/Modaui Studio
 ExecStart=${CS_BIN} --no-sandbox
 Restart=on-failure
 RestartSec=5
@@ -240,21 +240,21 @@ TimeoutStopSec=15
 [Install]
 WantedBy=multi-user.target
 UNIT
-success "Cherry Studio service installed ✓"
+success "Modaui Studio service installed ✓"
 
 # ─── 8. self-signed TLS certificate ──────────────────────────────────────────
 SSL_DIR="/etc/nginx/ssl"
 mkdir -p "$SSL_DIR"
 
-if [[ ! -f "${SSL_DIR}/cherrystudio.crt" ]]; then
+if [[ ! -f "${SSL_DIR}/modauistudio.crt" ]]; then
   log "Generating self-signed TLS certificate for ${SERVER_IP}…"
   openssl req -x509 -newkey rsa:4096 \
-    -keyout "${SSL_DIR}/cherrystudio.key" \
-    -out    "${SSL_DIR}/cherrystudio.crt" \
+    -keyout "${SSL_DIR}/modauistudio.key" \
+    -out    "${SSL_DIR}/modauistudio.crt" \
     -days 3650 -nodes \
-    -subj "/C=US/O=Cherry Studio/CN=${SERVER_IP}" \
+    -subj "/C=US/O=Modaui Studio/CN=${SERVER_IP}" \
     -addext "subjectAltName=IP:${SERVER_IP}" 2>/dev/null
-  chmod 600 "${SSL_DIR}/cherrystudio.key"
+  chmod 600 "${SSL_DIR}/modauistudio.key"
   success "TLS certificate generated ✓"
 else
   log "TLS certificate already exists, skipping."
@@ -263,8 +263,8 @@ fi
 # ─── 9. Nginx configuration ───────────────────────────────────────────────────
 log "Configuring Nginx reverse proxy…"
 
-cat > /etc/nginx/sites-available/cherrystudio <<NGINX
-# Cherry Studio – HTTPS reverse proxy
+cat > /etc/nginx/sites-available/modauistudio <<NGINX
+# Modaui Studio – HTTPS reverse proxy
 # Generated by server-install.sh
 
 # Redirect plain HTTP to HTTPS
@@ -278,8 +278,8 @@ server {
     listen 443 ssl;
     server_name ${SERVER_IP} _;
 
-    ssl_certificate     ${SSL_DIR}/cherrystudio.crt;
-    ssl_certificate_key ${SSL_DIR}/cherrystudio.key;
+    ssl_certificate     ${SSL_DIR}/modauistudio.crt;
+    ssl_certificate_key ${SSL_DIR}/modauistudio.key;
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_ciphers         HIGH:!aNULL:!MD5;
     ssl_session_cache   shared:SSL:10m;
@@ -307,17 +307,17 @@ server {
 }
 NGINX
 
-ln -sf /etc/nginx/sites-available/cherrystudio /etc/nginx/sites-enabled/cherrystudio
+ln -sf /etc/nginx/sites-available/modauistudio /etc/nginx/sites-enabled/modauistudio
 rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
 
-nginx -t 2>/dev/null || die "Nginx config test failed. Check /etc/nginx/sites-available/cherrystudio"
+nginx -t 2>/dev/null || die "Nginx config test failed. Check /etc/nginx/sites-available/modauistudio"
 success "Nginx configured ✓"
 
 # ─── 10. enable & start services ─────────────────────────────────────────────
 log "Enabling and starting services…"
 systemctl daemon-reload
-systemctl enable --now xvfb-cherrystudio.service
-systemctl enable --now cherry-studio.service
+systemctl enable --now xvfb-modauistudio.service
+systemctl enable --now modaui-studio.service
 systemctl enable --now nginx
 systemctl reload nginx
 
@@ -341,10 +341,10 @@ echo -e "  ${BOLD}API key${RESET}       :  ${API_KEY}"
 echo ""
 echo -e "  ${YELLOW}Note:${RESET} The certificate is self-signed. Clients must set"
 echo -e "        SSL verification to off, or add the cert to their trust store:"
-echo -e "        ${SSL_DIR}/cherrystudio.crt"
+echo -e "        ${SSL_DIR}/modauistudio.crt"
 echo ""
 echo -e "  ${BLUE}Service status${RESET}:"
-echo -e "    systemctl status cherry-studio"
-echo -e "    systemctl status xvfb-cherrystudio"
-echo -e "    journalctl -u cherry-studio -f"
+echo -e "    systemctl status modaui-studio"
+echo -e "    systemctl status xvfb-modauistudio"
+echo -e "    journalctl -u modaui-studio -f"
 echo ""

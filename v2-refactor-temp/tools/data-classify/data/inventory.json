@@ -2,7 +2,7 @@
   "metadata": {
     "generatedAt": "2026-03-13T06:11:12.842Z",
     "version": "2.0.0",
-    "description": "Cherry Studio data inventory"
+    "description": "Modaui Studio data inventory"
   },
   "redux": {
     "assistants": {
@@ -235,7 +235,7 @@
       "nutstorePath": {
         "file": "src/renderer/src/store/nutstore.ts",
         "type": "string",
-        "defaultValue": "/cherry-studio"
+        "defaultValue": "/modaui-studio"
       },
       "nutstoreAutoSync": {
         "file": "src/renderer/src/store/nutstore.ts",
@@ -745,7 +745,7 @@
       "webdavPath": {
         "file": "src/renderer/src/store/settings.ts",
         "type": "string",
-        "defaultValue": "/cherry-studio"
+        "defaultValue": "/modaui-studio"
       },
       "webdavAutoSync": {
         "file": "src/renderer/src/store/settings.ts",
@@ -1571,7 +1571,7 @@
       "type": "string",
       "defaultValue": null
     },
-    "persist:cherry-studio": {
+    "persist:modaui-studio": {
       "file": "src/renderer/src/services/BackupService.ts",
       "type": "string",
       "defaultValue": null

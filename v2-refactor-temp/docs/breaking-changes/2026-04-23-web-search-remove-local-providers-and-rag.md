@@ -34,5 +34,5 @@
 
 ## 关联 PR/提交
 
-- PR: <https://github.com/CherryHQ/cherry-studio/pull/14443>
+- PR: <https://github.com/CherryHQ/modaui-studio/pull/14443>
 - Commit: `cddbf6440 refactor(web-search): remove rag compression`

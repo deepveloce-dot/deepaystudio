@@ -1,5 +1,5 @@
-import { Box } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { Box } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 import { DeleteIcon } from '@renderer/components/Icons'
 import { TopView } from '@renderer/components/TopView'

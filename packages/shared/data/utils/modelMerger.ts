@@ -10,14 +10,14 @@ import type {
   ProtoProviderConfig,
   ProtoProviderModelOverride,
   ProtoReasoningSupport
-} from '@cherrystudio/provider-registry'
+} from '@modauistudio/provider-registry'
 import type {
   EndpointType,
   Modality,
   ModelCapability,
   ReasoningEffort as ReasoningEffortType
-} from '@cherrystudio/provider-registry'
-import { ENDPOINT_TYPE, objectValues, REASONING_EFFORT } from '@cherrystudio/provider-registry'
+} from '@modauistudio/provider-registry'
+import { ENDPOINT_TYPE, objectValues, REASONING_EFFORT } from '@modauistudio/provider-registry'
 import * as z from 'zod'
 
 import type { Model, RuntimeModelPricing, RuntimeReasoning } from '../types/model'

@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'
 import { SelectChatModelPopup } from '@renderer/components/Popups/SelectModelPopup'
 import { isLocalAi } from '@renderer/config/env'

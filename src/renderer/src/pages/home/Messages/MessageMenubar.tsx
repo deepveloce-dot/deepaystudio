@@ -1,5 +1,5 @@
 // import { InfoCircleOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { useMultiplePreferences } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'

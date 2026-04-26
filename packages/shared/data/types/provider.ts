@@ -11,8 +11,8 @@
  * Zod schemas are the single source of truth — all types derived via z.infer<>
  */
 
-import type { EndpointType } from '@cherrystudio/provider-registry'
-import { ENDPOINT_TYPE, objectValues } from '@cherrystudio/provider-registry'
+import type { EndpointType } from '@modauistudio/provider-registry'
+import { ENDPOINT_TYPE, objectValues } from '@modauistudio/provider-registry'
 import * as z from 'zod'
 
 // ─── Schemas formerly from provider-registry/schemas ─────────────────────────

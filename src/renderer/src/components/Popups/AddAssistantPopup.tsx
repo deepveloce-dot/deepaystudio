@@ -1,4 +1,4 @@
-import { RowFlex } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
 import { TopView } from '@renderer/components/TopView'
 import { useAssistants, useDefaultAssistant } from '@renderer/hooks/useAssistant'
 import { useAssistantPresets } from '@renderer/hooks/useAssistantPresets'

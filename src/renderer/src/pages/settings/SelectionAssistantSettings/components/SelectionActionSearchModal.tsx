@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import type { SelectionActionItem } from '@shared/data/preference/preferenceTypes'
 import { Form, Input, Modal, Select } from 'antd'

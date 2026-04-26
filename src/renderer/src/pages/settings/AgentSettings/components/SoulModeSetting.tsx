@@ -1,4 +1,4 @@
-import { Switch } from '@cherrystudio/ui'
+import { Switch } from '@modauistudio/ui'
 import type {
   AgentBaseWithId,
   AgentConfiguration,

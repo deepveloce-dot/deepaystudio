@@ -1,6 +1,6 @@
 import { PushpinOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
-import { Avatar, AvatarFallback } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
+import { Avatar, AvatarFallback } from '@modauistudio/ui'
 import { FreeTrialModelTag } from '@renderer/components/FreeTrialModelTag'
 import ModelTagsWithLabel from '@renderer/components/ModelTagsWithLabel'
 import { TopView } from '@renderer/components/TopView'

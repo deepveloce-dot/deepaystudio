@@ -1,5 +1,5 @@
-import { Flex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import type { ModelCapability, ModelType } from '@renderer/types'
 import { getDifference, uniqueObjectArray } from '@renderer/utils'
 import { Checkbox } from 'antd'

@@ -1,6 +1,6 @@
 /**
  * 消息转换模块
- * 将 Cherry Studio 消息格式转换为 AI SDK 消息格式
+ * 将 Modaui Studio 消息格式转换为 AI SDK 消息格式
  */
 
 import type { ReasoningPart } from '@ai-sdk/provider-utils'

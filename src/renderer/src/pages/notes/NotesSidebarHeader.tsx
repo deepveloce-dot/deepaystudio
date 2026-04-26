@@ -1,5 +1,5 @@
 import { CheckOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { NotesSortType } from '@renderer/types/note'
 import type { MenuProps } from 'antd'
 import { Dropdown, Input } from 'antd'

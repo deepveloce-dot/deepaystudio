@@ -1,4 +1,4 @@
-import { Switch } from '@cherrystudio/ui'
+import { Switch } from '@modauistudio/ui'
 import { useMultiplePreferences } from '@data/hooks/usePreference'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import type { FC } from 'react'

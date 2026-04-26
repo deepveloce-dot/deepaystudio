@@ -1,4 +1,4 @@
-import { Querit } from '@cherrystudio/ui/icons'
+import { Querit } from '@modauistudio/ui/icons'
 import { loggerService } from '@logger'
 import { BochaLogo, ExaLogo, SearXNGLogo, TavilyLogo, ZhipuLogo } from '@renderer/components/Icons'
 import type { QuickPanelListItem } from '@renderer/components/QuickPanel'

@@ -33,14 +33,14 @@ export function buildPathRegistry() {
   const appUserDataData = path.join(appUserData, 'Data')
   const appSession = app.getPath('sessionData')
   const sysTemp = app.getPath('temp')
-  const appTemp = path.join(sysTemp, 'CherryStudio')
+  const appTemp = path.join(sysTemp, 'ModauiStudio')
   // electron-builder `extraResources` output — distinct from appRootResources
   const appExtraResources = process.resourcesPath
   // `resources/` inside asar (bundled assets) — distinct from appExtraResources
   const appRootResources = path.join(app.getAppPath(), 'resources')
 
   return Object.freeze({
-    // -- A. cherry.* — ~/.cherrystudio infrastructure --
+    // -- A. cherry.* — ~/.modauistudio infrastructure --
     'cherry.home': CHERRY_HOME,
     'cherry.bin': path.join(CHERRY_HOME, 'bin'),
     'cherry.config': path.join(CHERRY_HOME, 'config'),
@@ -73,7 +73,7 @@ export function buildPathRegistry() {
     'app.temp': appTemp, // Cherry-specific temp under sys.temp
     'app.userdata': appUserData, // Electron per-app data dir (Cherry-owned)
     'app.userdata.data': appUserDataData,
-    'app.database.file': path.join(appUserData, 'cherrystudio.sqlite'),
+    'app.database.file': path.join(appUserData, 'modauistudio.sqlite'),
     // Dev: relative to __dirname; packaged: shipped via extraResources
     'app.database.migrations': app.isPackaged
       ? path.join(appExtraResources, 'migrations/sqlite-drizzle')
@@ -127,7 +127,7 @@ export function buildPathRegistry() {
     // Version log
     'feature.version_log.file': path.join(appUserData, 'version.log'),
 
-    // Protocol deep-link (Linux .desktop entry for cherrystudio:// scheme)
+    // Protocol deep-link (Linux .desktop entry for modauistudio:// scheme)
     'feature.protocol.desktop_entries': path.join(os.homedir(), '.local', 'share', 'applications'),
 
     // Feature-owned temp dirs (all under app.temp)

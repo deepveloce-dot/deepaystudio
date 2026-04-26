@@ -1,5 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons'
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import IcImageUp from '@renderer/assets/images/paintings/ic_ImageUp.svg'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import type { FileMetadata } from '@renderer/types'

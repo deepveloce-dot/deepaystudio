@@ -1,5 +1,5 @@
-import { Flex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { TopView } from '@renderer/components/TopView'
 import type { FormProps } from 'antd'
 import { Form, Input, Modal } from 'antd'

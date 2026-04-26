@@ -80,6 +80,8 @@ export interface PreferenceSchemas {
     'app.user.name': string
     // electronStore/ZoomFactor/ZoomFactor
     'app.zoom_factor': number
+    // Deepay backend API base URL
+    'deepay.api_base': string
     // redux/settings/clickAssistantToShowTopic
     'assistant.click_to_show_topic': boolean
     // redux/settings/assistantIconType
@@ -516,6 +518,7 @@ export const DefaultPreferences: PreferenceSchemas = {
     'app.user.id': 'uuid()',
     'app.user.name': '',
     'app.zoom_factor': 1,
+    'deepay.api_base': 'http://localhost:8080',
     'assistant.click_to_show_topic': true,
     'assistant.icon_type': 'emoji',
     'assistant.tab.show': true,
@@ -580,7 +583,7 @@ export const DefaultPreferences: PreferenceSchemas = {
     'data.backup.local.sync_interval': 0,
     'data.backup.nutstore.auto_sync': false,
     'data.backup.nutstore.max_backups': 0,
-    'data.backup.nutstore.path': '/cherry-studio',
+    'data.backup.nutstore.path': '/modaui-studio',
     'data.backup.nutstore.skip_backup_file': false,
     'data.backup.nutstore.sync_interval': 0,
     'data.backup.nutstore.token': '',
@@ -599,7 +602,7 @@ export const DefaultPreferences: PreferenceSchemas = {
     'data.backup.webdav.host': '',
     'data.backup.webdav.max_backups': 0,
     'data.backup.webdav.pass': '',
-    'data.backup.webdav.path': '/cherry-studio',
+    'data.backup.webdav.path': '/modaui-studio',
     'data.backup.webdav.skip_backup_file': false,
     'data.backup.webdav.sync_interval': 0,
     'data.backup.webdav.user': '',
@@ -751,7 +754,9 @@ export const DefaultPreferences: PreferenceSchemas = {
       'knowledge',
       'files',
       'code_tools',
-      'notes'
+      'notes',
+      'fashion',
+      'deepay'
     ],
     'ui.theme_mode': PreferenceTypes.ThemeMode.system,
     'ui.theme_user.code_font_family': '',

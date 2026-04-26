@@ -41,7 +41,7 @@ const startApp = async () => {
   if (migrationResult === 'handled') return
 
   // TODO(v2): move to a lifecycle service — here temporarily for timing.
-  electronApp.setAppUserModelId(import.meta.env.VITE_MAIN_BUNDLE_ID || 'com.kangfenmao.CherryStudio')
+  electronApp.setAppUserModelId(import.meta.env.VITE_MAIN_BUNDLE_ID || 'com.kangfenmao.ModauiStudio')
 
   // Start lifecycle (BeforeReady runs parallel with app.whenReady)
   application.registerAll(serviceList)

@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { FC } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'

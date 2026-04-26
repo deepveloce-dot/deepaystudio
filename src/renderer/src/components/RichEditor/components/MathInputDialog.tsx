@@ -1,5 +1,5 @@
-import { Flex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { Input } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'

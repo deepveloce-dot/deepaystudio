@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { CopyIcon, DeleteIcon } from '@renderer/components/Icons'
 import { useChatContext } from '@renderer/hooks/useChatContext'
 import type { Topic } from '@renderer/types'

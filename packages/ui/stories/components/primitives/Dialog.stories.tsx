@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from '@cherrystudio/ui'
+} from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof Dialog> = {

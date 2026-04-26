@@ -39,8 +39,8 @@ vi.mock('@application', async () => {
 })
 
 // Mock provider-registry/node — include RegistryLoader that delegates to mocked readers
-vi.mock('@cherrystudio/provider-registry/node', async () => {
-  const { normalizeModelId } = await vi.importActual<Record<string, unknown>>('@cherrystudio/provider-registry')
+vi.mock('@modauistudio/provider-registry/node', async () => {
+  const { normalizeModelId } = await vi.importActual<Record<string, unknown>>('@modauistudio/provider-registry')
   const normalize = normalizeModelId as (id: string) => string
 
   const readModelRegistry = vi.fn()
@@ -135,7 +135,7 @@ import {
   readModelRegistry,
   readProviderModelRegistry,
   readProviderRegistry
-} from '@cherrystudio/provider-registry/node'
+} from '@modauistudio/provider-registry/node'
 
 // Must import after mocks are set up
 const { providerRegistryService } = await import('../ProviderRegistryService')

@@ -1,4 +1,4 @@
-import { RowFlex } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
 import { PROVIDER_URLS } from '@renderer/config/providers'
 import { useAwsBedrockSettings } from '@renderer/hooks/useAwsBedrock'
 import { Alert, Input, Radio } from 'antd'

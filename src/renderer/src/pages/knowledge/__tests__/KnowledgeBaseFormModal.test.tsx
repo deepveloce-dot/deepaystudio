@@ -26,7 +26,7 @@ vi.mock('lucide-react', () => ({
 }))
 
 // Mock HStack component
-vi.mock('@cherrystudio/ui', () => ({
+vi.mock('@modauistudio/ui', () => ({
   RowFlex: ({ children, ...props }: any) => (
     <div data-testid="hstack" {...props}>
       {children}

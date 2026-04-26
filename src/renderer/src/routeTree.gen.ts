@@ -56,6 +56,8 @@ import { Route as AppPaintingsSplatRouteImport } from './routes/app/paintings/$'
 import { Route as AppMinappAppIdRouteImport } from './routes/app/minapp/$appId'
 import { Route as SettingsWebsearchProviderProviderIdRouteImport } from './routes/settings/websearch/provider.$providerId'
 import { Route as SettingsMcpSettingsServerIdRouteImport } from './routes/settings/mcp/settings.$serverId'
+import { Route as AppFashionRouteImport } from './routes/app/fashion'
+import { Route as AppDeepayRouteImport } from './routes/app/deepay'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -218,6 +220,16 @@ const AppAgentsRoute = AppAgentsRouteImport.update({
   path: '/agents',
   getParentRoute: () => AppRoute,
 } as any)
+const AppFashionRoute = AppFashionRouteImport.update({
+  id: '/fashion',
+  path: '/fashion',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDeepayRoute = AppDeepayRouteImport.update({
+  id: '/deepay',
+  path: '/deepay',
+  getParentRoute: () => AppRoute,
+} as any)
 const SettingsWebsearchIndexRoute = SettingsWebsearchIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -303,6 +315,8 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/settings': typeof SettingsRouteWithChildren
   '/app/agents': typeof AppAgentsRoute
+  '/app/fashion': typeof AppFashionRoute
+  '/app/deepay': typeof AppDeepayRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/chat': typeof AppChatRoute
   '/app/code': typeof AppCodeRoute
@@ -351,6 +365,8 @@ export interface FileRoutesByTo {
   '/app': typeof AppRouteWithChildren
   '/home': typeof HomeRoute
   '/app/agents': typeof AppAgentsRoute
+  '/app/fashion': typeof AppFashionRoute
+  '/app/deepay': typeof AppDeepayRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/chat': typeof AppChatRoute
   '/app/code': typeof AppCodeRoute
@@ -399,6 +415,8 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/settings': typeof SettingsRouteWithChildren
   '/app/agents': typeof AppAgentsRoute
+  '/app/fashion': typeof AppFashionRoute
+  '/app/deepay': typeof AppDeepayRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/chat': typeof AppChatRoute
   '/app/code': typeof AppCodeRoute
@@ -450,6 +468,8 @@ export interface FileRouteTypes {
     | '/home'
     | '/settings'
     | '/app/agents'
+    | '/app/fashion'
+    | '/app/deepay'
     | '/app/assistant'
     | '/app/chat'
     | '/app/code'
@@ -498,6 +518,8 @@ export interface FileRouteTypes {
     | '/app'
     | '/home'
     | '/app/agents'
+    | '/app/fashion'
+    | '/app/deepay'
     | '/app/assistant'
     | '/app/chat'
     | '/app/code'
@@ -545,6 +567,8 @@ export interface FileRouteTypes {
     | '/home'
     | '/settings'
     | '/app/agents'
+    | '/app/fashion'
+    | '/app/deepay'
     | '/app/assistant'
     | '/app/chat'
     | '/app/code'
@@ -822,6 +846,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgentsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/fashion': {
+      id: '/app/fashion'
+      path: '/fashion'
+      fullPath: '/app/fashion'
+      preLoaderRoute: typeof AppFashionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/deepay': {
+      id: '/app/deepay'
+      path: '/deepay'
+      fullPath: '/app/deepay'
+      preLoaderRoute: typeof AppDeepayRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/settings/websearch/': {
       id: '/settings/websearch/'
       path: '/'
@@ -932,6 +970,8 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAgentsRoute: typeof AppAgentsRoute
+  AppFashionRoute: typeof AppFashionRoute
+  AppDeepayRoute: typeof AppDeepayRoute
   AppAssistantRoute: typeof AppAssistantRoute
   AppChatRoute: typeof AppChatRoute
   AppCodeRoute: typeof AppCodeRoute
@@ -948,6 +988,8 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAgentsRoute: AppAgentsRoute,
+  AppFashionRoute: AppFashionRoute,
+  AppDeepayRoute: AppDeepayRoute,
   AppAssistantRoute: AppAssistantRoute,
   AppChatRoute: AppChatRoute,
   AppCodeRoute: AppCodeRoute,

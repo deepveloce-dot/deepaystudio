@@ -1,4 +1,4 @@
-import { Flex } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
 import { HealthStatus } from '@renderer/types/healthCheck'
 import React from 'react'
 import { useTranslation } from 'react-i18next'

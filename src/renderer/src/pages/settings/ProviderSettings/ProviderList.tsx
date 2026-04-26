@@ -1,4 +1,4 @@
-import { Button, MenuItem } from '@cherrystudio/ui'
+import { Button, MenuItem } from '@modauistudio/ui'
 import type { DropResult } from '@hello-pangea/dnd'
 import { loggerService } from '@logger'
 import {

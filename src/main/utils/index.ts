@@ -49,7 +49,7 @@ export function debounce(func: (...args: any[]) => void, wait: number, immediate
 
 // NOTE: It's an unused function. localStorage should not be accessed in main process.
 // export function dumpPersistState() {
-//   const persistState = JSON.parse(localStorage.getItem('persist:cherry-studio') || '{}')
+//   const persistState = JSON.parse(localStorage.getItem('persist:modaui-studio') || '{}')
 //   for (const key in persistState) {
 //     persistState[key] = JSON.parse(persistState[key])
 //   }

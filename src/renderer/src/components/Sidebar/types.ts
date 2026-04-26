@@ -1,4 +1,4 @@
-import type { CompoundIcon } from '@cherrystudio/ui'
+import type { CompoundIcon } from '@modauistudio/ui'
 import type { LucideIcon } from 'lucide-react'
 
 export interface SidebarMiniApp {

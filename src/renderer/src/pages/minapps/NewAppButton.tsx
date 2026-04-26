@@ -1,5 +1,5 @@
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons'
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { loadCustomMiniApp, ORIGIN_DEFAULT_MIN_APPS, updateAllMinApps } from '@renderer/config/minapps'
 import { useMinapps } from '@renderer/hooks/useMinapps'

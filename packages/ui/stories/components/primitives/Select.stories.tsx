@@ -7,7 +7,7 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue
-} from '@cherrystudio/ui'
+} from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Globe, Palette, User } from 'lucide-react'
 import { useState } from 'react'

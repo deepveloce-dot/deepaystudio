@@ -8,7 +8,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger
-} from '@cherrystudio/ui'
+} from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof Drawer> = {

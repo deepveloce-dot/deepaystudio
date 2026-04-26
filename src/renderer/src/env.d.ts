@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 import type { PermissionUpdate } from '@anthropic-ai/claude-agent-sdk'
-import type { ToastUtilities } from '@cherrystudio/ui'
+import type { ToastUtilities } from '@modauistudio/ui'
 import type { UseNavigateResult } from '@tanstack/react-router'
 import type { HookAPI } from 'antd/es/modal/useModal'
 

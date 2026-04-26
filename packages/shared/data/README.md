@@ -1,6 +1,6 @@
 # Shared Data Types
 
-This directory contains shared type definitions for Cherry Studio's data layer.
+This directory contains shared type definitions for Modaui Studio's data layer.
 
 ## Documentation
 

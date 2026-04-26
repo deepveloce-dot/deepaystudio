@@ -587,7 +587,7 @@ class ClaudeCodeService implements AgentServiceInterface {
     // not coupled to Soul Mode's autonomous-agent semantics.
     const skillsServer = new SkillsServer(session.agent_id)
     options.mcpServers.skills = { type: 'sdk', name: 'skills', instance: skillsServer.mcpServer }
-    // Auto-approve via Cherry Studio's own permission gate. The SDK whitelist
+    // Auto-approve via Modaui Studio's own permission gate. The SDK whitelist
     // (`options.allowedTools`) takes glob patterns, but `canUseTool` checks
     // `autoAllowTools` with exact string matching, so we have to add the full
     // tool names there too — otherwise non-Soul agents (which do not run in
@@ -1102,7 +1102,7 @@ async function buildAssistantContext(): Promise<string> {
 
   return [
     '## Current Environment',
-    `- App: Cherry Studio v${appVersion}`,
+    `- App: Modaui Studio v${appVersion}`,
     `- OS: ${platform}`,
     `- Language: ${language}, Theme: ${theme}`,
     proxy ? `- Proxy: ${proxy}` : '- Proxy: none',

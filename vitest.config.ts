@@ -111,7 +111,7 @@ export default defineConfig({
         extends: true,
         resolve: {
           alias: {
-            '@cherrystudio/ui': resolve(__dirname, 'packages/ui/src')
+            '@modauistudio/ui': resolve(__dirname, 'packages/ui/src')
           }
         },
         test: {

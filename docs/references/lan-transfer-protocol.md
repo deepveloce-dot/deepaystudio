@@ -1,9 +1,9 @@
-# Cherry Studio LAN Transfer Protocol Specification
+# Modaui Studio LAN Transfer Protocol Specification
 
 > Version: 1.0
 > Last Updated: 2025-12
 
-This document defines the LAN file transfer protocol between the Cherry Studio desktop client (Electron) and mobile client (Expo).
+This document defines the LAN file transfer protocol between the Modaui Studio desktop client (Electron) and mobile client (Expo).
 
 ---
 
@@ -63,9 +63,9 @@ This document defines the LAN file transfer protocol between the Cherry Studio d
 
 | Property | Value |
 |----------|-------|
-| Service Type | `cherrystudio` |
+| Service Type | `modauistudio` |
 | Protocol | `tcp` |
-| Full Service ID | `_cherrystudio._tcp` |
+| Full Service ID | `_modauistudio._tcp` |
 
 ### 2.2 Service Publishing (Mobile)
 
@@ -73,8 +73,8 @@ Mobile must publish the service via mDNS/Bonjour:
 
 ```typescript
 {
-  name: "Cherry Studio Mobile",
-  type: "cherrystudio",
+  name: "Modaui Studio Mobile",
+  type: "modauistudio",
   protocol: "tcp",
   port: 53317,
   txt: {
@@ -336,8 +336,8 @@ const totalChunks = Math.ceil(fileSize / CHUNK_SIZE)
 
 ```typescript
 export const LAN_TRANSFER_PROTOCOL_VERSION = '1'
-export const LAN_TRANSFER_SERVICE_TYPE = 'cherrystudio'
-export const LAN_TRANSFER_SERVICE_FULL_NAME = '_cherrystudio._tcp'
+export const LAN_TRANSFER_SERVICE_TYPE = 'modauistudio'
+export const LAN_TRANSFER_SERVICE_FULL_NAME = '_modauistudio._tcp'
 export const LAN_TRANSFER_TCP_PORT = 53317
 export const LAN_TRANSFER_CHUNK_SIZE = 512 * 1024         // 512KB
 export const LAN_TRANSFER_GLOBAL_TIMEOUT_MS = 10 * 60 * 1000  // 10 minutes
@@ -394,7 +394,7 @@ export const LAN_TRANSFER_ALLOWED_MIME_TYPES = ['application/zip', 'application/
 
 ### 10.1 Required Features
 
-1. **mDNS Service Publishing**: Publish `_cherrystudio._tcp` service on TCP port `53317`
+1. **mDNS Service Publishing**: Publish `_modauistudio._tcp` service on TCP port `53317`
 2. **TCP Server**: Listen on the specified port
 3. **Message Parsing**: Control messages via UTF-8 + `\n` JSON; data messages via binary frames (Magic+TotalLen framing)
 4. **Handshake Handling**: Validate `handshake`, send `handshake_ack`, respond to `ping`

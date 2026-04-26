@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { ActionTool } from '@renderer/components/ActionTools'
 import { Dropdown } from 'antd'
 import { memo, useCallback, useMemo } from 'react'

@@ -1,5 +1,5 @@
-import { Flex, Switch } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { Flex, Switch } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import type { McpError } from '@modelcontextprotocol/sdk/types.js'
 import { DeleteIcon } from '@renderer/components/Icons'

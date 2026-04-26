@@ -1,5 +1,5 @@
 import { CloudServerOutlined, CloudSyncOutlined, YuqueOutlined } from '@ant-design/icons'
-import { MenuItem, MenuList, RowFlex } from '@cherrystudio/ui'
+import { MenuItem, MenuList, RowFlex } from '@modauistudio/ui'
 import DividerWithText from '@renderer/components/DividerWithText'
 import { JoplinIcon, SiyuanIcon } from '@renderer/components/Icons'
 import { NutstoreIcon } from '@renderer/components/Icons/NutstoreIcons'

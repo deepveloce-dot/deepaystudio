@@ -9,8 +9,8 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (k: string) => k })
 }))
 
-// mock @cherrystudio/ui Button component
-vi.mock('@cherrystudio/ui', () => ({
+// mock @modauistudio/ui Button component
+vi.mock('@modauistudio/ui', () => ({
   Button: ({ children, onPress, ...props }: any) => (
     <button type="button" onClick={onPress} {...props}>
       {children}

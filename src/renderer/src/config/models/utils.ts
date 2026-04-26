@@ -1,4 +1,4 @@
-import type OpenAI from '@cherrystudio/openai'
+import type OpenAI from '@modauistudio/openai'
 import { isEmbeddingModel, isRerankModel } from '@renderer/config/models/embedding'
 import type { Assistant } from '@renderer/types'
 import { type Model, SystemProviderIds } from '@renderer/types'

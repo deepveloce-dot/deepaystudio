@@ -4,10 +4,10 @@
  * and interactive alongside the panel.
  *
  * For a full-screen modal dialog that covers the whole viewport with a
- * backdrop, use the shadcn `Drawer` primitive from '@cherrystudio/ui' instead.
+ * backdrop, use the shadcn `Drawer` primitive from '@modauistudio/ui' instead.
  */
-import { Button } from '@cherrystudio/ui/components/primitives/button'
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { Button } from '@modauistudio/ui/components/primitives/button'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 import { XIcon } from 'lucide-react'
 import * as React from 'react'

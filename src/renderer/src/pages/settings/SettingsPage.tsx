@@ -1,4 +1,4 @@
-import { MenuDivider, MenuItem, MenuList } from '@cherrystudio/ui'
+import { MenuDivider, MenuItem, MenuList } from '@modauistudio/ui'
 import { Navbar, NavbarCenter } from '@renderer/components/app/Navbar'
 import { McpLogo } from '@renderer/components/Icons'
 import Scrollbar from '@renderer/components/Scrollbar'

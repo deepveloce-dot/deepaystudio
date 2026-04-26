@@ -1,4 +1,4 @@
-import { MenuItem, MenuList } from '@cherrystudio/ui'
+import { MenuItem, MenuList } from '@modauistudio/ui'
 import { Icon } from '@iconify/react'
 import CodeViewer from '@renderer/components/CodeViewer'
 import RichEditor from '@renderer/components/RichEditor'

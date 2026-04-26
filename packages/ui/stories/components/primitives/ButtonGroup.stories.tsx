@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from '@cherrystudio/ui'
+import { Button, ButtonGroup } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { ChevronLeft, ChevronRight, LayoutGrid, List } from 'lucide-react'
 

@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { Copy } from 'lucide-react'
 import type { FC, KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'

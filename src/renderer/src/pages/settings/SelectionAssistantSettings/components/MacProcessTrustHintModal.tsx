@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { Modal, Typography } from 'antd'
 import type { FC } from 'react'
 import { Trans, useTranslation } from 'react-i18next'

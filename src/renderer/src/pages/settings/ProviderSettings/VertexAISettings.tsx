@@ -1,4 +1,4 @@
-import { RowFlex } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
 import { PROVIDER_URLS } from '@renderer/config/providers'
 import { useVertexAISettings } from '@renderer/hooks/useVertexAI'
 import { Alert, Input } from 'antd'

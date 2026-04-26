@@ -117,13 +117,13 @@ describe('PromptBuilder', () => {
 
   it('includes memory/FACT.md in memories section', async () => {
     setupFiles({
-      '/workspace/memory/FACT.md': '# Active Projects\n\n- Cherry Studio'
+      '/workspace/memory/FACT.md': '# Active Projects\n\n- Modaui Studio'
     })
 
     const result = await builder.buildSystemPrompt('/workspace')
 
     expect(result).toContain('<facts>')
-    expect(result).toContain('Cherry Studio')
+    expect(result).toContain('Modaui Studio')
     expect(result).toContain('</facts>')
     expect(result).toContain('WHAT you know')
   })
@@ -338,7 +338,7 @@ describe('PromptBuilder', () => {
 
     it('wraps memory/FACT.md content in a Workspace Knowledge block', async () => {
       setupFiles({
-        '/workspace/memory/FACT.md': '- Project: cherry-studio\n- Build tool: pnpm + electron-vite'
+        '/workspace/memory/FACT.md': '- Project: modaui-studio\n- Build tool: pnpm + electron-vite'
       })
 
       const result = await builder.buildFactsSection('/workspace')
@@ -346,7 +346,7 @@ describe('PromptBuilder', () => {
       expect(result).toBeDefined()
       expect(result).toContain('## Workspace Knowledge')
       expect(result).toContain('<facts>')
-      expect(result).toContain('Project: cherry-studio')
+      expect(result).toContain('Project: modaui-studio')
       expect(result).toContain('Build tool: pnpm + electron-vite')
       expect(result).toContain('</facts>')
       // The agent should also be told to keep updating FACT.md

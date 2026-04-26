@@ -1,5 +1,5 @@
 import { InfoCircleOutlined } from '@ant-design/icons'
-import { Button, InfoTooltip, RowFlex, Switch } from '@cherrystudio/ui'
+import { Button, InfoTooltip, RowFlex, Switch } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'
 import { useTheme } from '@renderer/context/ThemeProvider'

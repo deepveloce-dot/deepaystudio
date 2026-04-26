@@ -1,5 +1,5 @@
-import { RowFlex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { FolderIcon as NutstoreFolderIcon } from '@renderer/components/Icons/NutstoreIcons'
 import { Input } from 'antd'

@@ -1,6 +1,6 @@
 import { LoadingOutlined, WifiOutlined } from '@ant-design/icons'
-import { RowFlex } from '@cherrystudio/ui'
-import { Switch } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Switch } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import BackupPopup from '@renderer/components/Popups/BackupPopup'
 import LanTransferPopup from '@renderer/components/Popups/LanTransferPopup'

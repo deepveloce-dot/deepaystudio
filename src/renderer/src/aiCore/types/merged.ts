@@ -2,9 +2,9 @@
  * Application-Level Provider Type Merge Point
  */
 
-import type { RuntimeConfig } from '@cherrystudio/ai-core/core'
-import type { ModelConfig } from '@cherrystudio/ai-core/core/models/types'
-import type { RuntimeExecutor } from '@cherrystudio/ai-core/core/runtime'
+import type { RuntimeConfig } from '@modauistudio/ai-core/core'
+import type { ModelConfig } from '@modauistudio/ai-core/core/models/types'
+import type { RuntimeExecutor } from '@modauistudio/ai-core/core/runtime'
 import type {
   ExtensionConfigToIdResolutionMap,
   ExtensionToSettingsMap,
@@ -12,8 +12,8 @@ import type {
   ProviderExtensionConfig,
   StringKeys,
   UnionToIntersection
-} from '@cherrystudio/ai-core/provider'
-import { coreExtensions } from '@cherrystudio/ai-core/provider'
+} from '@modauistudio/ai-core/provider'
+import { coreExtensions } from '@modauistudio/ai-core/provider'
 
 import { extensions } from '../provider/extensions'
 

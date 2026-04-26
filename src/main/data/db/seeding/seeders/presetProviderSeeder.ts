@@ -1,7 +1,7 @@
 import { application } from '@application'
-import type { ProtoProviderConfig } from '@cherrystudio/provider-registry'
-import { buildRuntimeEndpointConfigs, ENDPOINT_TYPE } from '@cherrystudio/provider-registry'
-import { RegistryLoader } from '@cherrystudio/provider-registry/node'
+import type { ProtoProviderConfig } from '@modauistudio/provider-registry'
+import { buildRuntimeEndpointConfigs, ENDPOINT_TYPE } from '@modauistudio/provider-registry'
+import { RegistryLoader } from '@modauistudio/provider-registry/node'
 import { userProviderTable } from '@data/db/schemas/userProvider'
 
 import type { DbType, ISeeder } from '../../types'

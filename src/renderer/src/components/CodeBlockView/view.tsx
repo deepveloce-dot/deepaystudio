@@ -1,4 +1,4 @@
-import { CodeEditor, type CodeEditorHandles } from '@cherrystudio/ui'
+import { CodeEditor, type CodeEditorHandles } from '@modauistudio/ui'
 import { useMultiplePreferences, usePreference } from '@data/hooks/usePreference'
 import { Icon } from '@iconify/react'
 import { loggerService } from '@logger'

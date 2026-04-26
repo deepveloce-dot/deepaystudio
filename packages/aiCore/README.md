@@ -1,6 +1,6 @@
-# @cherrystudio/ai-core
+# @modauistudio/ai-core
 
-Cherry Studio AI Core 是一个基于 Vercel AI SDK 的统一 AI Provider 接口包，为 AI 应用提供强大的抽象层和插件化架构。
+Modaui Studio AI Core 是一个基于 Vercel AI SDK 的统一 AI Provider 接口包，为 AI 应用提供强大的抽象层和插件化架构。
 
 ## ✨ 核心亮点
 
@@ -71,7 +71,7 @@ Cherry Studio AI Core 是一个基于 Vercel AI SDK 的统一 AI Provider 接口
 ## 安装
 
 ```bash
-npm install @cherrystudio/ai-core ai @ai-sdk/google @ai-sdk/openai
+npm install @modauistudio/ai-core ai @ai-sdk/google @ai-sdk/openai
 ```
 
 ### React Native
@@ -84,7 +84,7 @@ const { getDefaultConfig } = require('expo/metro-config')
 
 const config = getDefaultConfig(__dirname)
 
-// 添加对 @cherrystudio/ai-core 的支持
+// 添加对 @modauistudio/ai-core 的支持
 config.resolver.resolverMainFields = ['react-native', 'browser', 'main']
 config.resolver.platforms = ['ios', 'android', 'native', 'web']
 
@@ -102,7 +102,7 @@ npm install @ai-sdk/openai @ai-sdk/anthropic @ai-sdk/google
 ### 基础用法
 
 ```typescript
-import { AiCore } from '@cherrystudio/ai-core'
+import { AiCore } from '@modauistudio/ai-core'
 
 // 创建 OpenAI executor
 const executor = AiCore.create('openai', {
@@ -123,7 +123,7 @@ const response = await executor.generateText('gpt-4', {
 ### 便捷函数
 
 ```typescript
-import { createOpenAIExecutor } from '@cherrystudio/ai-core'
+import { createOpenAIExecutor } from '@modauistudio/ai-core'
 
 // 快速创建 OpenAI executor
 const executor = createOpenAIExecutor({
@@ -139,7 +139,7 @@ const result = await executor.streamText('gpt-4', {
 ### 多 Provider 支持
 
 ```typescript
-import { AiCore } from '@cherrystudio/ai-core'
+import { AiCore } from '@modauistudio/ai-core'
 
 // 支持多种 AI providers
 const openaiExecutor = AiCore.create('openai', { apiKey: 'openai-key' })
@@ -153,7 +153,7 @@ const xaiExecutor = AiCore.create('xai', { apiKey: 'xai-key' })
 对于非内置的 providers，可以通过注册 API 扩展支持：
 
 ```typescript
-import { registerProvider, AiCore } from '@cherrystudio/ai-core'
+import { registerProvider, AiCore } from '@modauistudio/ai-core'
 
 // 方式一：导入并注册第三方 provider
 import { createGroq } from '@ai-sdk/groq'
@@ -190,7 +190,7 @@ AI Core 提供了强大的插件系统，支持请求全生命周期的扩展。
 为不同 AI Provider 提供统一的网络搜索能力：
 
 ```typescript
-import { webSearchPlugin } from '@cherrystudio/ai-core/built-in/plugins'
+import { webSearchPlugin } from '@modauistudio/ai-core/built-in/plugins'
 
 const executor = AiCore.create('openai', { apiKey: 'your-key' }, [
   webSearchPlugin({
@@ -216,7 +216,7 @@ const executor = AiCore.create('openai', { apiKey: 'your-key' }, [
 提供详细的请求日志记录：
 
 ```typescript
-import { createLoggingPlugin } from '@cherrystudio/ai-core/built-in/plugins'
+import { createLoggingPlugin } from '@modauistudio/ai-core/built-in/plugins'
 
 const executor = AiCore.create('openai', { apiKey: 'your-key' }, [
   createLoggingPlugin({
@@ -232,7 +232,7 @@ const executor = AiCore.create('openai', { apiKey: 'your-key' }, [
 为不支持原生 Function Call 的模型提供 prompt 方式的工具调用：
 
 ```typescript
-import { createPromptToolUsePlugin } from '@cherrystudio/ai-core/built-in/plugins'
+import { createPromptToolUsePlugin } from '@modauistudio/ai-core/built-in/plugins'
 
 // 对于不支持 function call 的模型
 const executor = AiCore.create(
@@ -258,7 +258,7 @@ const executor = AiCore.create(
 创建自定义插件非常简单：
 
 ```typescript
-import { definePlugin } from '@cherrystudio/ai-core'
+import { definePlugin } from '@modauistudio/ai-core'
 
 const customPlugin = definePlugin({
   name: 'custom-plugin',
@@ -307,7 +307,7 @@ const executor = AiCore.create('openai', { apiKey: 'your-key' }, [customPlugin])
 #### 基本用法示例
 
 ```typescript
-import { createClient } from '@cherrystudio/ai-core'
+import { createClient } from '@modauistudio/ai-core'
 import { createProviderRegistry } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
 import { anthropic } from '@ai-sdk/anthropic'
@@ -355,10 +355,10 @@ await client.streamObject({
 
 #### 与插件系统配合使用
 
-更强大的是，你还可以将自定义注册表与 Cherry Studio 的插件系统结合使用：
+更强大的是，你还可以将自定义注册表与 Modaui Studio 的插件系统结合使用：
 
 ```typescript
-import { PluginEnabledAiClient } from '@cherrystudio/ai-core'
+import { PluginEnabledAiClient } from '@modauistudio/ai-core'
 import { createProviderRegistry } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
 import { anthropic } from '@ai-sdk/anthropic'
@@ -414,7 +414,7 @@ await client.streamObject({
 ## 📚 相关资源
 
 - [Vercel AI SDK 文档](https://ai-sdk.dev/)
-- [Cherry Studio 项目](https://github.com/CherryHQ/cherry-studio)
+- [Modaui Studio 项目](https://github.com/CherryHQ/modaui-studio)
 - [AI SDK Providers](https://ai-sdk.dev/providers/ai-sdk-providers)
 
 ## 未来版本
@@ -426,8 +426,8 @@ await client.streamObject({
 
 ## 📄 License
 
-MIT License - 详见 [LICENSE](https://github.com/CherryHQ/cherry-studio/blob/main/LICENSE) 文件
+MIT License - 详见 [LICENSE](https://github.com/CherryHQ/modaui-studio/blob/main/LICENSE) 文件
 
 ---
 
-**Cherry Studio AI Core** - 让 AI 开发更简单、更强大、更灵活 🚀
+**Modaui Studio AI Core** - 让 AI 开发更简单、更强大、更灵活 🚀

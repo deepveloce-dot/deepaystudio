@@ -1,4 +1,4 @@
-import { Button, ColFlex } from '@cherrystudio/ui'
+import { Button, ColFlex } from '@modauistudio/ui'
 import { Alert } from 'antd'
 import type { FC } from 'react'
 import { useEffect, useState } from 'react'

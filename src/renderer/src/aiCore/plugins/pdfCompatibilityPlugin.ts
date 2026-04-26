@@ -5,7 +5,7 @@
  * Extracts text directly from the FilePart's base64 data using pdf-parse.
  */
 import type { LanguageModelV3FilePart, LanguageModelV3Message } from '@ai-sdk/provider'
-import { definePlugin } from '@cherrystudio/ai-core/core/plugins'
+import { definePlugin } from '@modauistudio/ai-core/core/plugins'
 import { loggerService } from '@logger'
 import { isAnthropicModel, isGeminiModel } from '@renderer/config/models'
 import { isOpenAILLMModel } from '@renderer/config/models/openai'

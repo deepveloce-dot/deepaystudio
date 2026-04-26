@@ -1,7 +1,7 @@
 **THIS DIRECTORY IS NOT FOR RUNTIME USE**
 
 **v2 Data Refactoring Notice**
-Before the official release of the alpha version, the database structure may change at any time. To maintain simplicity, the database migration files will be periodically reinitialized, which may cause the application to fail. If this occurs, please delete the `cherrystudio.sqlite` file located in the user data directory.
+Before the official release of the alpha version, the database structure may change at any time. To maintain simplicity, the database migration files will be periodically reinitialized, which may cause the application to fail. If this occurs, please delete the `modauistudio.sqlite` file located in the user data directory.
 
 - Using `libsql` as the `sqlite3` driver, and `drizzle` as the ORM and database migration tool
 - Table schemas are defined in `src\main\data\db\schemas`

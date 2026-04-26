@@ -10,7 +10,9 @@ import {
   MessageCircle,
   Palette,
   Settings,
-  Sparkles
+  Sparkles,
+  Store,
+  Wand2
 } from 'lucide-react'
 
 import type { Tab } from '../../hooks/useTabs'
@@ -32,6 +34,8 @@ export const ROUTE_ICONS: Record<string, IconComponent> = {
   '/app/files': Files,
   '/app/code': Code,
   '/app/notes': FileText,
+  '/app/fashion': Wand2,
+  '/app/deepay': Store,
   '/settings': Settings
 }
 

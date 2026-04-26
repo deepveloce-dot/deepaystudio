@@ -6,8 +6,8 @@ import {
   NumberOutlined,
   ReloadOutlined
 } from '@ant-design/icons'
-import { RowFlex } from '@cherrystudio/ui'
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { useAssistant } from '@renderer/hooks/useAssistant'
 import { useMessageOperations } from '@renderer/hooks/useMessageOperations'
 import type { Topic } from '@renderer/types'

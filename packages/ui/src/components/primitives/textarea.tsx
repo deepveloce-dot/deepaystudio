@@ -1,4 +1,4 @@
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { composeEventHandlers } from '@radix-ui/primitive'
 import { useCallbackRef } from '@radix-ui/react-use-callback-ref'
 import { useControllableState } from '@radix-ui/react-use-controllable-state'

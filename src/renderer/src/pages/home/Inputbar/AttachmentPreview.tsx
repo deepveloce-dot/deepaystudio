@@ -12,7 +12,7 @@ import {
   GlobalOutlined,
   LinkOutlined
 } from '@ant-design/icons'
-import { ColFlex, Tooltip } from '@cherrystudio/ui'
+import { ColFlex, Tooltip } from '@modauistudio/ui'
 import ConfirmDialog from '@renderer/components/ConfirmDialog'
 import CustomTag from '@renderer/components/Tags/CustomTag'
 import { useAttachment } from '@renderer/hooks/useAttachment'

@@ -1,4 +1,4 @@
-import { Switch } from '@cherrystudio/ui'
+import { Switch } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import i18n from '@renderer/i18n'
@@ -149,7 +149,7 @@ const PopupContainer: React.FC<PopupContainerProps> = ({
     title,
     tags: obsidianTags || '',
     createdAt: new Date().toISOString().split('T')[0],
-    source: 'Cherry Studio',
+    source: 'Modaui Studio',
     processingMethod: processingMethod,
     folder: ''
   })

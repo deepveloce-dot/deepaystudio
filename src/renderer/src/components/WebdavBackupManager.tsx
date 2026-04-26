@@ -1,5 +1,5 @@
 import { DeleteOutlined, ExclamationCircleOutlined, ReloadOutlined } from '@ant-design/icons'
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { restoreFromWebdav } from '@renderer/services/BackupService'
 import { formatFileSize } from '@renderer/utils'
 import { Modal, Table } from 'antd'

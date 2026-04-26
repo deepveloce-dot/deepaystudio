@@ -1,11 +1,11 @@
 // [v2] TODO: The legacy app/model/provider PNG/WebP logos were removed by the icon-system
 // overhaul (#12858). The imports below are a stop-gap to keep tests green - each mini-app
-// now receives a CompoundIcon from @cherrystudio/ui/icons instead of a deleted image URL.
+// now receives a CompoundIcon from @modauistudio/ui/icons instead of a deleted image URL.
 // A proper design should decouple mini-app icon resolution (e.g. a dedicated registry or
 // a `resolveMinAppIcon` helper) rather than hard-coding CompoundIcon references here.
 
-import type { CompoundIcon } from '@cherrystudio/ui'
-import { ModelIcons } from '@cherrystudio/ui/icons'
+import type { CompoundIcon } from '@modauistudio/ui'
+import { ModelIcons } from '@modauistudio/ui/icons'
 import {
   Abacus,
   AiStudio,
@@ -63,7 +63,7 @@ import {
   ZeroOne,
   Zhida,
   Zhipu
-} from '@cherrystudio/ui/icons'
+} from '@modauistudio/ui/icons'
 import { loggerService } from '@logger'
 import type { MinAppType } from '@renderer/types'
 import { ORIGIN_DEFAULT_MIN_APPS as SHARED_PRESETS } from '@shared/data/presets/miniapps'

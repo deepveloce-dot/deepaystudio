@@ -26,7 +26,7 @@ vi.mock('@renderer/utils/provider', () => ({
 }))
 
 vi.mock('@shared/utils', () => ({
-  defaultAppHeaders: () => ({ 'X-App': 'CherryStudio' })
+  defaultAppHeaders: () => ({ 'X-App': 'ModauiStudio' })
 }))
 
 const { listModels } = await import('../listModels')

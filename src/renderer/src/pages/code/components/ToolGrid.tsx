@@ -1,5 +1,5 @@
-import type { IconComponent } from '@cherrystudio/ui/icons'
-import { cn } from '@cherrystudio/ui/lib/utils'
+import type { IconComponent } from '@modauistudio/ui/icons'
+import { cn } from '@modauistudio/ui/lib/utils'
 
 import { CliIconBadge } from './CliIconBadge'
 import type { CodeToolMeta } from './types'

@@ -10,7 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { buildProviderOptions } from '../options'
 
 // Mock dependencies
-vi.mock('@cherrystudio/ai-core/provider', async (importOriginal) => {
+vi.mock('@modauistudio/ai-core/provider', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>
   return {
     ...actual,
@@ -943,7 +943,7 @@ describe('options utils', () => {
           provider: 'cherryin'
         } as Model
 
-        // User provides custom parameters with Cherry Studio provider ID
+        // User provides custom parameters with Modaui Studio provider ID
         vi.mocked(getCustomParameters).mockReturnValue({
           cherryin: {
             customOption1: 'value1',
@@ -985,7 +985,7 @@ describe('options utils', () => {
           provider: 'cherryin'
         } as Model
 
-        // User provides custom parameters with Cherry Studio provider ID
+        // User provides custom parameters with Modaui Studio provider ID
         vi.mocked(getCustomParameters).mockReturnValue({
           cherryin: {
             customOpenAIOption: 'openai_value'
@@ -1165,7 +1165,7 @@ describe('options utils', () => {
       )
 
       // Note: For proxy providers like aihubmix/newapi, users should write AI SDK provider ID (google/anthropic)
-      // instead of the Cherry Studio provider ID for custom parameters to work correctly
+      // instead of the Modaui Studio provider ID for custom parameters to work correctly
 
       // model.endpoint_type takes priority over the short-name heuristic so the providerOptions key
       // stays aligned with the SDK language-model class each proxy builds. Covers CherryIN's

@@ -1,4 +1,4 @@
-import { InfoTooltip } from '@cherrystudio/ui'
+import { InfoTooltip } from '@modauistudio/ui'
 import ModelSelector from '@renderer/components/ModelSelector'
 import { isRerankModel } from '@renderer/config/models'
 import { useProviders } from '@renderer/hooks/useProvider'

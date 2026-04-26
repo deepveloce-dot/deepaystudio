@@ -1,4 +1,4 @@
-import { Composio, Glama, Higress, Mcp, Mcpso, Modelscope, Pulse, Smithery, Zhipu } from '@cherrystudio/ui/icons'
+import { Composio, Glama, Higress, Mcp, Mcpso, Modelscope, Pulse, Smithery, Zhipu } from '@modauistudio/ui/icons'
 import { ExternalLink } from 'lucide-react'
 import type { FC } from 'react'
 import { useTranslation } from 'react-i18next'

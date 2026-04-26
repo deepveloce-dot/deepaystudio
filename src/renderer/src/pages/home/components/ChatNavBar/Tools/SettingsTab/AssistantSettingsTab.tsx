@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
   Switch
-} from '@cherrystudio/ui'
+} from '@modauistudio/ui'
 import { useMultiplePreferences, usePreference } from '@data/hooks/usePreference'
 import EditableNumber from '@renderer/components/EditableNumber'
 import Scrollbar from '@renderer/components/Scrollbar'

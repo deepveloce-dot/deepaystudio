@@ -23,7 +23,7 @@ src/renderer/src/windows/migrationV2/
    - `useMigrationProgress` subscribes to `MigrationIpcChannels.Progress`, queries last error/initial progress on load, and provides helpers to locally mark completion.
    - `useMigrationActions` wraps IPC invokes for backup, start, retry, cancel, and restart.
 4. Exporters:
-   - `ReduxExporter` pulls Redux Persist payload from `localStorage` (`persist:cherry-studio`), parses slices, and returns clean JS objects for main.
+   - `ReduxExporter` pulls Redux Persist payload from `localStorage` (`persist:modaui-studio`), parses slices, and returns clean JS objects for main.
    - `DexieExporter` snapshots Dexie tables from IndexedDB to JSON via IPC (`migration:write-export-file`), so main can read from disk without direct browser access.
 5. Components render the per-migrator list (`MigratorProgressList`), stage indicator, and footer action buttons used by the wizard.
 

@@ -1,4 +1,4 @@
-import { Badge, MenuItem, MenuList } from '@cherrystudio/ui'
+import { Badge, MenuItem, MenuList } from '@modauistudio/ui'
 import DividerWithText from '@renderer/components/DividerWithText'
 import Scrollbar from '@renderer/components/Scrollbar'
 import { getWebSearchProviderLogo } from '@renderer/config/webSearchProviders'

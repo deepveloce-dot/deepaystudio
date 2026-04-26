@@ -199,12 +199,12 @@ export const defaultLanguage = 'en-US'
 
 export enum FeedUrl {
   PRODUCTION = 'https://releases.cherry-ai.com',
-  GITHUB_LATEST = 'https://github.com/CherryHQ/cherry-studio/releases/latest/download'
+  GITHUB_LATEST = 'https://github.com/CherryHQ/modaui-studio/releases/latest/download'
 }
 
 export enum UpdateConfigUrl {
-  GITHUB = 'https://raw.githubusercontent.com/CherryHQ/cherry-studio/refs/heads/x-files/app-upgrade-config/app-upgrade-config.json',
-  GITCODE = 'https://raw.gitcode.com/CherryHQ/cherry-studio/raw/x-files%2Fapp-upgrade-config/app-upgrade-config.json'
+  GITHUB = 'https://raw.githubusercontent.com/CherryHQ/modaui-studio/refs/heads/x-files/app-upgrade-config/app-upgrade-config.json',
+  GITCODE = 'https://raw.gitcode.com/CherryHQ/modaui-studio/raw/x-files%2Fapp-upgrade-config/app-upgrade-config.json'
 }
 
 // export enum UpgradeChannel {
@@ -503,7 +503,7 @@ export const MACOS_TERMINALS_WITH_COMMANDS: TerminalConfigWithCommand[] = [
 ]
 
 // resources/scripts should be maintained manually
-export const HOME_CHERRY_DIR = '.cherrystudio'
+export const HOME_CHERRY_DIR = '.modauistudio'
 
 // Git Bash path configuration types
 export type GitBashPathSource = 'manual' | 'auto'
@@ -517,8 +517,8 @@ export interface GitBashPathInfo {
 export const CHERRYIN_CONFIG = {
   CLIENT_ID: '2a348c87-bae1-4756-a62f-b2e97200fd6d',
   ALLOWED_HOSTS: ['https://open.cherryin.ai', 'https://open.cherryin.dev'],
-  REDIRECT_URI: 'cherrystudio://oauth/callback',
+  REDIRECT_URI: 'modauistudio://oauth/callback',
   SCOPES: 'openid profile email offline_access balance:read usage:read tokens:read tokens:write'
 }
 
-export const APP_NAME = 'Cherry Studio'
+export const APP_NAME = 'Modaui Studio'

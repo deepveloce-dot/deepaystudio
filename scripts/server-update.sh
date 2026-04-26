@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # scripts/server-update.sh
 #
-# Cherry Studio – In-place Server Update
+# Modaui Studio – In-place Server Update
 #
 # Called automatically by the deploy-server.yml CI/CD workflow after a new
 # Linux .deb is uploaded to the server. Can also be run manually.
@@ -12,9 +12,9 @@
 # What this script does
 # ─────────────────────
 #   1. Validates the supplied .deb file
-#   2. Stops the cherry-studio service gracefully
+#   2. Stops the modaui-studio service gracefully
 #   3. Installs the new .deb (dpkg --install)
-#   4. Restarts the cherry-studio service
+#   4. Restarts the modaui-studio service
 #   5. Waits for the /health endpoint to respond
 #   6. Prints a success summary or rolls back on failure
 
@@ -41,20 +41,20 @@ API_KEY="${3:-}"
 # ─── derive server IP ─────────────────────────────────────────────────────────
 SERVER_IP=$(curl -fsSL --max-time 5 https://api.ipify.org 2>/dev/null || hostname -I | awk '{print $1}')
 
-echo -e "\n${BOLD}Cherry Studio – Server Update${RESET}\n"
+echo -e "\n${BOLD}Modaui Studio – Server Update${RESET}\n"
 log "New package : ${DEB_FILE}"
 log "CSaaS port  : ${CSAAS_PORT}"
 
 # ─── 1. stop service ─────────────────────────────────────────────────────────
-log "Stopping cherry-studio service…"
-if systemctl is-active --quiet cherry-studio; then
-  systemctl stop cherry-studio
+log "Stopping modaui-studio service…"
+if systemctl is-active --quiet modaui-studio; then
+  systemctl stop modaui-studio
   # Give the process up to 15 s to exit cleanly
   WAIT=0
-  while systemctl is-active --quiet cherry-studio && (( WAIT < 15 )); do
+  while systemctl is-active --quiet modaui-studio && (( WAIT < 15 )); do
     sleep 1; (( WAIT++ ))
   done
-  systemctl is-active --quiet cherry-studio && systemctl kill cherry-studio || true
+  systemctl is-active --quiet modaui-studio && systemctl kill modaui-studio || true
 fi
 success "Service stopped ✓"
 
@@ -64,8 +64,8 @@ dpkg -i "$DEB_FILE" || apt-get install -f -y -qq
 success "Package installed ✓"
 
 # ─── 3. start service ────────────────────────────────────────────────────────
-log "Starting cherry-studio service…"
-systemctl start cherry-studio
+log "Starting modaui-studio service…"
+systemctl start modaui-studio
 
 # ─── 4. health-check (up to 60 s) ────────────────────────────────────────────
 log "Waiting for /health endpoint (up to 60 s)…"
@@ -90,7 +90,7 @@ if $HEALTH_OK; then
   echo -e "  ${BOLD}Health check${RESET}  : https://${SERVER_IP}/health"
 else
   warn "Service is running but the health endpoint did not respond within 60 s."
-  warn "Check logs:  journalctl -u cherry-studio -n 50 --no-pager"
+  warn "Check logs:  journalctl -u modaui-studio -n 50 --no-pager"
   # Don't exit non-zero — the service may still be starting up
 fi
 echo ""

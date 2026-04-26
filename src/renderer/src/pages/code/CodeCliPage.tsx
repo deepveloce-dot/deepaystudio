@@ -1,4 +1,4 @@
-import { Button, Checkbox, EmptyState, Input, Label, SelectDropdown, Textarea } from '@cherrystudio/ui'
+import { Button, Checkbox, EmptyState, Input, Label, SelectDropdown, Textarea } from '@modauistudio/ui'
 import { AiProvider } from '@renderer/aiCore'
 import { Navbar, NavbarCenter } from '@renderer/components/app/Navbar'
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'

@@ -1,5 +1,5 @@
-import { RowFlex } from '@cherrystudio/ui'
-import { Tooltip } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import type { ActionTool } from '@renderer/components/ActionTools'
 import { EllipsisVertical } from 'lucide-react'
 import { memo, useMemo, useState } from 'react'

@@ -1,6 +1,6 @@
 /**
- * AI SDK 到 Cherry Studio Chunk 适配器
- * 用于将 AI SDK 的 fullStream 转换为 Cherry Studio 的 chunk 格式
+ * AI SDK 到 Modaui Studio Chunk 适配器
+ * 用于将 AI SDK 的 fullStream 转换为 Modaui Studio 的 chunk 格式
  */
 
 import { loggerService } from '@logger'
@@ -20,8 +20,8 @@ import { ToolCallChunkHandler } from './handleToolCallChunk'
 const logger = loggerService.withContext('AiSdkToChunkAdapter')
 
 /**
- * AI SDK 到 Cherry Studio Chunk 适配器类
- * 处理 fullStream 到 Cherry Studio chunk 的转换
+ * AI SDK 到 Modaui Studio Chunk 适配器类
+ * 处理 fullStream 到 Modaui Studio chunk 的转换
  */
 export class AiSdkToChunkAdapter {
   toolCallHandler: ToolCallChunkHandler
@@ -93,7 +93,7 @@ export class AiSdkToChunkAdapter {
   }
 
   /**
-   * 读取 fullStream 并转换为 Cherry Studio chunks
+   * 读取 fullStream 并转换为 Modaui Studio chunks
    * @param fullStream AI SDK 的 fullStream (ReadableStream)
    */
   private async readFullStream(fullStream: ReadableStream<TextStreamPart<ToolSet>>) {
@@ -160,7 +160,7 @@ export class AiSdkToChunkAdapter {
   }
 
   /**
-   * 转换 AI SDK chunk 为 Cherry Studio chunk 并调用回调
+   * 转换 AI SDK chunk 为 Modaui Studio chunk 并调用回调
    * @param chunk AI SDK 的 chunk 数据
    */
   private convertAndEmitChunk(

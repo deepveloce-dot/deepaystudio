@@ -1,4 +1,4 @@
-import type OpenAI from '@cherrystudio/openai'
+import type OpenAI from '@modauistudio/openai'
 import type { File } from '@google/genai'
 import type { FileSchema } from '@mistralai/mistralai/models/components'
 import { objectValues } from '@types'

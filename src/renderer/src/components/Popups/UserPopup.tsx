@@ -1,5 +1,5 @@
-import { Center, ColFlex, RowFlex } from '@cherrystudio/ui'
-import { Avatar, AvatarImage, EmojiAvatar } from '@cherrystudio/ui'
+import { Center, ColFlex, RowFlex } from '@modauistudio/ui'
+import { Avatar, AvatarImage, EmojiAvatar } from '@modauistudio/ui'
 import { cacheService } from '@data/CacheService'
 import { usePreference } from '@data/hooks/usePreference'
 import DefaultAvatar from '@renderer/assets/images/avatar.png'

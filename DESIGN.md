@@ -1,12 +1,12 @@
-# Design System Inspired by Cherry Studio
+# Design System Inspired by Modaui Studio
 
 ## 1. Visual Theme & Atmosphere
 
-Cherry Studio is a shadcn/ui-based design system built for an AI conversation application. The design language follows a neutral-first approach — a restrained, systematic palette rooted in the neutral gray scale where the interface itself recedes to let content take center stage. The aesthetic is utilitarian-modern: clean surfaces, subtle borders, and a deliberate absence of decorative color in the chrome, creating a tool that feels professional, focused, and endlessly customizable through its robust light/dark mode support.
+Modaui Studio is a shadcn/ui-based design system built for an AI conversation application. The design language follows a neutral-first approach — a restrained, systematic palette rooted in the neutral gray scale where the interface itself recedes to let content take center stage. The aesthetic is utilitarian-modern: clean surfaces, subtle borders, and a deliberate absence of decorative color in the chrome, creating a tool that feels professional, focused, and endlessly customizable through its robust light/dark mode support.
 
 The typography system is purposefully dual-track: Inter serves as the primary UI font for all functional text, delivering maximum legibility at small sizes, while Nunito Sans provides a softer, friendlier alternative for sans-serif contexts. For code and technical content, Geist Mono is the primary monospace font with JetBrains Mono as the programming-focused alternative. This pairing reflects a product that serves both casual users and developers — approachable in conversation, precise in code.
 
-What makes Cherry Studio distinctive is its commitment to the neutral spectrum as the entire UI foundation. Primary actions use near-black (`#171717`) in light mode and near-white (`#e5e5e5`) in dark mode — the brand identity IS the grayscale itself, not an accent color layered on top. The only chromatic departure is `destructive` red for dangerous actions and a Radix blue chart palette for data visualization. This creates an interface that feels like a high-quality writing tool — think iA Writer meets VS Code — where the user's content is always the most colorful thing on screen.
+What makes Modaui Studio distinctive is its commitment to the neutral spectrum as the entire UI foundation. Primary actions use near-black (`#171717`) in light mode and near-white (`#e5e5e5`) in dark mode — the brand identity IS the grayscale itself, not an accent color layered on top. The only chromatic departure is `destructive` red for dangerous actions and a Radix blue chart palette for data visualization. This creates an interface that feels like a high-quality writing tool — think iA Writer meets VS Code — where the user's content is always the most colorful thing on screen.
 
 **Key Characteristics:**
 - Neutral-first palette: the entire UI chrome lives within the neutral gray scale
@@ -302,7 +302,7 @@ All button hover states share a consistent pattern from Figma:
 
 ## 6. Depth & Elevation
 
-Cherry Studio uses a dual depth system: **surface color layering** for structural hierarchy and **box-shadows** for interactive feedback (hover states, floating elements).
+Modaui Studio uses a dual depth system: **surface color layering** for structural hierarchy and **box-shadows** for interactive feedback (hover states, floating elements).
 
 ### Surface Color Layers
 

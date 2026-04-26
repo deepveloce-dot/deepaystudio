@@ -1,6 +1,6 @@
-import type { BaseEmbeddings } from '@cherrystudio/embedjs-interfaces'
-import { OllamaEmbeddings } from '@cherrystudio/embedjs-ollama'
-import { OpenAiEmbeddings } from '@cherrystudio/embedjs-openai'
+import type { BaseEmbeddings } from '@modauistudio/embedjs-interfaces'
+import { OllamaEmbeddings } from '@modauistudio/embedjs-ollama'
+import { OpenAiEmbeddings } from '@modauistudio/embedjs-openai'
 import type { ApiClient } from '@types'
 import { net } from 'electron'
 

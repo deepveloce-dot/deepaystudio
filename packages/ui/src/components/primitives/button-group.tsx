@@ -1,4 +1,4 @@
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 

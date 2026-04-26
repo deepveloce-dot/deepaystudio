@@ -1,5 +1,5 @@
-import type { AiPlugin } from '@cherrystudio/ai-core'
-import { createPromptToolUsePlugin, providerToolPlugin } from '@cherrystudio/ai-core/built-in/plugins'
+import type { AiPlugin } from '@modauistudio/ai-core'
+import { createPromptToolUsePlugin, providerToolPlugin } from '@modauistudio/ai-core/built-in/plugins'
 import { preferenceService } from '@data/PreferenceService'
 import { loggerService } from '@logger'
 import { isGemini3Model, isQwen35to39Model, isSupportedThinkingTokenQwenModel } from '@renderer/config/models'

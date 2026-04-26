@@ -1,4 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@cherrystudio/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof Tabs> = {

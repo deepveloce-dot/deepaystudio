@@ -1,5 +1,5 @@
 // Original: src/renderer/src/components/Scrollbar/index.tsx
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { throttle } from 'lodash'
 import * as React from 'react'
 

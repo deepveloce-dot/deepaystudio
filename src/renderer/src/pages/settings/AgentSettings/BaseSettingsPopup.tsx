@@ -1,4 +1,4 @@
-import { Center } from '@cherrystudio/ui'
+import { Center } from '@modauistudio/ui'
 import type { MenuProps } from 'antd'
 import { Alert, Spin } from 'antd'
 import type { ReactNode } from 'react'

@@ -12,8 +12,8 @@
     "noFallthroughCasesInSwitch": true,
     "outDir": "./dist",
     "paths": {
-      "@cherrystudio/ui": ["./src/index.ts"],
-      "@cherrystudio/ui/*": ["./src/*"]
+      "@modauistudio/ui": ["./src/index.ts"],
+      "@modauistudio/ui/*": ["./src/*"]
     },
     "resolveJsonModule": true,
     "rootDir": ".",

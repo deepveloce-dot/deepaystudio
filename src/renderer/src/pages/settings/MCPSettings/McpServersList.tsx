@@ -1,4 +1,4 @@
-import { Sortable, useDndReorder } from '@cherrystudio/ui'
+import { Sortable, useDndReorder } from '@modauistudio/ui'
 import CollapsibleSearchBar from '@renderer/components/CollapsibleSearchBar'
 import { EditIcon } from '@renderer/components/Icons'
 import Scrollbar from '@renderer/components/Scrollbar'

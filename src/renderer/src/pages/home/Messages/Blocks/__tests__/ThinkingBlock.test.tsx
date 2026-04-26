@@ -48,7 +48,7 @@ vi.mock('antd', () => ({
   }
 }))
 
-vi.mock('@cherrystudio/ui', () => ({
+vi.mock('@modauistudio/ui', () => ({
   Tooltip: ({ title, children, mouseEnterDelay }: any) => (
     <div data-testid="tooltip" title={title} data-mouse-enter-delay={mouseEnterDelay}>
       {children}

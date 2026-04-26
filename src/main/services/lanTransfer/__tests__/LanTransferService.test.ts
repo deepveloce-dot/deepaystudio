@@ -68,7 +68,7 @@ vi.mock('node:net', async (importOriginal) => {
 
 vi.mock('electron', () => ({
   app: {
-    getName: vi.fn(() => 'Cherry Studio'),
+    getName: vi.fn(() => 'Modaui Studio'),
     getVersion: vi.fn(() => '1.0.0')
   },
   ipcMain: {
@@ -149,7 +149,7 @@ describe('LanTransferService - Discovery', () => {
 
       expect(state.isScanning).toBe(true)
       expect(state.lastScanStartedAt).toBeDefined()
-      expect(mocks.bonjour!.find).toHaveBeenCalledWith({ type: 'cherrystudio', protocol: 'tcp' })
+      expect(mocks.bonjour!.find).toHaveBeenCalledWith({ type: 'modauistudio', protocol: 'tcp' })
       expect(mocks.browser!.start).toHaveBeenCalled()
     })
 
@@ -245,7 +245,7 @@ describe('LanTransferService - Discovery', () => {
         port: 12345,
         addresses: ['192.168.1.100'],
         fqdn: 'test.local',
-        type: 'cherrystudio',
+        type: 'modauistudio',
         protocol: 'tcp'
       })
 

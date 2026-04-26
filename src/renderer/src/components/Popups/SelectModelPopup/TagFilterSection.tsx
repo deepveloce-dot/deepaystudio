@@ -1,4 +1,4 @@
-import { Flex } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import {
   EmbeddingTag,

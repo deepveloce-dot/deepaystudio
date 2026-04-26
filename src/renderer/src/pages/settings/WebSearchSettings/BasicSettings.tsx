@@ -1,4 +1,4 @@
-import { InfoTooltip } from '@cherrystudio/ui'
+import { InfoTooltip } from '@modauistudio/ui'
 import Selector from '@renderer/components/Selector'
 import { getWebSearchProviderLogo, webSearchProviderRequiresApiKey } from '@renderer/config/webSearchProviders'
 import { useTheme } from '@renderer/context/ThemeProvider'

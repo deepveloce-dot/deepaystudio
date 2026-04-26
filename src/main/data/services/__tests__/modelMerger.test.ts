@@ -10,7 +10,7 @@ import {
 import { describe, expect, it } from 'vitest'
 
 // Use string literals matching the actual enum values to avoid
-// importing @cherrystudio/provider-registry (not aliased in shared tests).
+// importing @modauistudio/provider-registry (not aliased in shared tests).
 const CAPABILITY = {
   FUNCTION_CALL: 'function-call',
   IMAGE_RECOGNITION: 'image-recognition',

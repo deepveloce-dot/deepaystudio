@@ -1,5 +1,5 @@
 import { PlusOutlined, RedoOutlined } from '@ant-design/icons'
-import { Button, ColFlex, InfoTooltip, RowFlex, Switch } from '@cherrystudio/ui'
+import { Button, ColFlex, InfoTooltip, RowFlex, Switch } from '@modauistudio/ui'
 import { useCache } from '@data/hooks/useCache'
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'

@@ -1,4 +1,4 @@
-import { Button, InfoTooltip } from '@cherrystudio/ui'
+import { Button, InfoTooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import EmojiPicker from '@renderer/components/EmojiPicker'
 import useTranslate from '@renderer/hooks/useTranslate'

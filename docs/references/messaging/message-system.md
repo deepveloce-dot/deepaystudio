@@ -1,6 +1,6 @@
 # Message System
 
-This document describes the Cherry Studio message system architecture, including message lifecycle, state management, and operation interfaces.
+This document describes the Modaui Studio message system architecture, including message lifecycle, state management, and operation interfaces.
 
 ## Message Lifecycle
 

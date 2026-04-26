@@ -1,5 +1,5 @@
 /**
- * Cherry Studio 项目特定的 Provider Extensions
+ * Modaui Studio 项目特定的 Provider Extensions
  * 用于支持运行时动态导入的 AI Providers
  */
 
@@ -15,7 +15,7 @@ import { createMistral, type MistralProviderSettings } from '@ai-sdk/mistral'
 import { createPerplexity, type PerplexityProviderSettings } from '@ai-sdk/perplexity'
 import type { ProviderV3 } from '@ai-sdk/provider'
 import { createTogetherAI, type TogetherAIProviderSettings } from '@ai-sdk/togetherai'
-import { ProviderExtension, type ProviderExtensionConfig } from '@cherrystudio/ai-core/provider'
+import { ProviderExtension, type ProviderExtensionConfig } from '@modauistudio/ai-core/provider'
 import {
   createGitHubCopilotOpenAICompatible,
   type GitHubCopilotProviderSettings

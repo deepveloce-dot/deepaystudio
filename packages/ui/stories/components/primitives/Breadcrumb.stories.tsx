@@ -6,7 +6,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from '@cherrystudio/ui'
+} from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Slash } from 'lucide-react'
 

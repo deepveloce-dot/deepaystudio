@@ -10,7 +10,7 @@ vi.mock('../MigrationContext', () => ({
 const mockPaths: MigrationPaths = {
   userData: '/tmp/test-userdata',
   cherryHome: '/tmp/test-cherryhome',
-  databaseFile: '/tmp/test-userdata/cherrystudio.sqlite',
+  databaseFile: '/tmp/test-userdata/modauistudio.sqlite',
   knowledgeBaseDir: '/tmp/test-userdata/Data/KnowledgeBase',
   versionLogFile: '/tmp/test-userdata/version.log',
   legacyAgentDbFile: '/tmp/test-userdata/Data/agents.db',

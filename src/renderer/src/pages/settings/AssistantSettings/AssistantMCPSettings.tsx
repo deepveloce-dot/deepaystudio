@@ -1,4 +1,4 @@
-import { Box, InfoTooltip, Switch, Tooltip } from '@cherrystudio/ui'
+import { Box, InfoTooltip, Switch, Tooltip } from '@modauistudio/ui'
 import { useMCPServers } from '@renderer/hooks/useMCPServers'
 import type { Assistant, McpMode } from '@renderer/types'
 import { getEffectiveMcpMode } from '@renderer/types'

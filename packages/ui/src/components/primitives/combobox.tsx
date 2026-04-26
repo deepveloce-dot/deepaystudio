@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@cherrystudio/ui/components/primitives/button'
+import { Button } from '@modauistudio/ui/components/primitives/button'
 import {
   Command,
   CommandEmpty,
@@ -8,9 +8,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList
-} from '@cherrystudio/ui/components/primitives/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@cherrystudio/ui/components/primitives/popover'
-import { cn } from '@cherrystudio/ui/lib/utils'
+} from '@modauistudio/ui/components/primitives/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@modauistudio/ui/components/primitives/popover'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { Check, ChevronDown, X } from 'lucide-react'
 import * as React from 'react'

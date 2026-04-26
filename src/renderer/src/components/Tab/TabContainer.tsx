@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Sortable, useDndReorder } from '@cherrystudio/ui'
-import { Tooltip } from '@cherrystudio/ui'
+import { Sortable, useDndReorder } from '@modauistudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import HorizontalScrollContainer from '@renderer/components/HorizontalScrollContainer'

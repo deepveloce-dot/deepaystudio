@@ -1,5 +1,5 @@
-import { Center, ColFlex } from '@cherrystudio/ui'
-import { resolveProviderIcon } from '@cherrystudio/ui/icons'
+import { Center, ColFlex } from '@modauistudio/ui'
+import { resolveProviderIcon } from '@modauistudio/ui/icons'
 import { loggerService } from '@logger'
 import { ProviderAvatarPrimitive } from '@renderer/components/ProviderAvatar'
 import ProviderLogoPicker from '@renderer/components/ProviderLogoPicker'

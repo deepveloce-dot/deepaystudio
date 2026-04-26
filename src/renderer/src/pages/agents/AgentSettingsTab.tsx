@@ -1,4 +1,4 @@
-import { DescriptionSwitch, HelpTooltip } from '@cherrystudio/ui'
+import { DescriptionSwitch, HelpTooltip } from '@modauistudio/ui'
 import { useMultiplePreferences, usePreference } from '@data/hooks/usePreference'
 import EditableNumber from '@renderer/components/EditableNumber'
 import Scrollbar from '@renderer/components/Scrollbar'

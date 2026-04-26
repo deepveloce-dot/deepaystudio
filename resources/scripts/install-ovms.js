@@ -25,7 +25,7 @@ const OVMS_EX_URL = 'https://gitcode.com/gcw_ggDjjkY3/kjfile/releases/download/d
  */
 function cleanOldOvmsInstallation() {
   console.log('Cleaning the existing OVMS installation...')
-  const csDir = path.join(os.homedir(), '.cherrystudio')
+  const csDir = path.join(os.homedir(), '.modauistudio')
   const csOvmsDir = path.join(csDir, 'ovms')
   if (fs.existsSync(csOvmsDir)) {
     try {
@@ -60,7 +60,7 @@ async function installOvmsBase() {
   }
 
   // unzip the base package to the target directory
-  const csDir = path.join(os.homedir(), '.cherrystudio')
+  const csDir = path.join(os.homedir(), '.modauistudio')
   const csOvmsDir = path.join(csDir, 'ovms')
   fs.mkdirSync(csOvmsDir, { recursive: true })
 
@@ -90,16 +90,16 @@ async function installOvmsBase() {
   }
 
   // copy {csOvmsBinDir}/setupvars.bat to {csOvmsBinDir}/run.bat, and append the following lines to run.bat:
-  // del %USERPROFILE%\.cherrystudio\ovms_log.log
-  // ovms.exe --config_path models/config.json --rest_port 8000 --log_level DEBUG --log_path %USERPROFILE%\.cherrystudio\ovms_log.log
+  // del %USERPROFILE%\.modauistudio\ovms_log.log
+  // ovms.exe --config_path models/config.json --rest_port 8000 --log_level DEBUG --log_path %USERPROFILE%\.modauistudio\ovms_log.log
   const runBatPath = path.join(csOvmsBinDir, 'run.bat')
   try {
     fs.copyFileSync(path.join(csOvmsBinDir, 'setupvars.bat'), runBatPath)
     fs.appendFileSync(runBatPath, '\r\n')
-    fs.appendFileSync(runBatPath, 'del %USERPROFILE%\\.cherrystudio\\ovms_log.log\r\n')
+    fs.appendFileSync(runBatPath, 'del %USERPROFILE%\\.modauistudio\\ovms_log.log\r\n')
     fs.appendFileSync(
       runBatPath,
-      'ovms.exe --config_path models/config.json --rest_port 8000 --log_level DEBUG --log_path %USERPROFILE%\\.cherrystudio\\ovms_log.log\r\n'
+      'ovms.exe --config_path models/config.json --rest_port 8000 --log_level DEBUG --log_path %USERPROFILE%\\.modauistudio\\ovms_log.log\r\n'
     )
     console.log(`Created run.bat at: ${runBatPath}`)
   } catch (error) {
@@ -137,7 +137,7 @@ async function installOvmsExtra() {
   }
 
   // unzip the extra package to the target directory
-  const csDir = path.join(os.homedir(), '.cherrystudio')
+  const csDir = path.join(os.homedir(), '.modauistudio')
   const csOvmsDir = path.join(csDir, 'ovms')
 
   try {

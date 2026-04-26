@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from '@cherrystudio/ui'
+import { Avatar, AvatarFallback } from '@modauistudio/ui'
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'
 import { getModelUniqId } from '@renderer/services/ModelService'
 import type { Model, Provider } from '@renderer/types'

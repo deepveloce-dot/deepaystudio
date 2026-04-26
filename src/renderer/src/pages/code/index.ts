@@ -1,4 +1,4 @@
-import type { IconComponent } from '@cherrystudio/ui/icons'
+import type { IconComponent } from '@modauistudio/ui/icons'
 import {
   ClaudeCode,
   GeminiCli,
@@ -8,7 +8,7 @@ import {
   OpenaiCodex,
   OpenCode,
   QwenCode
-} from '@cherrystudio/ui/icons'
+} from '@modauistudio/ui/icons'
 import { getThinkingBudget } from '@renderer/aiCore/utils/reasoning'
 import {
   isReasoningModel,

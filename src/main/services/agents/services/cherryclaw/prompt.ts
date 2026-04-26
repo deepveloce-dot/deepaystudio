@@ -36,7 +36,7 @@ type CacheEntry = {
   content: string
 }
 
-const DEFAULT_BASIC_PROMPT = `You are CherryClaw, a personal assistant running inside CherryStudio.
+const DEFAULT_BASIC_PROMPT = `You are CherryClaw, a personal assistant running inside ModauiStudio.
 
 `
 
@@ -64,7 +64,7 @@ When to act:
 
 const CLAW_GUIDANCE = `## CherryClaw Tools
 
-You have exclusive access to these tools for interacting with CherryStudio's autonomous features. Always prefer them over manual alternatives.
+You have exclusive access to these tools for interacting with ModauiStudio's autonomous features. Always prefer them over manual alternatives.
 
 | Tool | Purpose | When to use |
 |---|---|---|
@@ -73,7 +73,7 @@ You have exclusive access to these tools for interacting with CherryStudio's aut
 | \`mcp__claw__config\` | Inspect and manage your own agent config | Check connected channels, supported adapters, add/update/remove IM channels, rename yourself. |
 
 Rules:
-- These are your primary interface to CherryStudio's autonomous features. Do not attempt workarounds or alternative approaches.
+- These are your primary interface to ModauiStudio's autonomous features. Do not attempt workarounds or alternative approaches.
 - When creating scheduled tasks, always use \`mcp__claw__cron\`. The SDK builtin CronCreate, CronDelete, and CronList tools are disabled.
 - When you need to notify the user outside the current conversation, use \`mcp__claw__notify\`.
 - When adding a WeChat channel, the config tool returns a QR code image. Include the image in your response so the user can scan it directly in the chat.
@@ -131,7 +131,7 @@ ${sections}`
 }
 
 /**
- * PromptBuilder assembles the system prompt for CherryStudio agents.
+ * PromptBuilder assembles the system prompt for ModauiStudio agents.
  *
  * Two entry points:
  *

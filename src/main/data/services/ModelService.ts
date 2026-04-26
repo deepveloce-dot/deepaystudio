@@ -8,7 +8,7 @@
  */
 
 import { application } from '@application'
-import type { ModelLookupResult } from '@cherrystudio/provider-registry'
+import type { ModelLookupResult } from '@modauistudio/provider-registry'
 import type { NewUserModel, UserModel } from '@data/db/schemas/userModel'
 import { isRegistryEnrichableField, userModelTable } from '@data/db/schemas/userModel'
 import { defaultHandlersFor, type SqliteErrorHandlers, withSqliteErrors } from '@data/db/sqliteErrors'

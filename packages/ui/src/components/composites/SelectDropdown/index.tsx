@@ -1,5 +1,5 @@
-import { Popover, PopoverContent, PopoverTrigger } from '@cherrystudio/ui/components/primitives/popover'
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { Popover, PopoverContent, PopoverTrigger } from '@modauistudio/ui/components/primitives/popover'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { ChevronDown, X } from 'lucide-react'
 import type { ReactNode } from 'react'

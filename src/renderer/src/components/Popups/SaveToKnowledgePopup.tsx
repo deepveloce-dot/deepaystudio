@@ -1,4 +1,4 @@
-import { ColFlex, Flex, HelpTooltip } from '@cherrystudio/ui'
+import { ColFlex, Flex, HelpTooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import CustomTag from '@renderer/components/Tags/CustomTag'
 import { TopView } from '@renderer/components/TopView'

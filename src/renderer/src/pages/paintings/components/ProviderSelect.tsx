@@ -1,4 +1,4 @@
-import { resolveProviderIcon } from '@cherrystudio/ui/icons'
+import { resolveProviderIcon } from '@modauistudio/ui/icons'
 import { ProviderAvatarPrimitive } from '@renderer/components/ProviderAvatar'
 import ImageStorage from '@renderer/services/ImageStorage'
 import { getProviderNameById } from '@renderer/services/ProviderService'

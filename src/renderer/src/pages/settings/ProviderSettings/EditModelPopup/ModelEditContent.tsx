@@ -1,4 +1,4 @@
-import { Button, Flex, Switch, Tooltip, WarnTooltip } from '@cherrystudio/ui'
+import { Button, Flex, Switch, Tooltip, WarnTooltip } from '@modauistudio/ui'
 import CopyIcon from '@renderer/components/Icons/CopyIcon'
 import {
   EmbeddingTag,

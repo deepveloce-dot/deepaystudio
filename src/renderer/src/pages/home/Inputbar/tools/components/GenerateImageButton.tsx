@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { ActionIconButton } from '@renderer/components/Buttons'
 import { isGenerateImageModel } from '@renderer/config/models'
 import type { Assistant, Model } from '@renderer/types'

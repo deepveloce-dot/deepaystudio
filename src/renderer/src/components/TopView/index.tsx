@@ -1,5 +1,5 @@
 // import { loggerService } from '@logger'
-import { Box } from '@cherrystudio/ui'
+import { Box } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import TopViewMinappContainer from '@renderer/components/MinApp/TopViewMinappContainer'
 import { useAppInit } from '@renderer/hooks/useAppInit'

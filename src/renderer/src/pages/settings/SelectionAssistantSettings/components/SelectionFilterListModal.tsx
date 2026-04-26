@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { isWin } from '@renderer/config/constant'
 import { Form, Input, Modal } from 'antd'
 import type { FC } from 'react'

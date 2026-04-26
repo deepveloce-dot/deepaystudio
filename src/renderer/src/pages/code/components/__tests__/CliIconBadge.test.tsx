@@ -1,4 +1,4 @@
-import { AddCategory } from '@cherrystudio/ui/icons'
+import { AddCategory } from '@modauistudio/ui/icons'
 import { codeCLI } from '@shared/config/constant'
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'

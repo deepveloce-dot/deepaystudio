@@ -1,5 +1,5 @@
 import { CheckOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import ThinkingEffect from '@renderer/components/ThinkingEffect'

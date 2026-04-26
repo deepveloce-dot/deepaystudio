@@ -1,5 +1,5 @@
-import type { CodeMirrorTheme } from '@cherrystudio/ui'
-import { getCmThemeByName, getCmThemeNames } from '@cherrystudio/ui'
+import type { CodeMirrorTheme } from '@modauistudio/ui'
+import { getCmThemeByName, getCmThemeNames } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { useMermaid } from '@renderer/hooks/useMermaid'

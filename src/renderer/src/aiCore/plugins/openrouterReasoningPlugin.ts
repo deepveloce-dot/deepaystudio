@@ -1,5 +1,5 @@
 import type { LanguageModelV3StreamPart } from '@ai-sdk/provider'
-import { definePlugin } from '@cherrystudio/ai-core'
+import { definePlugin } from '@modauistudio/ai-core'
 import type { LanguageModelMiddleware } from 'ai'
 
 /**

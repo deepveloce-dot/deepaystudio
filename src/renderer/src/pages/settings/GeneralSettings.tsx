@@ -1,6 +1,6 @@
-import { InfoTooltip, RowFlex } from '@cherrystudio/ui'
-import { Flex } from '@cherrystudio/ui'
-import { Switch } from '@cherrystudio/ui'
+import { InfoTooltip, RowFlex } from '@modauistudio/ui'
+import { Flex } from '@modauistudio/ui'
+import { Switch } from '@modauistudio/ui'
 import { useMultiplePreferences, usePreference } from '@data/hooks/usePreference'
 import Selector from '@renderer/components/Selector'
 import { isMac } from '@renderer/config/constant'
@@ -367,7 +367,38 @@ const GeneralSettings: FC = () => {
           <Switch checked={enableDeveloperMode} onCheckedChange={setEnableDeveloperMode} />
         </SettingRow>
       </SettingGroup>
+      <DeepaySettingGroup theme={theme} />
     </SettingContainer>
+  )
+}
+
+function DeepaySettingGroup({ theme }: { theme: import('@shared/data/preference/preferenceTypes').ThemeMode }) {
+  const { t } = useTranslation()
+  const [deepayApiBase, setDeepayApiBase] = usePreference('deepay.api_base')
+  const [draft, setDraft] = useState(deepayApiBase)
+
+  function handleBlur() {
+    const trimmed = draft.trim()
+    if (trimmed) void setDeepayApiBase(trimmed)
+  }
+
+  return (
+    <SettingGroup theme={theme}>
+      <SettingTitle>{t('deepay.settings.title', { defaultValue: 'Deepay 设置' })}</SettingTitle>
+      <SettingDivider />
+      <SettingRow>
+        <SettingRowTitle>
+          {t('deepay.settings.api_base', { defaultValue: '后台地址 (API Base URL)' })}
+        </SettingRowTitle>
+        <Input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={handleBlur}
+          placeholder="http://localhost:8080"
+          style={{ width: 260 }}
+        />
+      </SettingRow>
+    </SettingGroup>
   )
 }
 

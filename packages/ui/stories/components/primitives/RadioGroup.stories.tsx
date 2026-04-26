@@ -1,4 +1,4 @@
-import { RadioGroup, RadioGroupItem } from '@cherrystudio/ui'
+import { RadioGroup, RadioGroupItem } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Bell, Check, Moon, Palette, Sun } from 'lucide-react'
 import { useState } from 'react'

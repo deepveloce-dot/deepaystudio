@@ -1,5 +1,5 @@
 import { PlusOutlined, SendOutlined, SwapOutlined } from '@ant-design/icons'
-import { Button, Flex, Tooltip } from '@cherrystudio/ui'
+import { Button, Flex, Tooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { Navbar, NavbarCenter } from '@renderer/components/app/Navbar'
 import { CopyIcon } from '@renderer/components/Icons'

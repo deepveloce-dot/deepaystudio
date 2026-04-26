@@ -1,11 +1,11 @@
 # Provider & Model Registry System
 
-This document describes how Cherry Studio loads, parses, and merges provider/model preset data with user data.
+This document describes how Modaui Studio loads, parses, and merges provider/model preset data with user data.
 
 ## Architecture Overview
 
 ```
-@cherrystudio/provider-registry (package)
+@modauistudio/provider-registry (package)
 ├── data/
 │   ├── models.json           2525 preset models (capabilities, pricing, modalities...)
 │   ├── providers.json        63 preset providers (endpoints, apiFeatures, metadata)

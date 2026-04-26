@@ -6,7 +6,7 @@
  *
  * WARNING: Bypassing MigrationPaths and calling `app.getPath('userData')`
  * directly will cause data loss for v1 users who configured a custom
- * userData directory via `~/.cherrystudio/config/config.json`. On the
+ * userData directory via `~/.modauistudio/config/config.json`. On the
  * first v2 launch, `app.getPath('userData')` returns the Electron default
  * — not the user's actual data directory — because `resolveUserDataLocation()`
  * has not yet migrated the legacy config into boot-config.json.
@@ -23,7 +23,7 @@ import { app } from 'electron'
 
 const logger = loggerService.withContext('MigrationPaths')
 
-const DB_NAME = 'cherrystudio.sqlite'
+const DB_NAME = 'modauistudio.sqlite'
 const MIGRATIONS_BASE_PATH = 'migrations/sqlite-drizzle'
 
 /**
@@ -38,12 +38,12 @@ export interface MigrationPaths {
 
   /** Resolved v1 userData directory (accounts for legacy config.json custom path). */
   readonly userData: string
-  /** ~/.cherrystudio — cherry home directory. */
+  /** ~/.modauistudio — cherry home directory. */
   readonly cherryHome: string
 
   // ── Derived from userData (pre-computed, consumers use directly) ──
 
-  /** {userData}/cherrystudio.sqlite */
+  /** {userData}/modauistudio.sqlite */
   readonly databaseFile: string
   /** {userData}/Data/KnowledgeBase */
   readonly knowledgeBaseDir: string
@@ -83,7 +83,7 @@ export interface MigrationPathsResult {
  *   1. Start with the current `app.getPath('userData')` (set by
  *      `resolveUserDataLocation()` in preboot — may be the Electron
  *      default if boot-config.json had no entry).
- *   2. Read `~/.cherrystudio/config/config.json` for a legacy `appDataPath`.
+ *   2. Read `~/.modauistudio/config/config.json` for a legacy `appDataPath`.
  *   3. If a valid custom path is found and differs from current:
  *      - Call `app.setPath('userData', ...)` so Chromium-level storage
  *        (IndexedDB, localStorage) initializes at the correct location

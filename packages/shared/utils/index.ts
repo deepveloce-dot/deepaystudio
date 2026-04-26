@@ -6,7 +6,7 @@ export * from './pdf'
 export const defaultAppHeaders = () => {
   return {
     'HTTP-Referer': 'https://cherry-ai.com',
-    'X-Title': 'Cherry Studio'
+    'X-Title': 'Modaui Studio'
   }
 }
 

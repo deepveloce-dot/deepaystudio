@@ -1,5 +1,5 @@
 import { RedoOutlined } from '@ant-design/icons'
-import { Button, RowFlex, Tooltip } from '@cherrystudio/ui'
+import { Button, RowFlex, Tooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import CustomTag from '@renderer/components/Tags/CustomTag'
 import { useKnowledge } from '@renderer/hooks/useKnowledge'

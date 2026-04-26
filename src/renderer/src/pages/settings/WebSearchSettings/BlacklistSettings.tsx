@@ -1,5 +1,5 @@
 import { CheckOutlined, LoadingOutlined } from '@ant-design/icons'
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { useTimer } from '@renderer/hooks/useTimer'

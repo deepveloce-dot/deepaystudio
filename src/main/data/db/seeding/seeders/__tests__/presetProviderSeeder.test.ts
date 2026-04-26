@@ -14,7 +14,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 // Fake registry providers — two preset providers: 'openai' and 'anthropic'.
 // The seeder always also adds 'cherryai' as a built-in.
-vi.mock('@cherrystudio/provider-registry/node', () => {
+vi.mock('@modauistudio/provider-registry/node', () => {
   class RegistryLoader {
     loadProviders() {
       return [
@@ -35,8 +35,8 @@ vi.mock('@cherrystudio/provider-registry/node', () => {
   return { RegistryLoader }
 })
 
-vi.mock('@cherrystudio/provider-registry', async () => {
-  const actual: Record<string, unknown> = await vi.importActual('@cherrystudio/provider-registry')
+vi.mock('@modauistudio/provider-registry', async () => {
+  const actual: Record<string, unknown> = await vi.importActual('@modauistudio/provider-registry')
   return {
     ...actual,
     buildRuntimeEndpointConfigs: vi.fn(() => null)

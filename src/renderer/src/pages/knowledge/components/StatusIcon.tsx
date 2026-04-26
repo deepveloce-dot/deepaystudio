@@ -1,5 +1,5 @@
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import type { KnowledgeBase, ProcessingStatus } from '@renderer/types'
 import { Progress } from 'antd'

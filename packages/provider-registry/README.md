@@ -1,6 +1,6 @@
-# @cherrystudio/provider-registry
+# @modauistudio/provider-registry
 
-Bundled AI provider and model catalog for Cherry Studio. Ships static JSON data files and TypeScript schemas for reading them.
+Bundled AI provider and model catalog for Modaui Studio. Ships static JSON data files and TypeScript schemas for reading them.
 
 ## Data Files
 
@@ -18,7 +18,7 @@ import {
   readModelRegistry,
   readProviderRegistry,
   readProviderModelRegistry
-} from '@cherrystudio/provider-registry/node'
+} from '@modauistudio/provider-registry/node'
 
 const models = readModelRegistry('/path/to/models.json')
 const providers = readProviderRegistry('/path/to/providers.json')
@@ -35,7 +35,7 @@ import type {
   EndpointType,
   ModelCapability,
   Modality
-} from '@cherrystudio/provider-registry'
+} from '@modauistudio/provider-registry'
 ```
 
 ## Build

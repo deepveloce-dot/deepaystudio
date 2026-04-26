@@ -3,9 +3,9 @@ name: skill-creator
 description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
 ---
 
-## Cherry Studio workflow (READ FIRST — overrides packaging / install steps below)
+## Modaui Studio workflow (READ FIRST — overrides packaging / install steps below)
 
-You are running inside Cherry Studio. Skills live in a managed global registry,
+You are running inside Modaui Studio. Skills live in a managed global registry,
 so you do **not** write files to `.claude/skills/` or to
 `~/Library/Application Support/.../Skills/` directly, and you should **ignore**
 any `package_skill.py` / `.skill` packaging steps mentioned later in this file

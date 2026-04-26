@@ -12,13 +12,13 @@ import {
   definePlugin,
   type StreamTextParams,
   type StreamTextResult
-} from '@cherrystudio/ai-core'
+} from '@modauistudio/ai-core'
 import { loggerService } from '@logger'
 import { getDefaultModel, getProviderByModel } from '@renderer/services/AssistantService'
 import type { Assistant } from '@renderer/types'
 import type { ExtractResults } from '@renderer/utils/extract'
 import { extractInfoFromXML } from '@renderer/utils/extract'
-// import { generateObject } from '@cherrystudio/ai-core'
+// import { generateObject } from '@modauistudio/ai-core'
 import {
   SEARCH_SUMMARY_PROMPT,
   SEARCH_SUMMARY_PROMPT_KNOWLEDGE_ONLY,

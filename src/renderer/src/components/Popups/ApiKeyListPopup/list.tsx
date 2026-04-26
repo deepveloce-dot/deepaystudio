@@ -1,4 +1,4 @@
-import { Button, Flex, Tooltip } from '@cherrystudio/ui'
+import { Button, Flex, Tooltip } from '@modauistudio/ui'
 import { DeleteIcon } from '@renderer/components/Icons'
 import { StreamlineGoodHealthAndWellBeing } from '@renderer/components/Icons/SVGIcon'
 import Scrollbar from '@renderer/components/Scrollbar'

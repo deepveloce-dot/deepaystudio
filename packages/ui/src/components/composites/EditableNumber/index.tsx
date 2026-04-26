@@ -1,5 +1,5 @@
 // Original path: src/renderer/src/components/EditableNumber/index.tsx
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import * as React from 'react'
 
 export interface EditableNumberProps {

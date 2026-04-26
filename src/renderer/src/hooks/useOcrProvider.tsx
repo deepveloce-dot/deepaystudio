@@ -1,4 +1,4 @@
-import { Intel, Paddleocr, TesseractJs } from '@cherrystudio/ui/icons'
+import { Intel, Paddleocr, TesseractJs } from '@modauistudio/ui/icons'
 import { loggerService } from '@logger'
 import { BUILTIN_OCR_PROVIDERS_MAP, DEFAULT_OCR_PROVIDER } from '@renderer/config/ocr'
 import { getBuiltinOcrProviderLabel } from '@renderer/i18n/label'

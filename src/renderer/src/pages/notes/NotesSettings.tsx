@@ -1,4 +1,4 @@
-import { Button, Switch } from '@cherrystudio/ui'
+import { Button, Switch } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import Selector from '@renderer/components/Selector'
 import { useTheme } from '@renderer/context/ThemeProvider'

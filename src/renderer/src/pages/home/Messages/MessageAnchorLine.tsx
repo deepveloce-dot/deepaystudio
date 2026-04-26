@@ -1,4 +1,4 @@
-import { Avatar, AvatarImage, EmojiAvatar } from '@cherrystudio/ui'
+import { Avatar, AvatarImage, EmojiAvatar } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { APP_NAME, AppLogo, isLocalAi } from '@renderer/config/env'
 import { getModelLogoById } from '@renderer/config/models'

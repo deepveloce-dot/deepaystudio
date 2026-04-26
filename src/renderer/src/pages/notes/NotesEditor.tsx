@@ -1,4 +1,4 @@
-import { SpaceBetweenRowFlex, Tooltip } from '@cherrystudio/ui'
+import { SpaceBetweenRowFlex, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import ActionIconButton from '@renderer/components/Buttons/ActionIconButton'
 import CodeEditor, { type CodeEditorHandles } from '@renderer/components/CodeEditor'

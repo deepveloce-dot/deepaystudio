@@ -1,7 +1,7 @@
 {
-  "name": "@cherrystudio/ai-core",
+  "name": "@modauistudio/ai-core",
   "version": "2.0.1",
-  "description": "Cherry Studio AI Core - Unified AI Provider Interface Based on Vercel AI SDK",
+  "description": "Modaui Studio AI Core - Unified AI Provider Interface Based on Vercel AI SDK",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -19,17 +19,17 @@
     "test:watch": "vitest",
     "prepublishOnly": "pnpm build"
   },
-  "keywords": ["ai", "sdk", "openai", "anthropic", "google", "cherry-studio", "vercel-ai-sdk"],
-  "author": "Cherry Studio",
+  "keywords": ["ai", "sdk", "openai", "anthropic", "google", "modaui-studio", "vercel-ai-sdk"],
+  "author": "Modaui Studio",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CherryHQ/cherry-studio.git"
+    "url": "git+https://github.com/CherryHQ/modaui-studio.git"
   },
   "bugs": {
-    "url": "https://github.com/CherryHQ/cherry-studio/issues"
+    "url": "https://github.com/CherryHQ/modaui-studio/issues"
   },
-  "homepage": "https://github.com/CherryHQ/cherry-studio#readme",
+  "homepage": "https://github.com/CherryHQ/modaui-studio#readme",
   "peerDependencies": {
     "@ai-sdk/google": "^3.0.64",
     "@ai-sdk/openai": "^3.0.53",
@@ -43,13 +43,13 @@
     "@ai-sdk/provider": "^3.0.8",
     "@ai-sdk/provider-utils": "^4.0.23",
     "@ai-sdk/xai": "^3.0.83",
-    "@cherrystudio/ai-sdk-provider": "workspace:*",
+    "@modauistudio/ai-sdk-provider": "workspace:*",
     "@openrouter/ai-sdk-provider": "^2.3.3",
     "lru-cache": "^11.2.4",
     "zod": "^4.1.5"
   },
   "devDependencies": {
-    "@cherrystudio/ai-sdk-provider": "workspace:*",
+    "@modauistudio/ai-sdk-provider": "workspace:*",
     "biome": "^0.3.3",
     "oxlint": "^1.36.0",
     "tsdown": "^0.20.3",

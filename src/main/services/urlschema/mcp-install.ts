@@ -51,7 +51,7 @@ export function handleMcpProtocolUrl(url: URL) {
       //     }
       //   }
       // }
-      // cherrystudio://mcp/install?servers={base64Encode(JSON.stringify(jsonConfig))}
+      // modauistudio://mcp/install?servers={base64Encode(JSON.stringify(jsonConfig))}
 
       const data = params.get('servers')
 

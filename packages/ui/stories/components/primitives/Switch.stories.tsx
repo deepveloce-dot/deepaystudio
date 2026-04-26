@@ -1,4 +1,4 @@
-import { DescriptionSwitch, Switch } from '@cherrystudio/ui'
+import { DescriptionSwitch, Switch } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Bell, Moon, Shield, Wifi, Zap } from 'lucide-react'
 import { useState } from 'react'

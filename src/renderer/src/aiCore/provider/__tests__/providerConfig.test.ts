@@ -61,7 +61,7 @@ vi.mock('@renderer/hooks/useAwsBedrock', () => ({
 
 import type { GoogleVertexProviderSettings } from '@ai-sdk/google-vertex/edge'
 import type { OpenAICompatibleProviderSettings } from '@ai-sdk/openai-compatible'
-import type { CherryInProviderSettings } from '@cherrystudio/ai-sdk-provider'
+import type { CherryInProviderSettings } from '@modauistudio/ai-sdk-provider'
 import type { GitHubCopilotProviderSettings } from '@opeoginni/github-copilot-openai-compatible'
 import type { ProviderConfig } from '@renderer/aiCore/types'
 import { getAwsBedrockAuthType } from '@renderer/hooks/useAwsBedrock'
@@ -952,7 +952,7 @@ describe('providerToAiSdkConfig', () => {
       const settings = config.providerSettings
       expect(settings.headers).toBeDefined()
       expect(settings.headers!['HTTP-Referer']).toBe('https://cherry-ai.com')
-      expect(settings.headers!['X-Title']).toBe('Cherry Studio')
+      expect(settings.headers!['X-Title']).toBe('Modaui Studio')
     })
 
     it('merges extra_headers from provider', async () => {

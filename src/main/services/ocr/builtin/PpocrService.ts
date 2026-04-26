@@ -68,7 +68,7 @@ export class PpocrService extends OcrBaseService {
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'Client-Platform': 'cherry-studio'
+      'Client-Platform': 'modaui-studio'
     }
 
     if (options.accessToken) {

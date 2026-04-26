@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { RowFlex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { deleteCustomLanguage, getAllCustomLanguages } from '@renderer/services/TranslateService'
 import type { CustomTranslateLanguage } from '@renderer/types'

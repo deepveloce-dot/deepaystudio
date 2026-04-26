@@ -1,5 +1,5 @@
-import { Flex } from '@cherrystudio/ui'
-import { Tooltip } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'
 import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types.js'

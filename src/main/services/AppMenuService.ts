@@ -150,13 +150,13 @@ export class AppMenuService extends BaseService {
           {
             label: appMenu.feedback,
             click: () => {
-              void shell.openExternal('https://github.com/CherryHQ/cherry-studio/issues/new/choose')
+              void shell.openExternal('https://github.com/CherryHQ/modaui-studio/issues/new/choose')
             }
           },
           {
             label: appMenu.releases,
             click: () => {
-              void shell.openExternal('https://github.com/CherryHQ/cherry-studio/releases')
+              void shell.openExternal('https://github.com/CherryHQ/modaui-studio/releases')
             }
           }
         ]

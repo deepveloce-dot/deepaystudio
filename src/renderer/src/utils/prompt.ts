@@ -1,4 +1,4 @@
-import { DEFAULT_SYSTEM_PROMPT } from '@cherrystudio/ai-core/built-in/plugins'
+import { DEFAULT_SYSTEM_PROMPT } from '@modauistudio/ai-core/built-in/plugins'
 import { loggerService } from '@logger'
 import { preferenceService } from '@renderer/data/PreferenceService'
 import store from '@renderer/store'

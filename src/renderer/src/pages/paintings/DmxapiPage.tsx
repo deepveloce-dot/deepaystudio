@@ -1,6 +1,6 @@
 import { PlusOutlined, RedoOutlined } from '@ant-design/icons'
-import { Button, InfoTooltip, RowFlex, Switch } from '@cherrystudio/ui'
-import { resolveProviderIcon } from '@cherrystudio/ui/icons'
+import { Button, InfoTooltip, RowFlex, Switch } from '@modauistudio/ui'
+import { resolveProviderIcon } from '@modauistudio/ui/icons'
 import { useCache } from '@data/hooks/useCache'
 import DMXAPIToImg from '@renderer/assets/images/providers/DMXAPI-to-img.webp'
 import { Navbar, NavbarCenter, NavbarRight } from '@renderer/components/app/Navbar'

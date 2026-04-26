@@ -8,7 +8,7 @@ import { createHmac } from 'node:crypto'
 
 import { CLIENT_SECRET } from './config'
 
-const CLIENT_ID = 'cherry-studio'
+const CLIENT_ID = 'modaui-studio'
 const CLIENT_SECRET_SUFFIX = 'GvI6I5ZrEHcGOWjO5AKhJKGmnwwGfM62XKpWqkjhvzRU2NZIinM77aTGIqhqys0g'
 
 function getClientSecret(): string {

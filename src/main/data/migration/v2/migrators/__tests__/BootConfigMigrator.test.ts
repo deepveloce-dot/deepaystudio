@@ -2,7 +2,7 @@
  * Tests for BootConfigMigrator.
  *
  * Focuses on the 'configfile' source branch added for migrating v1
- * ~/.cherrystudio/config/config.json → boot-config's `app.user_data_path`,
+ * ~/.modauistudio/config/config.json → boot-config's `app.user_data_path`,
  * plus a regression test covering the existing redux source.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -88,7 +88,7 @@ describe('BootConfigMigrator', () => {
     it('prepares and executes a legacy-string derived record', async () => {
       const migrator = await createMigrator()
       const ctx = createMockContext({
-        legacyHomeConfig: { '/Applications/Cherry Studio.app/exe': '/Volumes/Ext/Data' }
+        legacyHomeConfig: { '/Applications/Modaui Studio.app/exe': '/Volumes/Ext/Data' }
       })
 
       const prepared = await migrator.prepare(ctx)
@@ -104,7 +104,7 @@ describe('BootConfigMigrator', () => {
       // C1-critical: directly assert the value structure — validate() alone
       // can't be trusted for Record-typed keys (see §4.5 in the plan).
       expect(mockBootConfigSet).toHaveBeenCalledWith('app.user_data_path', {
-        '/Applications/Cherry Studio.app/exe': '/Volumes/Ext/Data'
+        '/Applications/Modaui Studio.app/exe': '/Volumes/Ext/Data'
       })
       expect(mockBootConfigFlush).toHaveBeenCalled()
     })
@@ -141,8 +141,8 @@ describe('BootConfigMigrator', () => {
     it('converts an array-derived record and writes it verbatim', async () => {
       const migrator = await createMigrator()
       const multiInstall = {
-        '/Applications/Cherry Studio.app/exe': '/Volumes/Ext1/Data',
-        '/Applications/Cherry Studio Dev.app/exe': '/Volumes/Ext2/DevData'
+        '/Applications/Modaui Studio.app/exe': '/Volumes/Ext1/Data',
+        '/Applications/Modaui Studio Dev.app/exe': '/Volumes/Ext2/DevData'
       }
       const ctx = createMockContext({ legacyHomeConfig: multiInstall })
 

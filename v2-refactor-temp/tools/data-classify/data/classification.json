@@ -488,7 +488,7 @@
         {
           "originalKey": "nutstorePath",
           "type": "string",
-          "defaultValue": "/cherry-studio",
+          "defaultValue": "/modaui-studio",
           "status": "classified",
           "category": "preferences",
           "targetKey": "data.backup.nutstore.path"
@@ -1463,7 +1463,7 @@
         {
           "originalKey": "webdavPath",
           "type": "string",
-          "defaultValue": "/cherry-studio",
+          "defaultValue": "/modaui-studio",
           "status": "classified",
           "category": "preferences",
           "targetKey": "data.backup.webdav.path"
@@ -3432,11 +3432,11 @@
       ]
     },
     "localStorage": {
-      "persist:cherry-studio": [
+      "persist:modaui-studio": [
         {
-          "originalKey": "persist:cherry-studio",
+          "originalKey": "persist:modaui-studio",
           "type": "string",
-          "defaultValue": "data.localStorage['persist:cherry-studio']",
+          "defaultValue": "data.localStorage['persist:modaui-studio']",
           "status": "pending",
           "category": null,
           "targetKey": null

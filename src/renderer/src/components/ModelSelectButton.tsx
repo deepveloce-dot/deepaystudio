@@ -1,5 +1,5 @@
-import type { TooltipProps } from '@cherrystudio/ui'
-import { Button, Tooltip } from '@cherrystudio/ui'
+import type { TooltipProps } from '@modauistudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import type { Model } from '@renderer/types'
 import { useCallback, useMemo } from 'react'
 

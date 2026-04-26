@@ -1,4 +1,4 @@
-import { InfoTooltip } from '@cherrystudio/ui'
+import { InfoTooltip } from '@modauistudio/ui'
 import InputEmbeddingDimension from '@renderer/components/InputEmbeddingDimension'
 import ModelSelector from '@renderer/components/ModelSelector'
 import { DEFAULT_KNOWLEDGE_DOCUMENT_COUNT } from '@renderer/config/constant'

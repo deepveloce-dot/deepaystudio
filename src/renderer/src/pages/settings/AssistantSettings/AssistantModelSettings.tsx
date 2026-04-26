@@ -1,4 +1,4 @@
-import { Button, HelpTooltip, RowFlex, Switch } from '@cherrystudio/ui'
+import { Button, HelpTooltip, RowFlex, Switch } from '@modauistudio/ui'
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'
 import CodeEditor from '@renderer/components/CodeEditor'
 import EditableNumber from '@renderer/components/EditableNumber'

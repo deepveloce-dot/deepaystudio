@@ -1,4 +1,4 @@
-import { MenuItem } from '@cherrystudio/ui'
+import { MenuItem } from '@modauistudio/ui'
 
 import { ActiveIndicator, MiniAppIcon } from './primitives'
 import { SidebarTooltip } from './Tooltip'

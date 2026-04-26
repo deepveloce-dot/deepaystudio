@@ -1,5 +1,5 @@
 import { CloseCircleFilled } from '@ant-design/icons'
-import { Button, Flex, HelpTooltip, RowFlex, Switch, Tooltip } from '@cherrystudio/ui'
+import { Button, Flex, HelpTooltip, RowFlex, Switch, Tooltip } from '@modauistudio/ui'
 import EmojiPicker from '@renderer/components/EmojiPicker'
 import { ResetIcon } from '@renderer/components/Icons'
 import Selector from '@renderer/components/Selector'

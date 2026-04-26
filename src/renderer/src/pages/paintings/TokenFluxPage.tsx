@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, InfoTooltip, Tooltip } from '@cherrystudio/ui'
-import { resolveProviderIcon } from '@cherrystudio/ui/icons'
+import { Button, InfoTooltip, Tooltip } from '@modauistudio/ui'
+import { resolveProviderIcon } from '@modauistudio/ui/icons'
 import { useCache } from '@data/hooks/useCache'
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'

@@ -1,5 +1,5 @@
 import { InfoCircleOutlined, UndoOutlined } from '@ant-design/icons' // 导入重置图标和Info图标
-import { Button, Switch, Tooltip } from '@cherrystudio/ui'
+import { Button, Switch, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import Selector from '@renderer/components/Selector'
 import { allMinApps } from '@renderer/config/minapps'

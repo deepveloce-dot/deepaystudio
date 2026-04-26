@@ -81,7 +81,7 @@ Respond in the language of the user's query, unless the user instructions specif
 `
 
 /**
- * 默认工具使用示例（提取自 Cherry Studio）
+ * 默认工具使用示例（提取自 Modaui Studio）
  */
 const DEFAULT_TOOL_USE_EXAMPLES = `
 Here are a few examples using notional tools:
@@ -156,7 +156,7 @@ User: <tool_use_result>
 A: The population of Shanghai is 26 million, while Guangzhou has a population of 15 million. Therefore, Shanghai has the highest population.`
 
 /**
- * 构建可用工具部分（提取自 Cherry Studio）
+ * 构建可用工具部分（提取自 Modaui Studio）
  */
 function buildAvailableTools(tools: ToolSet): string | null {
   const availableTools = Object.keys(tools)
@@ -181,7 +181,7 @@ ${result}
 }
 
 /**
- * 默认的系统提示符构建函数（提取自 Cherry Studio）
+ * 默认的系统提示符构建函数（提取自 Modaui Studio）
  */
 function defaultBuildSystemPrompt(userSystemPrompt: string, tools: ToolSet, mcpMode?: string): string {
   const availableTools = buildAvailableTools(tools)
@@ -212,7 +212,7 @@ Above example were using notional tools that might not exist for you. You only h
 }
 
 /**
- * 默认工具解析函数（提取自 Cherry Studio）
+ * 默认工具解析函数（提取自 Modaui Studio）
  * 解析 XML 格式的工具调用
  */
 function defaultParseToolUse(content: string, tools: ToolSet): { results: ToolUseResult[]; content: string } {

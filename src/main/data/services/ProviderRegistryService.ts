@@ -6,15 +6,15 @@
  * - resolveModels: resolve raw SDK model entries against registry
  * - lookupModel: DB-aware single model lookup with reasoning config
  *
- * Pure JSON loading, caching, and lookups live in @cherrystudio/provider-registry
+ * Pure JSON loading, caching, and lookups live in @modauistudio/provider-registry
  * (RegistryLoader, buildRuntimeEndpointConfigs).
  */
 
 import { application } from '@application'
-import type { ProtoModelConfig, ProtoProviderModelOverride } from '@cherrystudio/provider-registry'
-import type { EndpointType } from '@cherrystudio/provider-registry'
-import { buildRuntimeEndpointConfigs } from '@cherrystudio/provider-registry'
-import { RegistryLoader } from '@cherrystudio/provider-registry/node'
+import type { ProtoModelConfig, ProtoProviderModelOverride } from '@modauistudio/provider-registry'
+import type { EndpointType } from '@modauistudio/provider-registry'
+import { buildRuntimeEndpointConfigs } from '@modauistudio/provider-registry'
+import { RegistryLoader } from '@modauistudio/provider-registry/node'
 import { loggerService } from '@logger'
 import { ErrorCode, isDataApiError } from '@shared/data/api/apiErrors'
 import type { Model } from '@shared/data/types/model'

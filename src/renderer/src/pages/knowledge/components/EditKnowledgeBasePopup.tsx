@@ -1,4 +1,4 @@
-import { ColFlex } from '@cherrystudio/ui'
+import { ColFlex } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { nanoid } from '@reduxjs/toolkit'
 import { TopView } from '@renderer/components/TopView'

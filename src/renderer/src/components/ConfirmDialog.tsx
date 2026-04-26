@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { CheckIcon, XIcon } from 'lucide-react'
 import type { FC } from 'react'
 import { createPortal } from 'react-dom'

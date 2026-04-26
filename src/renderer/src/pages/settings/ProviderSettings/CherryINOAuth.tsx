@@ -1,4 +1,4 @@
-import { Cherryin } from '@cherrystudio/ui/icons'
+import { Cherryin } from '@modauistudio/ui/icons'
 import { loggerService } from '@logger'
 import { useProvider } from '@renderer/hooks/useProvider'
 import { oauthWithCherryIn } from '@renderer/utils/oauth'

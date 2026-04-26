@@ -1,5 +1,5 @@
 import { ExportOutlined, MenuOutlined } from '@ant-design/icons'
-import { Box, RowFlex } from '@cherrystudio/ui'
+import { Box, RowFlex } from '@modauistudio/ui'
 import { DraggableList } from '@renderer/components/DraggableList'
 import { DeleteIcon } from '@renderer/components/Icons'
 import { TopView } from '@renderer/components/TopView'

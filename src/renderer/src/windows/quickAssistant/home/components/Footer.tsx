@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, LoadingOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { Tag as AntdTag } from 'antd'
 import { CircleArrowLeft, Copy, Pin } from 'lucide-react'
 import type { FC } from 'react'

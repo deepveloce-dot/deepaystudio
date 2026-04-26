@@ -1,4 +1,4 @@
-import { resolveProviderIcon } from '@cherrystudio/ui/icons'
+import { resolveProviderIcon } from '@modauistudio/ui/icons'
 import type { AgentBase, AgentConfiguration, AgentType } from '@renderer/types'
 import type { PermissionModeCard } from '@renderer/types/agent'
 

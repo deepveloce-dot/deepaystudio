@@ -1,4 +1,4 @@
-import { ColFlex, RowFlex } from '@cherrystudio/ui'
+import { ColFlex, RowFlex } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import MaxContextCount from '@renderer/components/MaxContextCount'
 import { Divider, Popover } from 'antd'

@@ -1,4 +1,4 @@
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@cherrystudio/ui'
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@modauistudio/ui'
 import { AppLogo } from '@renderer/config/env'
 import { loggerService } from '@renderer/services/LoggerService'
 import { MigrationIpcChannels } from '@shared/data/migration/v2/types'

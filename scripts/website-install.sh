@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # scripts/website-install.sh
 #
-# Cherry Studio – Docusaurus 网站一键部署脚本（Ubuntu，HTTP 80）
+# Modaui Studio – Docusaurus 网站一键部署脚本（Ubuntu，HTTP 80）
 #
 # 用法:
 #   sudo ./scripts/website-install.sh
@@ -10,14 +10,14 @@
 #
 # 脚本功能:
 #   1. 安装系统依赖（Nginx、Node.js 20、yarn）
-#   2. 克隆 cherry-studio-website-docusaurus 仓库
+#   2. 克隆 modaui-studio-website-docusaurus 仓库
 #   3. yarn build 生成静态文件
-#   4. 把 build/ 放到 /var/www/cherry-studio/
+#   4. 把 build/ 放到 /var/www/modaui-studio/
 #   5. 写入 Nginx 配置，监听 80 端口
 #   6. 开机自启 Nginx
 #
 # CI/CD 后续更新由 GitHub Actions (deploy-website.yml) 完成：
-#   rsync build/ → /var/www/cherry-studio/ → nginx reload
+#   rsync build/ → /var/www/modaui-studio/ → nginx reload
 #
 # 需要在 GitHub 仓库 Secrets 中配置：
 #   WEBSITE_HOST      – 服务器 IP 或域名（如 51.38.123.49）
@@ -38,9 +38,9 @@ die()     { echo -e "${RED}[website]${RESET} $*" >&2; exit 1; }
 # ─── 参数 ─────────────────────────────────────────────────────────────────────
 DOMAIN="51.38.123.49"
 DEPLOY_USER="www-data"
-WEB_ROOT="/var/www/cherry-studio"
-REPO_URL="https://github.com/CherryHQ/cherry-studio-website-docusaurus.git"
-BUILD_DIR="/tmp/cherry-studio-website-build"
+WEB_ROOT="/var/www/modaui-studio"
+REPO_URL="https://github.com/CherryHQ/modaui-studio-website-docusaurus.git"
+BUILD_DIR="/tmp/modaui-studio-website-build"
 NODE_VERSION="20"
 
 while [[ $# -gt 0 ]]; do
@@ -55,7 +55,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # ─── 权限检查 ─────────────────────────────────────────────────────────────────
-echo -e "\n${BOLD}Cherry Studio 网站部署${RESET}\n"
+echo -e "\n${BOLD}Modaui Studio 网站部署${RESET}\n"
 [[ "$EUID" -eq 0 ]] || die "请用 root 运行：sudo $0 $*"
 
 log "配置信息："
@@ -113,8 +113,8 @@ success "文件部署完成 ✓"
 # ─── 4. Nginx 配置 ────────────────────────────────────────────────────────────
 log "配置 Nginx..."
 
-cat > /etc/nginx/sites-available/cherry-studio <<NGINX
-# Cherry Studio 文档网站
+cat > /etc/nginx/sites-available/modaui-studio <<NGINX
+# Modaui Studio 文档网站
 # 由 scripts/website-install.sh 自动生成
 # CI/CD 更新由 deploy-website.yml 处理
 
@@ -141,13 +141,13 @@ server {
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-Content-Type-Options "nosniff";
 
-    access_log /var/log/nginx/cherry-studio.access.log;
-    error_log  /var/log/nginx/cherry-studio.error.log;
+    access_log /var/log/nginx/modaui-studio.access.log;
+    error_log  /var/log/nginx/modaui-studio.error.log;
 }
 NGINX
 
 # 启用站点，禁用默认站点
-ln -sf /etc/nginx/sites-available/cherry-studio /etc/nginx/sites-enabled/cherry-studio
+ln -sf /etc/nginx/sites-available/modaui-studio /etc/nginx/sites-enabled/modaui-studio
 rm -f /etc/nginx/sites-enabled/default 2>/dev/null || true
 
 nginx -t || die "Nginx 配置检查失败，请查看错误信息"
@@ -184,6 +184,6 @@ echo -e "    WEBSITE_USER    = \$(whoami)  # 有 sudo 权限的 SSH 用户"
 echo -e "    WEBSITE_SSH_KEY = <SSH 私钥内容>"
 echo ""
 echo -e "  ${BLUE}日志查看${RESET}:"
-echo -e "    tail -f /var/log/nginx/cherry-studio.access.log"
-echo -e "    tail -f /var/log/nginx/cherry-studio.error.log"
+echo -e "    tail -f /var/log/nginx/modaui-studio.access.log"
+echo -e "    tail -f /var/log/nginx/modaui-studio.error.log"
 echo ""

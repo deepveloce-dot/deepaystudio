@@ -1,6 +1,6 @@
 import { CheckOutlined } from '@ant-design/icons'
-import { Box } from '@cherrystudio/ui'
-import { Tooltip } from '@cherrystudio/ui'
+import { Box } from '@modauistudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { useAppSelector } from '@renderer/store'
 import type { Assistant, AssistantSettings } from '@renderer/types'
 import type { SelectProps } from 'antd'

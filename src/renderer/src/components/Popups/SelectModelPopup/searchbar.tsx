@@ -1,4 +1,4 @@
-import { RowFlex } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
 import type { InputRef } from 'antd'
 import { Input } from 'antd'
 import { Search } from 'lucide-react'

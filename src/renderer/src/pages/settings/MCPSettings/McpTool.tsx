@@ -1,4 +1,4 @@
-import { ColFlex, Flex, InfoTooltip, Switch, Tooltip } from '@cherrystudio/ui'
+import { ColFlex, Flex, InfoTooltip, Switch, Tooltip } from '@modauistudio/ui'
 import { McpLogo } from '@renderer/components/Icons'
 import type { MCPServer, MCPTool } from '@renderer/types'
 import { isToolAutoApproved } from '@renderer/utils/mcp-tools'

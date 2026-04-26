@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, ColFlex, Flex, RowFlex, Tooltip } from '@cherrystudio/ui'
+import { Button, ButtonGroup, ColFlex, Flex, RowFlex, Tooltip } from '@modauistudio/ui'
 import CollapsibleSearchBar from '@renderer/components/CollapsibleSearchBar'
 import { LoadingIcon, StreamlineGoodHealthAndWellBeing } from '@renderer/components/Icons'
 import CustomTag from '@renderer/components/Tags/CustomTag'

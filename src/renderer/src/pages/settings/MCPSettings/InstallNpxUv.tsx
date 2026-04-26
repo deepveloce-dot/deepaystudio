@@ -1,6 +1,6 @@
 import { CheckCircleOutlined, QuestionCircleOutlined, WarningOutlined } from '@ant-design/icons'
-import { Center, ColFlex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { Center, ColFlex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { usePersistCache } from '@renderer/data/hooks/useCache'
 import { useNavigate } from '@tanstack/react-router'
 import { Alert } from 'antd'

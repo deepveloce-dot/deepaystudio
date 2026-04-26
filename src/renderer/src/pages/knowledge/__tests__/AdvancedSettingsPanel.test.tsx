@@ -30,7 +30,7 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@cherrystudio/ui', () => ({
+vi.mock('@modauistudio/ui', () => ({
   InfoTooltip: ({ title }: { title: string }) => <div>{mocks.i18n.t(title)}</div>
 }))
 

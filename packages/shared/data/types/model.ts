@@ -16,7 +16,7 @@ import type {
   Modality,
   ModelCapability,
   ReasoningEffort
-} from '@cherrystudio/provider-registry'
+} from '@modauistudio/provider-registry'
 import {
   CURRENCY,
   ENDPOINT_TYPE,
@@ -24,7 +24,7 @@ import {
   MODEL_CAPABILITY,
   objectValues,
   REASONING_EFFORT
-} from '@cherrystudio/provider-registry'
+} from '@modauistudio/provider-registry'
 import * as z from 'zod'
 
 // Re-export const objects for consumers

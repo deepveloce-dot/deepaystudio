@@ -1,5 +1,5 @@
-import { Button, Flex, RowFlex, Switch, Tooltip, WarnTooltip } from '@cherrystudio/ui'
-import { HelpTooltip } from '@cherrystudio/ui'
+import { Button, Flex, RowFlex, Switch, Tooltip, WarnTooltip } from '@modauistudio/ui'
+import { HelpTooltip } from '@modauistudio/ui'
 import { adaptProvider } from '@renderer/aiCore/provider/providerConfig'
 import OpenAIAlert from '@renderer/components/Alert/OpenAIAlert'
 import { showErrorDetailPopup } from '@renderer/components/ErrorDetailModal'

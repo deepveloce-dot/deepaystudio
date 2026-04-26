@@ -1,5 +1,5 @@
-import type { OpenAI } from '@cherrystudio/openai'
-import type { Stream } from '@cherrystudio/openai/streaming'
+import type { OpenAI } from '@modauistudio/openai'
+import type { Stream } from '@modauistudio/openai/streaming'
 import type { TokenUsage } from '@mcp-trace/trace-core'
 import type { Span } from '@opentelemetry/api'
 import { endSpan } from '@renderer/services/SpanManagerService'

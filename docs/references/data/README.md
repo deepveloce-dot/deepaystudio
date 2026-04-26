@@ -1,6 +1,6 @@
 # Data System Reference
 
-This is the main entry point for Cherry Studio's data management documentation. The application uses four data systems based on data characteristics and loading requirements.
+This is the main entry point for Modaui Studio's data management documentation. The application uses four data systems based on data characteristics and loading requirements.
 
 ## Quick Navigation
 
@@ -225,7 +225,7 @@ const { data: files } = useQuery('/files')
                          │
          ┌───────────────▼─────────────┐
          │ BootConfigService                       │
-         │ (sync load, ~/.cherrystudio/            │
+         │ (sync load, ~/.modauistudio/            │
          │  boot-config.json — also used directly  │
          │  in early boot before lifecycle)        │
          └─────────────────────────────────────────┘

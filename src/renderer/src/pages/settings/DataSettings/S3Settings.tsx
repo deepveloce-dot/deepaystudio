@@ -1,5 +1,5 @@
 import { FolderOpenOutlined, SaveOutlined, SyncOutlined } from '@ant-design/icons'
-import { Button, InfoTooltip, RowFlex, Switch, WarnTooltip } from '@cherrystudio/ui'
+import { Button, InfoTooltip, RowFlex, Switch, WarnTooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { S3BackupManager } from '@renderer/components/S3BackupManager'
 import { S3BackupModal, useS3BackupModal } from '@renderer/components/S3Modals'

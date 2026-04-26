@@ -165,7 +165,7 @@ export class OpenClawService extends BaseService {
 
   /**
    * Check if OpenClaw is installed.
-   * Only recognizes the local binary (~/.cherrystudio/bin/). If openclaw is found
+   * Only recognizes the local binary (~/.modauistudio/bin/). If openclaw is found
    * in PATH but not locally, it's likely an old npm-installed version (possibly a
    * third-party fork with ads) and needs migration.
    */
@@ -183,7 +183,7 @@ export class OpenClawService extends BaseService {
   }
 
   /**
-   * Find the openclaw executable. Only uses the local binary (~/.cherrystudio/bin/).
+   * Find the openclaw executable. Only uses the local binary (~/.modauistudio/bin/).
    * Never falls back to PATH to avoid running old npm-installed versions.
    */
   private async findOpenClawBinary(): Promise<string | null> {
@@ -303,7 +303,7 @@ export class OpenClawService extends BaseService {
   }
 
   /**
-   * Uninstall OpenClaw by removing the binary from ~/.cherrystudio/bin/.
+   * Uninstall OpenClaw by removing the binary from ~/.modauistudio/bin/.
    */
   public async uninstall(): Promise<OperationResult> {
     // Stop the gateway before removing binary
@@ -751,7 +751,7 @@ export class OpenClawService extends BaseService {
   }
 
   /**
-   * Sync Cherry Studio Provider configuration to OpenClaw
+   * Sync Modaui Studio Provider configuration to OpenClaw
    */
   public async syncProviderConfig(provider: Provider, primaryModel: Model): Promise<OperationResult> {
     try {

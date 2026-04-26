@@ -1,5 +1,5 @@
-import { HelpTooltip } from '@cherrystudio/ui'
-import { Switch } from '@cherrystudio/ui'
+import { HelpTooltip } from '@modauistudio/ui'
+import { Switch } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import AnthropicProviderListPopover from '@renderer/components/AnthropicProviderListPopover'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'

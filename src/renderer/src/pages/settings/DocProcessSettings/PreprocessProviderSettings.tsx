@@ -1,5 +1,5 @@
 import { ExportOutlined } from '@ant-design/icons'
-import { Button, Flex, Tooltip } from '@cherrystudio/ui'
+import { Button, Flex, Tooltip } from '@modauistudio/ui'
 import { LogoAvatar } from '@renderer/components/Icons'
 import { ApiKeyListPopup } from '@renderer/components/Popups/ApiKeyListPopup'
 import { getPreprocessProviderLogo, PREPROCESS_PROVIDER_CONFIG } from '@renderer/config/preprocessProviders'

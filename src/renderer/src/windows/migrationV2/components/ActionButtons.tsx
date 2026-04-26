@@ -2,7 +2,7 @@
  * Action buttons component for migration flow
  */
 
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import type { MigrationStage } from '@shared/data/migration/v2/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'

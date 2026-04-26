@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { app } from 'electron'
 
 /**
- * Reader for the legacy v1 home config file (typically ~/.cherrystudio/config/config.json).
+ * Reader for the legacy v1 home config file (typically ~/.modauistudio/config/config.json).
  *
  * The file path is injected via the constructor rather than computed internally,
  * so callers control where the config file is located.
@@ -26,7 +26,7 @@ import { app } from 'electron'
  * consumers (e.g. the future `initAppDataDir()` rewire).
  *
  * Known limitation: AppImage / Windows portable builds write a special
- * `executablePath` (cherry-studio.appimage / cherry-studio-portable.exe)
+ * `executablePath` (modaui-studio.appimage / modaui-studio-portable.exe)
  * that differs from `app.getPath('exe')`. This reader does not reproduce
  * that normalization — the legacy-string fallback uses the raw exe path,
  * and array entries are preserved verbatim. Consumers of `app.user_data_path`

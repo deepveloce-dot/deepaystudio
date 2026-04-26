@@ -1,5 +1,5 @@
-import { RowFlex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { MessageEditingProvider } from '@renderer/context/MessageEditingContext'
 import { getTopicById } from '@renderer/hooks/useTopic'
 import { default as MessageItem } from '@renderer/pages/home/Messages/Message'

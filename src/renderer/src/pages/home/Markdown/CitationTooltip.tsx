@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import Favicon from '@renderer/components/Icons/FallbackFavicon'
 import MarqueeText from '@renderer/components/MarqueeText'
 import { fetchXOEmbed, isXPostUrl } from '@renderer/utils/fetch'

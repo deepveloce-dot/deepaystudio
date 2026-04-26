@@ -1,4 +1,4 @@
-import type { IconComponent } from '@cherrystudio/ui/icons'
+import type { IconComponent } from '@modauistudio/ui/icons'
 import type { codeCLI } from '@shared/config/constant'
 
 export interface CodeToolMeta {

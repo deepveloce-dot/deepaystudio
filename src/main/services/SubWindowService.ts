@@ -241,7 +241,7 @@ export class SubWindowService extends BaseService {
     // Deliberately omit `backgroundColor` on macOS — an undefined value can still overwrite
     // the vibrancy-enabled default through the options merge path.
     const options: Partial<WindowOptions> = {
-      title: title || 'Cherry Studio Tab',
+      title: title || 'Modaui Studio Tab',
       darkTheme: dark,
       ...(isMac && { titleBarOverlay: dark ? titleBarOverlayDark : titleBarOverlayLight }),
       ...(!isMac && { backgroundColor: dark ? '#181818' : '#FFFFFF' }),

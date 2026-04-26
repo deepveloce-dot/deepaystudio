@@ -1,5 +1,5 @@
 import { ArrowsAltOutlined, ShrinkOutlined } from '@ant-design/icons'
-import { Avatar, AvatarFallback, AvatarGroup, RowFlex, Tooltip } from '@cherrystudio/ui'
+import { Avatar, AvatarFallback, AvatarGroup, RowFlex, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'
 import Scrollbar from '@renderer/components/Scrollbar'

@@ -1,4 +1,4 @@
-import { HelpTooltip } from '@cherrystudio/ui'
+import { HelpTooltip } from '@modauistudio/ui'
 import SelectAgentBaseModelButton from '@renderer/pages/agents/components/SelectAgentBaseModelButton'
 import type { AgentBaseWithId, ApiModel, UpdateAgentFunctionUnion } from '@renderer/types'
 import { useTranslation } from 'react-i18next'

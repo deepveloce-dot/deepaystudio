@@ -174,7 +174,7 @@ type Story = StoryObj<typeof AllIconsShowcase>
  * ## 使用示例
  *
  * ```tsx
- * import { Anthropic } from '@cherrystudio/ui/icons'
+ * import { Anthropic } from '@modauistudio/ui/icons'
  *
  * // 通过 fontSize 控制大小
  * <div style={{ fontSize: 24 }}>
@@ -202,7 +202,7 @@ export const AllLogos: Story = {
  * 使用 `monoColor` 参数来实时预览不同颜色下的 Mono 效果。
  *
  * ```tsx
- * import { Anthropic } from '@cherrystudio/ui/icons'
+ * import { Anthropic } from '@modauistudio/ui/icons'
  *
  * <Anthropic.Color />  // 彩色
  * <Anthropic.Mono className="text-red-500" />   // 单色自定义颜色
@@ -223,7 +223,7 @@ export const ColorVsMono: StoryObj<typeof ColorVsMonoShowcase> = {
  * 通过 `size` 控制头像大小，图标自动缩放为容器的 75%。
  *
  * ```tsx
- * import { Anthropic } from '@cherrystudio/ui/icons'
+ * import { Anthropic } from '@modauistudio/ui/icons'
  *
  * <Anthropic.Avatar size={32} />
  * <Anthropic.Avatar size={48} shape="rounded" />

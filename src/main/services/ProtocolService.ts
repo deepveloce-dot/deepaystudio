@@ -11,9 +11,9 @@ import { app } from 'electron'
 import { handleProvidersProtocolUrl } from './urlschema/handle-providers'
 import { handleMcpProtocolUrl } from './urlschema/mcp-install'
 
-export const CHERRY_STUDIO_PROTOCOL = 'cherrystudio'
+export const CHERRY_STUDIO_PROTOCOL = 'modauistudio'
 
-const DESKTOP_FILE_NAME = 'cherrystudio-url-handler.desktop'
+const DESKTOP_FILE_NAME = 'modauistudio-url-handler.desktop'
 const execAsync = promisify(exec)
 const logger = loggerService.withContext('ProtocolService')
 
@@ -96,7 +96,7 @@ export class ProtocolService extends BaseService {
 
   /**
    * Sets up deep linking for the AppImage build on Linux by creating a .desktop file.
-   * This allows the OS to open cherrystudio:// URLs with this App.
+   * This allows the OS to open modauistudio:// URLs with this App.
    */
   private async setupAppImageDeepLink(): Promise<void> {
     // Only run on Linux and when packaged as an AppImage
@@ -114,7 +114,7 @@ export class ProtocolService extends BaseService {
       }
 
       const desktopFileContent = `[Desktop Entry]
-Name=Cherry Studio
+Name=Modaui Studio
 Exec=${escapePathForExec(appPath)} %U
 Terminal=false
 Type=Application

@@ -1,4 +1,4 @@
-import { Flex } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
 import { useOcrProvider } from '@renderer/hooks/useOcrProvider'
 import { BuiltinOcrProviderIds, isOcrOVProvider } from '@renderer/types'
 import { Tag } from 'antd'

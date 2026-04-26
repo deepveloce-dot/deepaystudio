@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { ActionIconButton } from '@renderer/components/Buttons'
 import { useShortcut, useShortcutDisplay } from '@renderer/hooks/useShortcuts'
 import { Eraser } from 'lucide-react'

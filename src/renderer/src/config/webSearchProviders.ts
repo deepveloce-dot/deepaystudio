@@ -1,5 +1,5 @@
-import type { CompoundIcon } from '@cherrystudio/ui'
-import { Bocha, Exa, Querit, Searxng, Tavily, Zhipu } from '@cherrystudio/ui/icons'
+import type { CompoundIcon } from '@modauistudio/ui'
+import { Bocha, Exa, Querit, Searxng, Tavily, Zhipu } from '@modauistudio/ui/icons'
 import type { WebSearchProvider, WebSearchProviderId } from '@renderer/types'
 
 type WebSearchProviderConfig = {

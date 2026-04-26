@@ -1,4 +1,4 @@
-import { Button, RowFlex } from '@cherrystudio/ui'
+import { Button, RowFlex } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { TopView } from '@renderer/components/TopView'
 import { useTimer } from '@renderer/hooks/useTimer'

@@ -28,7 +28,7 @@ const uiMocks = vi.hoisted(() => ({
   ))
 }))
 
-vi.mock('@cherrystudio/ui', () => uiMocks)
+vi.mock('@modauistudio/ui', () => uiMocks)
 
 const originalWindowOpen = window.open
 

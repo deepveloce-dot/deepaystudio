@@ -118,7 +118,7 @@ export function createApp(): express.Application {
    *               properties:
    *                 name:
    *                   type: string
-   *                   example: Cherry Studio API
+   *                   example: Modaui Studio API
    *                 version:
    *                   type: string
    *                   example: 1.0.0
@@ -127,7 +127,7 @@ export function createApp(): express.Application {
    */
   app.get('/', (_req, res) => {
     res.json({
-      name: 'Cherry Studio API',
+      name: 'Modaui Studio API',
       version: '1.0.0',
       endpoints: {
         health: 'GET /health',

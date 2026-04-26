@@ -99,7 +99,7 @@ export function registerMigrationIpcHandlers(userDataPath: string): void {
 
       const result = await dialog.showSaveDialog({
         title: 'Save Migration Backup',
-        defaultPath: `cherry-studio-migration-backup-${new Date().toISOString().split('T')[0]}.zip`,
+        defaultPath: `modaui-studio-migration-backup-${new Date().toISOString().split('T')[0]}.zip`,
         filters: [
           { name: 'Backup Files', extensions: ['zip'] },
           { name: 'All Files', extensions: ['*'] }

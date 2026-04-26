@@ -1,4 +1,4 @@
-import { Scrollbar } from '@cherrystudio/ui'
+import { Scrollbar } from '@modauistudio/ui'
 import type {
   DroppableProps,
   DropResult,

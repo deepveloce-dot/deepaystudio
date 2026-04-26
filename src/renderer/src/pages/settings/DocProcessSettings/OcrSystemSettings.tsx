@@ -1,6 +1,6 @@
 // import { loggerService } from '@logger'
-import { Flex } from '@cherrystudio/ui'
-import { InfoTooltip } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
+import { InfoTooltip } from '@modauistudio/ui'
 import { SuccessTag } from '@renderer/components/Tags/SuccessTag'
 import { isMac, isWin } from '@renderer/config/constant'
 import { useOcrProvider } from '@renderer/hooks/useOcrProvider'

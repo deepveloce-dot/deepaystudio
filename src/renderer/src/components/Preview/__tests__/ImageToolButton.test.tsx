@@ -12,7 +12,7 @@ vi.mock('antd', () => ({
   ))
 }))
 
-vi.mock('@cherrystudio/ui', () => ({
+vi.mock('@modauistudio/ui', () => ({
   Button: ({ children, onPress, disabled, isDisabled, startContent, ...props }: any) => (
     <button type="button" data-testid="button" onClick={onPress} disabled={disabled || isDisabled} {...props}>
       {startContent}

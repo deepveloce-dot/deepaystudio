@@ -1,4 +1,4 @@
-import { Button, Flex, RowFlex, Tooltip } from '@cherrystudio/ui'
+import { Button, Flex, RowFlex, Tooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { LoadingIcon } from '@renderer/components/Icons'
 import { TopView } from '@renderer/components/TopView'

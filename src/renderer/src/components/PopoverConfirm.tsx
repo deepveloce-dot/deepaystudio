@@ -1,5 +1,5 @@
-import { Button, Popover, PopoverContent, PopoverTrigger } from '@cherrystudio/ui'
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { Button, Popover, PopoverContent, PopoverTrigger } from '@modauistudio/ui'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { TriangleAlertIcon } from 'lucide-react'
 import type { ComponentProps, PropsWithChildren, ReactNode } from 'react'
 import { useState } from 'react'

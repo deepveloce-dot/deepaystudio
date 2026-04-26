@@ -10,7 +10,7 @@
  */
 import type { LanguageModelV3Source } from '@ai-sdk/provider'
 import type { WebSearchResultBlock } from '@anthropic-ai/sdk/resources'
-import type OpenAI from '@cherrystudio/openai'
+import type OpenAI from '@modauistudio/openai'
 import type { GenerateImagesConfig, GroundingMetadata, PersonGeneration } from '@google/genai'
 export type { LanguageVarious } from '@shared/data/preference/preferenceTypes'
 import type { CSSProperties } from 'react'

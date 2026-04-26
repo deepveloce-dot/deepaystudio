@@ -19,7 +19,7 @@ import { IpcChannel } from '@shared/IpcChannel'
 import { BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
 
-const TRACER_NAME = 'CherryStudio'
+const TRACER_NAME = 'ModauiStudio'
 
 const logger = loggerService.withContext('NodeTraceService')
 

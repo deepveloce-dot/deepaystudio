@@ -1,4 +1,4 @@
-import { MenuItem, MenuList } from '@cherrystudio/ui'
+import { MenuItem, MenuList } from '@modauistudio/ui'
 import Scrollbar from '@renderer/components/Scrollbar'
 import { getChannelTypeIcon } from '@renderer/utils/agentSession'
 import type { FC } from 'react'

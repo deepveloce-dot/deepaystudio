@@ -1,7 +1,7 @@
 {
-  "name": "@cherrystudio/ui",
+  "name": "@modauistudio/ui",
   "version": "1.0.0-alpha.1",
-  "description": "Cherry Studio UI Component Library - React Components for Cherry Studio",
+  "description": "Modaui Studio UI Component Library - React Components for Modaui Studio",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -39,18 +39,18 @@
     "react",
     "tailwindcss",
     "typescript",
-    "cherry-studio"
+    "modaui-studio"
   ],
-  "author": "Cherry Studio",
+  "author": "Modaui Studio",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CherryHQ/cherry-studio.git"
+    "url": "git+https://github.com/CherryHQ/modaui-studio.git"
   },
   "bugs": {
-    "url": "https://github.com/CherryHQ/cherry-studio/issues"
+    "url": "https://github.com/CherryHQ/modaui-studio/issues"
   },
-  "homepage": "https://github.com/CherryHQ/cherry-studio#readme",
+  "homepage": "https://github.com/CherryHQ/modaui-studio#readme",
   "peerDependencies": {
     "framer-motion": "^11.0.0 || ^12.0.0",
     "react": "^19.0.0",

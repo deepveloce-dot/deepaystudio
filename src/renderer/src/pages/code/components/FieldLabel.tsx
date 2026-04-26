@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { Info } from 'lucide-react'
 import type { ReactNode } from 'react'
 

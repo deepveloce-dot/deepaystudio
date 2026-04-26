@@ -4,8 +4,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle
-} from '@cherrystudio/ui/components/primitives/dialog'
-import { cn } from '@cherrystudio/ui/lib/utils'
+} from '@modauistudio/ui/components/primitives/dialog'
+import { cn } from '@modauistudio/ui/lib/utils'
 import { Command as CommandPrimitive } from 'cmdk'
 import { SearchIcon } from 'lucide-react'
 import * as React from 'react'

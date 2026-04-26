@@ -1,4 +1,4 @@
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import * as SwitchPrimitive from '@radix-ui/react-switch'
 import { cva } from 'class-variance-authority'
 import * as React from 'react'

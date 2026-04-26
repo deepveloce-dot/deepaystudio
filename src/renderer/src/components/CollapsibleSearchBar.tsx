@@ -1,4 +1,4 @@
-import { Tooltip } from '@cherrystudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import i18n from '@renderer/i18n'
 import type { InputRef } from 'antd'
 import { Input } from 'antd'

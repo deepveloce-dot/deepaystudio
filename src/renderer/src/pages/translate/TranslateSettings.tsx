@@ -1,4 +1,4 @@
-import { Button, ColFlex, Flex, HelpTooltip, RowFlex, Switch, Tooltip } from '@cherrystudio/ui'
+import { Button, ColFlex, Flex, HelpTooltip, RowFlex, Switch, Tooltip } from '@modauistudio/ui'
 import LanguageSelect from '@renderer/components/LanguageSelect'
 import db from '@renderer/databases'
 import useTranslate from '@renderer/hooks/useTranslate'

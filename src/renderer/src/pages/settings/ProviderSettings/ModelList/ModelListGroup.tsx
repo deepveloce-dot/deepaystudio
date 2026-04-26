@@ -1,4 +1,4 @@
-import { Button, Flex, Tooltip } from '@cherrystudio/ui'
+import { Button, Flex, Tooltip } from '@modauistudio/ui'
 import CustomCollapse from '@renderer/components/CustomCollapse'
 import { DynamicVirtualList, type DynamicVirtualListRef } from '@renderer/components/VirtualList'
 import type { Model } from '@renderer/types'

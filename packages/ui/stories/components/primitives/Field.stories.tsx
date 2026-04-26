@@ -9,7 +9,7 @@ import {
   FieldSeparator,
   FieldSet,
   Input
-} from '@cherrystudio/ui'
+} from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 
 const meta: Meta<typeof Field> = {
@@ -58,7 +58,7 @@ export const Horizontal: Story = {
       <Field orientation="horizontal">
         <FieldLabel htmlFor="field-username">Username</FieldLabel>
         <FieldContent>
-          <Input id="field-username" placeholder="cherry-studio" />
+          <Input id="field-username" placeholder="modaui-studio" />
           <FieldDescription>Visible in your profile and mentions.</FieldDescription>
         </FieldContent>
       </Field>

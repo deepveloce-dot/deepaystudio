@@ -87,7 +87,7 @@ application's own files.
 
 It does **not** mean "user data" in the colloquial sense (用户数据). The
 Electron userData directory contains a mix of user content
-(`cherrystudio.sqlite`, `Data/Files`, `Data/KnowledgeBase`, …) AND
+(`modauistudio.sqlite`, `Data/Files`, `Data/KnowledgeBase`, …) AND
 Chromium runtime state (`Network/`, `Partitions/`, `IndexedDB`,
 `Local Storage`, …) AND application logs (`logs/`). When this code talks
 about "copying userData", it means copying the **entire OS directory** as

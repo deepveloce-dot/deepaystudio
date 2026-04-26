@@ -588,7 +588,7 @@ export class WindowManager extends BaseService {
     }
   }
 
-  // ─── Public API: Broadcast (Cherry Studio extension) ──────────
+  // ─── Public API: Broadcast (Modaui Studio extension) ──────────
 
   /**
    * Broadcast an IPC message to all managed windows.

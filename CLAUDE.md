@@ -7,7 +7,7 @@
 - **Library-first, custom-last**: Before writing custom code, check library/framework docs for built-in options or existing solutions. Write custom code only when no adequate alternative exists.
 - **Match the house style**: Reuse existing patterns, naming, and conventions.
 - **Research via subagent**: Lean on `subagent` for external docs, APIs, news, and references.
-- **Build with Tailwind CSS & Shadcn UI**: Use components from `@cherrystudio/ui` (located in `packages/ui`, Shadcn UI + Tailwind CSS) for every new UI component; never add `antd`, `HeroUI`, or `styled-components`.
+- **Build with Tailwind CSS & Shadcn UI**: Use components from `@modauistudio/ui` (located in `packages/ui`, Shadcn UI + Tailwind CSS) for every new UI component; never add `antd`, `HeroUI`, or `styled-components`.
 - **Log centrally**: Route all logging through `loggerService` with the right context—no `console.log`.
 - **Access paths centrally**: Use `application.getPath('namespace.key', filename?)` for all main-process filesystem paths—never call `app.getPath()`, `os.homedir()`, or construct paths ad-hoc. Import the singleton via `import { application } from '@application'`.
 - **Lint, test, and format before completion**: Coding tasks are only complete after running `pnpm lint`, `pnpm test`, and `pnpm format` successfully.
@@ -165,7 +165,7 @@ Services without long-lived resources or persistent side effects: use **named ex
 ### UI Layer
 
 - **Prohibited**: antd, HeroUI, styled-components
-- **Adopting**: `@cherrystudio/ui` (located in `packages/ui`, Tailwind CSS + Shadcn UI)
+- **Adopting**: `@modauistudio/ui` (located in `packages/ui`, Tailwind CSS + Shadcn UI)
 
 ### Data Classification Toolchain
 

@@ -1,6 +1,6 @@
 # API Design Guidelines
 
-Guidelines for designing RESTful APIs in the Cherry Studio Data API system.
+Guidelines for designing RESTful APIs in the Modaui Studio Data API system.
 
 ## Path Naming
 
@@ -568,7 +568,7 @@ Don't mix both forms for the same resource inside one module — although cache 
 
 ## Matcher Semantics: Cache vs DataApi
 
-Cherry Studio has two cache layers with different key shapes and different invalidation matchers. They look similar but **are not interchangeable**:
+Modaui Studio has two cache layers with different key shapes and different invalidation matchers. They look similar but **are not interchangeable**:
 
 | Layer | Key shape | Match syntax | Example |
 |---|---|---|---|

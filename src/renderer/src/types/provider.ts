@@ -1,4 +1,4 @@
-import type OpenAI from '@cherrystudio/openai'
+import type OpenAI from '@modauistudio/openai'
 import type { Model } from '@types'
 import * as z from 'zod'
 

@@ -1,6 +1,6 @@
 # Styles Reference
 
-This document is a lightweight index for the active style sources used by `@cherrystudio/ui`.
+This document is a lightweight index for the active style sources used by `@modauistudio/ui`.
 
 ## Source Files
 
@@ -19,6 +19,6 @@ Runtime styles and design tokens live under `src/styles`:
 
 Do not consume files from `packages/ui/docs` at runtime.
 
-- Use `@cherrystudio/ui/styles/*` for all actual app and package integration.
+- Use `@modauistudio/ui/styles/*` for all actual app and package integration.
 - Treat this document as reference only, not as part of the public runtime contract.
 - If you need to inspect shipped style outputs, check `dist/styles/` instead.

@@ -2,8 +2,8 @@
  * Boot config migrator - migrates boot configuration from legacy storage to BootConfigService
  *
  * Reads from ElectronStore, Redux, Dexie settings, localStorage, and the legacy
- * home config file (~/.cherrystudio/config/config.json) sources, then writes
- * values to bootConfigService (~/.cherrystudio/boot-config.json).
+ * home config file (~/.modauistudio/config/config.json) sources, then writes
+ * values to bootConfigService (~/.modauistudio/boot-config.json).
  */
 
 import { loggerService } from '@logger'
@@ -278,7 +278,7 @@ export class BootConfigMigrator extends BaseMigrator {
     // prepare(), matching the reader's `null` return semantics.
     const configFileMappings: ReadonlyArray<{ originalKey: string; targetKey: BootConfigKey }> = [
       {
-        // `appDataPath` field at the top level of ~/.cherrystudio/config/config.json
+        // `appDataPath` field at the top level of ~/.modauistudio/config/config.json
         // (legacy string or array of { executablePath, dataPath })
         originalKey: 'appDataPath',
         targetKey: 'app.user_data_path'

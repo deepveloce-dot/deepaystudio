@@ -1,8 +1,8 @@
-# Cherry Studio Contributor Guide
+# Modaui Studio Contributor Guide
 
 [**English**](../../CONTRIBUTING.md) | [中文](./contributing.md)
 
-Welcome to the Cherry Studio contributor community! We are committed to making Cherry Studio a project that provides long-term value, and we invite more developers to join us. Whether you're an experienced developer or just getting started, your contributions will help us better serve users and improve software quality.
+Welcome to the Modaui Studio contributor community! We are committed to making Modaui Studio a project that provides long-term value, and we invite more developers to join us. Whether you're an experienced developer or just getting started, your contributions will help us better serve users and improve software quality.
 
 ## How to Contribute
 
@@ -14,7 +14,7 @@ Here are several ways you can participate:
 4. **Product Design**: Participate in product design discussions to help improve user experience and interface design.
 5. **Write Documentation**: Help us improve user manuals, API documentation, and developer guides.
 6. **Community Maintenance**: Participate in community discussions, help answer user questions, and foster community activity.
-7. **Promote Usage**: Promote Cherry Studio through blogs, social media, and other channels to attract more users and developers.
+7. **Promote Usage**: Promote Modaui Studio through blogs, social media, and other channels to attract more users and developers.
 
 ## Before You Start
 
@@ -28,7 +28,7 @@ For a comprehensive overview of the project architecture, tech stack, code conve
 
 ## Getting Started
 
-To familiarize yourself with the code, we recommend working on issues tagged with one or more of the following labels: [good-first-issue](https://github.com/CherryHQ/cherry-studio/labels/good%20first%20issue), [help-wanted](https://github.com/CherryHQ/cherry-studio/labels/help%20wanted), or [kind/bug](https://github.com/CherryHQ/cherry-studio/labels/kind%2Fbug). Any help is welcome.
+To familiarize yourself with the code, we recommend working on issues tagged with one or more of the following labels: [good-first-issue](https://github.com/CherryHQ/modaui-studio/labels/good%20first%20issue), [help-wanted](https://github.com/CherryHQ/modaui-studio/labels/help%20wanted), or [kind/bug](https://github.com/CherryHQ/modaui-studio/labels/kind%2Fbug). Any help is welcome.
 
 ### Testing
 
@@ -36,7 +36,7 @@ Features without tests are considered non-existent. To ensure code is truly effe
 
 ### Automated Testing on Pull Requests
 
-Automated tests are triggered on pull requests (PRs) opened by Cherry Studio organization members, excluding draft PRs. PRs from new contributors are initially labeled `needs-ok-to-test` and are not automatically tested. After a Cherry Studio organization member adds `/ok-to-test` to the PR, the test pipeline will be created.
+Automated tests are triggered on pull requests (PRs) opened by Modaui Studio organization members, excluding draft PRs. PRs from new contributors are initially labeled `needs-ok-to-test` and are not automatically tested. After a Modaui Studio organization member adds `/ok-to-test` to the PR, the test pipeline will be created.
 
 ### Consider Opening Your Pull Request as a Draft
 
@@ -82,7 +82,7 @@ Please read the following key information before submitting a Pull Request:
 
 ### Participate in v2 Development
 
-v2 is the next major milestone for Cherry Studio, and we invite every developer to actively participate! Whether it's new feature development, architecture optimization, or code refactoring, contributions on the `v2` branch are welcome. Let's build a better Cherry Studio together!
+v2 is the next major milestone for Modaui Studio, and we invite every developer to actively participate! Whether it's new feature development, architecture optimization, or code refactoring, contributions on the `v2` branch are welcome. Let's build a better Modaui Studio together!
 
 > **Note**: The `v2` branch will only accept new feature submissions after all current features have been fully refactored.
 
@@ -93,6 +93,6 @@ Thank you for your understanding and continued support during this important dev
 If you have any questions or suggestions, feel free to reach out:
 
 - WeChat: kangfenmao
-- [GitHub Issues](https://github.com/CherryHQ/cherry-studio/issues)
+- [GitHub Issues](https://github.com/CherryHQ/modaui-studio/issues)
 
-Thank you for your support and contributions! We look forward to building a better Cherry Studio with you.
+Thank you for your support and contributions! We look forward to building a better Modaui Studio with you.

@@ -1,4 +1,4 @@
-import { Kbd, KbdGroup } from '@cherrystudio/ui'
+import { Kbd, KbdGroup } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Command, Copy, Save, Search } from 'lucide-react'
 // import { Tooltip, TooltipContent, TooltipTrigger } from '../../../src/components/primitives/tooltip'

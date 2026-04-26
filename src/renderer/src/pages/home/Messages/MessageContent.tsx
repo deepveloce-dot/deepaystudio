@@ -1,4 +1,4 @@
-import { Flex } from '@cherrystudio/ui'
+import { Flex } from '@modauistudio/ui'
 import { getModelUniqId } from '@renderer/services/ModelService'
 import type { Message } from '@renderer/types/newMessage'
 import { isEmpty } from 'lodash'

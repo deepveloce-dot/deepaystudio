@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons'
-import { Tooltip } from '@cherrystudio/ui'
-import { PROVIDER_ICON_CATALOG } from '@cherrystudio/ui/icons'
+import { Tooltip } from '@modauistudio/ui'
+import { PROVIDER_ICON_CATALOG } from '@modauistudio/ui/icons'
 import { ProviderAvatarPrimitive } from '@renderer/components/ProviderAvatar'
 import { getProviderLabel } from '@renderer/i18n/label'
 import { Input } from 'antd'

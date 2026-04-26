@@ -22,12 +22,12 @@ const ALLOWED_ROUTES = [
 ]
 
 /**
- * Handle cherrystudio://navigate/<path> deep links.
+ * Handle modauistudio://navigate/<path> deep links.
  *
  * Examples:
- *   cherrystudio://navigate/settings/provider
- *   cherrystudio://navigate/agents
- *   cherrystudio://navigate/knowledge
+ *   modauistudio://navigate/settings/provider
+ *   modauistudio://navigate/agents
+ *   modauistudio://navigate/knowledge
  */
 export function handleNavigateProtocolUrl(url: URL) {
   const targetPath = url.pathname || '/'

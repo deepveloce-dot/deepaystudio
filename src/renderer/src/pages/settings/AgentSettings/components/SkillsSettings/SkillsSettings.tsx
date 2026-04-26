@@ -1,4 +1,4 @@
-import { Switch } from '@cherrystudio/ui'
+import { Switch } from '@modauistudio/ui'
 import CollapsibleSearchBar from '@renderer/components/CollapsibleSearchBar'
 import { TopView } from '@renderer/components/TopView'
 import { useInstalledSkills } from '@renderer/hooks/useSkills'

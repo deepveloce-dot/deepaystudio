@@ -1,6 +1,6 @@
 /**
  * Entry point for the migration v2 window
- * Initializes the migration UI with @cherrystudio/ui components
+ * Initializes the migration UI with @modauistudio/ui components
  */
 import '@renderer/assets/styles/index.css'
 import '@renderer/assets/styles/tailwind.css'

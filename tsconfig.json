@@ -17,7 +17,7 @@
     "paths": {
       "@renderer/*": ["src/renderer/src/*"],
       "@shared/*": ["packages/shared/*"],
-      "@cherrystudio/provider-registry": ["packages/provider-registry/src/index.ts"]
+      "@modauistudio/provider-registry": ["packages/provider-registry/src/index.ts"]
     }
   }
 }

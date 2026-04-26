@@ -1,5 +1,5 @@
 import { FormOutlined } from '@ant-design/icons'
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { EventEmitter } from '@renderer/services/EventService'
 import { EVENT_NAMES } from '@renderer/services/EventService'

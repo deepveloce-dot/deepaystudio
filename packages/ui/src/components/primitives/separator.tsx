@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import * as SeparatorPrimitive from '@radix-ui/react-separator'
 import * as React from 'react'
 

@@ -1,4 +1,4 @@
-# Cherry Studio Documentation
+# Modaui Studio Documentation
 
 ## Guides
 

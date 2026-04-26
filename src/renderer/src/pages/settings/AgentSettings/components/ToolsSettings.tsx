@@ -1,4 +1,4 @@
-import { Switch } from '@cherrystudio/ui'
+import { Switch } from '@modauistudio/ui'
 import CollapsibleSearchBar from '@renderer/components/CollapsibleSearchBar'
 import { permissionModeCards } from '@renderer/config/agent'
 import { useMCPServers } from '@renderer/hooks/useMCPServers'

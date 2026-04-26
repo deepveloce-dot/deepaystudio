@@ -696,7 +696,7 @@
     },
     "authHeaderText": "在授权标头中使用：",
     "configuration": "配置",
-    "description": "通过 OpenAI 兼容的 HTTP API 暴露 Cherry Studio 的 AI 功能",
+    "description": "通过 OpenAI 兼容的 HTTP API 暴露 Modaui Studio 的 AI 功能",
     "documentation": {
       "title": "API 文档"
     },
@@ -2801,12 +2801,12 @@
       "select_other_provider": "选择其他服务商",
       "setup_hint": "请您先至少配置一个服务商，以获得最佳使用体验",
       "subtitle": "使用 CherryIN 服务商可畅享顶级 AI 服务",
-      "title": "欢迎使用 Cherry Studio"
+      "title": "欢迎使用 Modaui Studio"
     }
   },
   "openclaw": {
     "checking_installation": "正在检查 OpenClaw 安装状态...",
-    "description": "使用 Cherry Studio 服务商为 OpenClaw 提供支持，OpenClaw 是您的个人 AI 助手，可在 WhatsApp、Telegram、Slack、Discord 等平台上使用。",
+    "description": "使用 Modaui Studio 服务商为 OpenClaw 提供支持，OpenClaw 是您的个人 AI 助手，可在 WhatsApp、Telegram、Slack、Discord 等平台上使用。",
     "error": {
       "select_provider_model": "请先选择服务商和模型"
     },
@@ -2915,7 +2915,7 @@
       "stop": "停止 OVMS",
       "stopping": "停止中"
     },
-    "description": "<div><p>1. 下载 OV 模型.</p><p>2. 在 'Manager' 中添加模型.</p><p>仅支持 Windows!</p><p>OVMS 安装路径: '%USERPROFILE%\\.cherrystudio\\ovms' .</p><p>请参考 <a href=https://github.com/openvinotoolkit/model_server/blob/c55551763d02825829337b62c2dcef9339706f79/docs/deploying_server_baremetal.md>Intel OVMS 指南</a></p></dev>",
+    "description": "<div><p>1. 下载 OV 模型.</p><p>2. 在 'Manager' 中添加模型.</p><p>仅支持 Windows!</p><p>OVMS 安装路径: '%USERPROFILE%\\.modauistudio\\ovms' .</p><p>请参考 <a href=https://github.com/openvinotoolkit/model_server/blob/c55551763d02825829337b62c2dcef9339706f79/docs/deploying_server_baremetal.md>Intel OVMS 指南</a></p></dev>",
     "download": {
       "button": "下载",
       "error": "下载失败",
@@ -3674,7 +3674,7 @@
           },
           "description": {
             "0": "划词助手需「<strong>辅助功能权限</strong>」才能正常工作。",
-            "1": "请点击「<strong>去设置</strong>」，并在稍后弹出的权限请求弹窗中点击 「<strong>打开系统设置</strong>」 按钮，然后在之后的应用列表中找到 「<strong>Cherry Studio</strong>」，并打开权限开关。",
+            "1": "请点击「<strong>去设置</strong>」，并在稍后弹出的权限请求弹窗中点击 「<strong>打开系统设置</strong>」 按钮，然后在之后的应用列表中找到 「<strong>Modaui Studio</strong>」，并打开权限开关。",
             "2": "完成设置后，请再次开启划词助手。"
           },
           "title": "辅助功能权限"
@@ -3686,7 +3686,7 @@
         "title": "应用筛选名单",
         "user_tips": {
           "mac": "请输入应用的Bundle ID，每行一个，不区分大小写，可以模糊匹配。例如：com.google.Chrome、com.apple.mail等",
-          "windows": "请输入应用的执行文件名，每行一个，不区分大小写，可以模糊匹配。例如：chrome.exe、weixin.exe、Cherry Studio.exe等"
+          "windows": "请输入应用的执行文件名，每行一个，不区分大小写，可以模糊匹配。例如：chrome.exe、weixin.exe、Modaui Studio.exe等"
         }
       },
       "linux": {
@@ -3698,7 +3698,7 @@
         "wayland_checklist_subtitle": "确认以下条件已满足，以尽可能优化 Wayland 下的体验：",
         "wayland_description": "当前为 Wayland 模式，受系统限制，部分桌面环境下工具栏只能显示在屏幕中央，无法跟随选中文本定位。建议切换到 X11 模式以获得完整体验。",
         "wayland_title": "Wayland 模式提示",
-        "xwayland_fail": "未启用，请使用 `--ozone-platform=x11` 参数启动 Cherry Studio",
+        "xwayland_fail": "未启用，请使用 `--ozone-platform=x11` 参数启动 Modaui Studio",
         "xwayland_label": "XWayland 模式：",
         "xwayland_pass": "已启用"
       },
@@ -3991,14 +3991,14 @@
             "test_message_received": "已收到 {{device}} 的 pong 响应",
             "test_message_sent": "已发送 hello world 测试数据"
           },
-          "idle_hint": "扫描已暂停。开始扫描以发现局域网中的 Cherry Studio 设备。",
+          "idle_hint": "扫描已暂停。开始扫描以发现局域网中的 Modaui Studio 设备。",
           "ip_addresses": "IP 地址",
           "last_seen": "最后活动：{{time}}",
           "metadata": "元数据",
-          "no_connection_warning": "请在 Cherry Studio 移动端打开局域网传输",
+          "no_connection_warning": "请在 Modaui Studio 移动端打开局域网传输",
           "no_devices": "尚未发现局域网设备",
           "scan_devices": "扫描设备",
-          "scanning_hint": "正在扫描局域网中的 Cherry Studio 设备...",
+          "scanning_hint": "正在扫描局域网中的 Modaui Studio 设备...",
           "send_file": "发送文件",
           "status": {
             "completed": "传输完成",
@@ -4348,7 +4348,7 @@
         },
         "root": {
           "label": "备份目录（可选）",
-          "placeholder": "例如：/cherry-studio"
+          "placeholder": "例如：/modaui-studio"
         },
         "secretAccessKey": {
           "label": "Secret Access Key",
@@ -4384,7 +4384,7 @@
           "title": "连接检测"
         },
         "root_path": "文档根路径",
-        "root_path_placeholder": "例如：/CherryStudio",
+        "root_path_placeholder": "例如：/ModauiStudio",
         "title": "思源笔记配置",
         "token": {
           "help": "在思源笔记 -> 设置 -> 关于中获取",
@@ -4782,7 +4782,7 @@
       },
       "oauth": {
         "callback": {
-          "message": "您可以关闭此页面并返回 Cherry Studio",
+          "message": "您可以关闭此页面并返回 Modaui Studio",
           "title": "认证成功"
         }
       },
@@ -5771,7 +5771,9 @@
     "paintings": "绘画",
     "settings": "设置",
     "store": "助手库",
-    "translate": "翻译"
+    "translate": "翻译",
+    "fashion": "AI 服装设计",
+    "deepay": "Deepay 开店"
   },
   "trace": {
     "backList": "返回列表",
@@ -5942,5 +5944,34 @@
     "quit": "退出",
     "show_window": "显示窗口",
     "visualization": "可视化"
+  },
+  "fashion": {
+    "title": "AI 服装设计",
+    "subtitle": "一句话 → AI 出款 → 一键开店",
+    "category": "品类",
+    "style": "风格",
+    "market": "目标市场",
+    "ai_modify": "AI 微调",
+    "generate": "生成系列",
+    "regenerate": "重新生成",
+    "open_shop": "一键开店",
+    "select_hint": "选择一款，AI 自动生成商品信息"
+  },
+  "deepay": {
+    "title": "Deepay 开店",
+    "subtitle": "设计 → 开店 → 售卖，全链路闭环",
+    "tab": {
+      "create": "一键开店",
+      "shops": "我的店铺",
+      "admin": "管理后台"
+    },
+    "create_shop": "立即开店",
+    "creating": "正在创建…",
+    "shop_created": "店铺创建成功！",
+    "no_shops": "还没有店铺",
+    "admin": {
+      "title": "Deepay 管理后台",
+      "welcome": "欢迎回来，选择模块开始管理"
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { ChevronRight, Loader2, Mail } from 'lucide-react'
 

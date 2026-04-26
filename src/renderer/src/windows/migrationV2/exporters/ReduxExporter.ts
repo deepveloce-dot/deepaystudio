@@ -3,7 +3,7 @@
  * Extracts persisted Redux state from localStorage and parses it for Main process
  */
 
-const PERSIST_KEY = 'persist:cherry-studio'
+const PERSIST_KEY = 'persist:modaui-studio'
 
 // Redux slices that need to be migrated
 const SLICES_TO_EXPORT = [

@@ -146,7 +146,7 @@ export default defineConfig([
         {
           selector: 'CallExpression[callee.object.name="console"]',
           message:
-            '❗CherryStudio uses unified LoggerService: 📖 docs/en/guides/logging.md\n❗CherryStudio 使用统一的日志服务：📖 docs/zh/guides/logging.md\n\n'
+            '❗ModauiStudio uses unified LoggerService: 📖 docs/en/guides/logging.md\n❗ModauiStudio 使用统一的日志服务：📖 docs/zh/guides/logging.md\n\n'
         }
       ]
     }
@@ -295,13 +295,13 @@ export default defineConfig([
             //   name: 'antd',
             //   importNames: ['Flex', 'Switch', 'message', 'Button', 'Tooltip'],
             //   message:
-            //     '❌ Do not import this component from antd. Use our custom components instead: import { ... } from "@cherrystudio/ui"'
+            //     '❌ Do not import this component from antd. Use our custom components instead: import { ... } from "@modauistudio/ui"'
             // },
             {
               name: 'antd',
               importNames: ['Switch'],
               message:
-                '❌ Do not import this component from antd. Use our custom components instead: import { ... } from "@cherrystudio/ui"'
+                '❌ Do not import this component from antd. Use our custom components instead: import { ... } from "@modauistudio/ui"'
             },
             {
               name: '@heroui/react',
@@ -335,7 +335,7 @@ export default defineConfig([
               },
               messages: {
                 legacyVar:
-                  'Legacy renderer CSS variable "{{variable}}" is deprecated. Prefer @cherrystudio/ui theme contract variables or Tailwind semantic utilities instead.'
+                  'Legacy renderer CSS variable "{{variable}}" is deprecated. Prefer @modauistudio/ui theme contract variables or Tailwind semantic utilities instead.'
               }
             },
             create(context) {

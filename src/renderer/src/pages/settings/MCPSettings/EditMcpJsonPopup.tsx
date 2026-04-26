@@ -1,4 +1,4 @@
-import { CodeEditor } from '@cherrystudio/ui'
+import { CodeEditor } from '@modauistudio/ui'
 import { dataApiService } from '@data/DataApiService'
 import { usePreference } from '@data/hooks/usePreference'
 import { loggerService } from '@logger'

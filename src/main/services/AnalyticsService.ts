@@ -1,6 +1,6 @@
 import { application } from '@application'
-import type { TokenUsageData } from '@cherrystudio/analytics-client'
-import { AnalyticsClient } from '@cherrystudio/analytics-client'
+import type { TokenUsageData } from '@modauistudio/analytics-client'
+import { AnalyticsClient } from '@modauistudio/analytics-client'
 import { loggerService } from '@logger'
 import { type Activatable, BaseService, Injectable, Phase, ServicePhase } from '@main/core/lifecycle'
 import { generateUserAgent, getClientId } from '@main/utils/systemInfo'
@@ -46,7 +46,7 @@ export class AnalyticsService extends BaseService implements Activatable {
 
     this.client = new AnalyticsClient({
       clientId,
-      channel: 'cherry-studio',
+      channel: 'modaui-studio',
       onError: (error) => logger.error('Analytics error:', error),
       headers: {
         'User-Agent': generateUserAgent(),

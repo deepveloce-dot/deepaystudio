@@ -1,10 +1,10 @@
-# Cherry Studio AI Core Architecture Documentation
+# Modaui Studio AI Core Architecture Documentation
 
 > **Version**: v4.0 (ToolFactory + providerToolPlugin unified tool injection)
 > **Updated**: 2026-03-20
-> **Applicable to**: Cherry Studio v1.8.1+
+> **Applicable to**: Modaui Studio v1.8.1+
 
-This document describes the complete data flow and architectural design from user interaction to AI SDK calls in Cherry Studio. It serves as the key documentation for understanding the application's core functionality.
+This document describes the complete data flow and architectural design from user interaction to AI SDK calls in Modaui Studio. It serves as the key documentation for understanding the application's core functionality.
 
 ---
 
@@ -28,7 +28,7 @@ This document describes the complete data flow and architectural design from use
 
 ### 1.1 Architectural Layers
 
-Cherry Studio's AI calls follow a clear layered architecture:
+Modaui Studio's AI calls follow a clear layered architecture:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -68,7 +68,7 @@ Cherry Studio's AI calls follow a clear layered architecture:
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                  Core Package Layer                          │
-│  packages/aiCore/ (@cherrystudio/ai-core)                    │
+│  packages/aiCore/ (@modauistudio/ai-core)                    │
 │  ┌────────────────────────────────────────────────────┐    │
 │  │ RuntimeExecutor                                     │    │
 │  │  - streamText()                                     │    │
@@ -1602,7 +1602,7 @@ for await (const textDelta of streamResult.textStream) {
 
 ### 11.1 Test Utilities (test-utils)
 
-`@cherrystudio/ai-core` provides a complete set of testing utilities:
+`@modauistudio/ai-core` provides a complete set of testing utilities:
 
 ```typescript
 // packages/aiCore/test_utils/helpers/model.ts
@@ -1727,7 +1727,7 @@ Current test coverage:
 
 **A**:
 
-- **Plugin**: Feature extension at Cherry Studio level (Reasoning, ToolUse, WebSearch)
+- **Plugin**: Feature extension at Modaui Studio level (Reasoning, ToolUse, WebSearch)
 - **Middleware**: Request/response interceptor at AI SDK level
 
 ### Q3: When to use Legacy Provider?
@@ -1746,4 +1746,4 @@ Current test coverage:
 
 **Document Version**: v4.0
 **Last Updated**: 2026-03-20
-**Maintainer**: Cherry Studio Team
+**Maintainer**: Modaui Studio Team

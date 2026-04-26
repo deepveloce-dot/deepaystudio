@@ -1,4 +1,4 @@
-import { Button, Switch, Tooltip } from '@cherrystudio/ui'
+import { Button, Switch, Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { isLinux, isMac, isWin } from '@renderer/config/constant'
 import { useTheme } from '@renderer/context/ThemeProvider'
@@ -99,7 +99,7 @@ const SelectionAssistantSettings: FC = () => {
           <Spacer />
           <Button
             variant="ghost"
-            onClick={() => window.api.openWebsite('https://github.com/CherryHQ/cherry-studio/issues/6505')}
+            onClick={() => window.api.openWebsite('https://github.com/CherryHQ/modaui-studio/issues/6505')}
             style={{ fontSize: 12 }}>
             {'FAQ & ' + t('settings.about.feedback.button')}
           </Button>

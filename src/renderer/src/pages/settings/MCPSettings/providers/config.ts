@@ -1,5 +1,5 @@
-import type { CompoundIcon } from '@cherrystudio/ui'
-import { Ai302, Bailian, Lanyun, Mcprouter, Modelscope, Tokenflux } from '@cherrystudio/ui/icons'
+import type { CompoundIcon } from '@modauistudio/ui'
+import { Ai302, Bailian, Lanyun, Mcprouter, Modelscope, Tokenflux } from '@modauistudio/ui/icons'
 import type { MCPServer } from '@renderer/types'
 
 import { getAI302Token, saveAI302Token, syncAi302Servers } from './302ai'

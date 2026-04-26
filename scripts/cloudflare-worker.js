@@ -1,9 +1,9 @@
 // 配置信息
 const config = {
-  R2_CUSTOM_DOMAIN: 'cherrystudio.ocool.online',
-  R2_BUCKET_NAME: 'cherrystudio',
+  R2_CUSTOM_DOMAIN: 'modauistudio.ocool.online',
+  R2_BUCKET_NAME: 'modauistudio',
   // 缓存键名
-  CACHE_KEY: 'cherry-studio-latest-release',
+  CACHE_KEY: 'modaui-studio-latest-release',
   VERSION_DB: 'versions.json',
   LOG_FILE: 'logs.json',
   MAX_LOGS: 1000 // 最多保存多少条日志
@@ -349,7 +349,7 @@ async function getCachedRelease(env) {
 async function checkNewRelease(env) {
   try {
     // 获取 GitHub 最新版本
-    const githubResponse = await fetch('https://api.github.com/repos/kangfenmao/cherry-studio/releases/latest', {
+    const githubResponse = await fetch('https://api.github.com/repos/kangfenmao/modaui-studio/releases/latest', {
       headers: { 'User-Agent': 'CloudflareWorker' }
     })
 

@@ -11,7 +11,7 @@ import {
   RowFlex,
   SpaceBetweenRowFlex,
   Tooltip
-} from '@cherrystudio/ui'
+} from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import EmojiPicker from '@renderer/components/EmojiPicker'
 import type { RichEditorRef } from '@renderer/components/RichEditor/types'

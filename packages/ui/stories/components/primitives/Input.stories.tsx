@@ -1,4 +1,4 @@
-import { Input } from '@cherrystudio/ui'
+import { Input } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Mail, Search, User } from 'lucide-react'
 import { useState } from 'react'

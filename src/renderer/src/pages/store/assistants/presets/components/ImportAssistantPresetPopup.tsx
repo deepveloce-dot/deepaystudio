@@ -1,5 +1,5 @@
-import { RowFlex } from '@cherrystudio/ui'
-import { Button } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Button } from '@modauistudio/ui'
 import { TopView } from '@renderer/components/TopView'
 import { useAssistantPresets } from '@renderer/hooks/useAssistantPresets'
 import { useSettings } from '@renderer/hooks/useSettings'

@@ -1,4 +1,4 @@
-import type { ChatCompletionMessageParam } from '@cherrystudio/openai/resources'
+import type { ChatCompletionMessageParam } from '@modauistudio/openai/resources'
 import type { Model } from '@renderer/types'
 import { describe, expect, it } from 'vitest'
 

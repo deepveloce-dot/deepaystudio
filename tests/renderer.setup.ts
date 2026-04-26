@@ -139,8 +139,8 @@ vi.stubGlobal('api', {
   }
 })
 
-// Mock @cherrystudio/ui globally for renderer tests
-vi.mock('@cherrystudio/ui', () => {
+// Mock @modauistudio/ui globally for renderer tests
+vi.mock('@modauistudio/ui', () => {
   const React = require('react')
   return {
     Button: ({ children, onPress, disabled, isDisabled, startContent, ...props }) =>

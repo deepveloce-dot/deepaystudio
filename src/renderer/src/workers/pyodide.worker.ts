@@ -19,7 +19,7 @@ const PYODIDE_INDEX_URL = 'https://cdn.jsdelivr.net/pyodide/v0.28.0/full/'
 const PYODIDE_MODULE_URL = PYODIDE_INDEX_URL + 'pyodide.mjs'
 
 const MATPLOTLIB_SHIM_CODE = `
-def __cherry_studio_matplotlib_setup():
+def __modaui_studio_matplotlib_setup():
     import os
     # Set backend before importing pyplot
     os.environ["MPLBACKEND"] = "AGG"
@@ -53,8 +53,8 @@ def __cherry_studio_matplotlib_setup():
     # Replace global show function
     plt.show = _new_show
 
-__cherry_studio_matplotlib_setup()
-del __cherry_studio_matplotlib_setup
+__modaui_studio_matplotlib_setup()
+del __modaui_studio_matplotlib_setup
 `
 
 // 声明全局变量用于输出

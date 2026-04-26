@@ -1,4 +1,4 @@
-import type { WebSearchPluginConfig } from '@cherrystudio/ai-core/built-in/plugins'
+import type { WebSearchPluginConfig } from '@modauistudio/ai-core/built-in/plugins'
 import type { MCPTool } from '@renderer/types'
 import type { Assistant, Message } from '@renderer/types'
 import type { Chunk } from '@renderer/types/chunk'

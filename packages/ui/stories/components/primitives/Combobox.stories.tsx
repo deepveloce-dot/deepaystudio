@@ -1,4 +1,4 @@
-import { Combobox } from '@cherrystudio/ui'
+import { Combobox } from '@modauistudio/ui'
 import type { Meta, StoryObj } from '@storybook/react'
 import { ChevronDown, User } from 'lucide-react'
 import { useState } from 'react'

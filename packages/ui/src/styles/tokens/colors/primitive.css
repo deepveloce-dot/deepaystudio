@@ -294,7 +294,7 @@
   --cs-black: oklch(0 0 0);
   --cs-white: oklch(1 0 0);
 
-  /* Brand (Cherry Studio 品牌专属色) */
+  /* Brand (Modaui Studio 品牌专属色) */
   --cs-brand-50: oklch(0.98 0.015 152);
   --cs-brand-100: oklch(0.96 0.034 151);
   --cs-brand-200: oklch(0.91 0.073 151);

@@ -696,7 +696,7 @@
     },
     "authHeaderText": "Χρήση στην κεφαλίδα εξουσιοδότησης:",
     "configuration": "Διαμόρφωση",
-    "description": "Εκθέτει τις δυνατότητες AI του Cherry Studio μέσω API HTTP συμβατών με OpenAI",
+    "description": "Εκθέτει τις δυνατότητες AI του Modaui Studio μέσω API HTTP συμβατών με OpenAI",
     "documentation": {
       "title": "Τεκμηρίωση API"
     },
@@ -2801,12 +2801,12 @@
       "select_other_provider": "Επιλέξτε Άλλο Πάροχο",
       "setup_hint": "Παρακαλούμε ρυθμίστε τουλάχιστον έναν πάροχο για την καλύτερη εμπειρία",
       "subtitle": "Απολαύστε κορυφαίες υπηρεσίες τεχνητής νοημοσύνης με την CherryIN",
-      "title": "Καλώς ήρθατε στο Cherry Studio"
+      "title": "Καλώς ήρθατε στο Modaui Studio"
     }
   },
   "openclaw": {
     "checking_installation": "Έλεγχος εγκατάστασης του OpenClaw...",
-    "description": "Ενσωματώστε τους παρόχους Cherry Studio με την πύλη OpenClaw για να ενεργοποιήσετε πράκτορες κωδικοποίησης AI όπως το Claude Code, το Qwen-Coder και άλλοι.",
+    "description": "Ενσωματώστε τους παρόχους Modaui Studio με την πύλη OpenClaw για να ενεργοποιήσετε πράκτορες κωδικοποίησης AI όπως το Claude Code, το Qwen-Coder και άλλοι.",
     "error": {
       "select_provider_model": "Παρακαλώ επιλέξτε πρώτα έναν πάροχο και ένα μοντέλο"
     },
@@ -2844,7 +2844,7 @@
       "title": "Διαμόρφωση Μοντέλου"
     },
     "node_missing": {
-      "description": "Το OpenClaw απαιτεί Node.js/npm. Παρακαλώ εγκαταστήστε πρώτα το Node.js και, στη συνέχεια, επανεκκινήστε το Cherry Studio.",
+      "description": "Το OpenClaw απαιτεί Node.js/npm. Παρακαλώ εγκαταστήστε πρώτα το Node.js και, στη συνέχεια, επανεκκινήστε το Modaui Studio.",
       "download_button": "Κατεβάστε το Node.js",
       "hint": "macOS: brew install node | Windows: Κατεβάστε την έκδοση LTS από το nodejs.org",
       "title": "Απαιτείται Node.js"
@@ -2915,7 +2915,7 @@
       "stop": "Διακοπή OVMS",
       "stopping": "Διακοπή σε εξέλιξη"
     },
-    "description": "<div><p>1. Λήψη μοντέλου OV.</p><p>2. Προσθήκη μοντέλου στο 'Manager'.</p><p>Υποστηρίζεται μόνο στα Windows!</p><p>Διαδρομή εγκατάστασης OVMS: '%USERPROFILE%\\.cherrystudio\\ovms' .</p><p>Ανατρέξτε στον <a href=https://github.com/openvinotoolkit/model_server/blob/c55551763d02825829337b62c2dcef9339706f79/docs/deploying_server_baremetal.md>Οδηγό Intel OVMS</a></p></div>",
+    "description": "<div><p>1. Λήψη μοντέλου OV.</p><p>2. Προσθήκη μοντέλου στο 'Manager'.</p><p>Υποστηρίζεται μόνο στα Windows!</p><p>Διαδρομή εγκατάστασης OVMS: '%USERPROFILE%\\.modauistudio\\ovms' .</p><p>Ανατρέξτε στον <a href=https://github.com/openvinotoolkit/model_server/blob/c55551763d02825829337b62c2dcef9339706f79/docs/deploying_server_baremetal.md>Οδηγό Intel OVMS</a></p></div>",
     "download": {
       "button": "Λήψη",
       "error": "Η επιλογή απέτυχε",
@@ -3674,7 +3674,7 @@
           },
           "description": {
             "0": "Το βοήθημα επιλογής λέξεων χρειάζεται «<strong>άδεια πρόσβασης σε δυνατότητες υποστήριξης</strong>» για να λειτουργήσει σωστά.",
-            "1": "Παρακαλούμε κάντε κλικ στο «<strong>Πήγαινε στις ρυθμίσεις</strong>» και, στη συνέχεια, στο παράθυρο αιτήματος αδειών που θα εμφανιστεί, κάντε κλικ στο κουμπί «<strong>Άνοιγμα ρυθμίσεων συστήματος</strong>», βρείτε στη λίστα εφαρμογών που θα ακολουθήσει το «<strong>Cherry Studio</strong>» και ενεργοποιήστε την άδεια.",
+            "1": "Παρακαλούμε κάντε κλικ στο «<strong>Πήγαινε στις ρυθμίσεις</strong>» και, στη συνέχεια, στο παράθυρο αιτήματος αδειών που θα εμφανιστεί, κάντε κλικ στο κουμπί «<strong>Άνοιγμα ρυθμίσεων συστήματος</strong>», βρείτε στη λίστα εφαρμογών που θα ακολουθήσει το «<strong>Modaui Studio</strong>» και ενεργοποιήστε την άδεια.",
             "2": "Μετά την ολοκλήρωση των ρυθμίσεων, ενεργοποιήστε ξανά το βοήθημα επιλογής λέξεων."
           },
           "title": "Άδεια Προσβασιμότητας"
@@ -3686,7 +3686,7 @@
         "title": "Λίστα Εφαρμογών Φιλτραρίσματος",
         "user_tips": {
           "mac": "Παρακαλώ εισαγάγετε το Bundle ID της εφαρμογής, ένα ανά γραμμή, δεν γίνεται διάκριση πεζών/κεφαλαίων, υποστηρίζεται ασαφής αντιστοίχιση. Για παράδειγμα: com.google.Chrome, com.apple.mail κ.λπ.",
-          "windows": "Παρακαλώ εισαγάγετε το όνομα του εκτελέσιμου αρχείου της εφαρμογής, ένα ανά γραμμή, δεν γίνεται διάκριση πεζών/κεφαλαίων, υποστηρίζεται ασαφής αντιστοίχιση. Για παράδειγμα: chrome.exe, weixin.exe, Cherry Studio.exe κ.λπ."
+          "windows": "Παρακαλώ εισαγάγετε το όνομα του εκτελέσιμου αρχείου της εφαρμογής, ένα ανά γραμμή, δεν γίνεται διάκριση πεζών/κεφαλαίων, υποστηρίζεται ασαφής αντιστοίχιση. Για παράδειγμα: chrome.exe, weixin.exe, Modaui Studio.exe κ.λπ."
         }
       },
       "linux": {
@@ -3698,7 +3698,7 @@
         "wayland_checklist_subtitle": "Διασφαλίστε ότι πληρούνται οι ακόλουθες προϋποθέσεις για τη βελτιστοποίηση της εμπειρίας Wayland:",
         "wayland_description": "Βρίσκεστε σε συνεδρία Wayland. Λόγω περιορισμών του συστήματος, η γραμμή εργαλείων ενδέχεται να εμφανίζεται μόνο στο κέντρο της οθόνης αντί να ακολουθεί το επιλεγμένο κείμενο σε ορισμένα περιβάλλοντα επιφάνειας εργασίας. Συνιστάται να μεταβείτε σε συνεδρία X11 για την πλήρη εμπειρία.",
         "wayland_title": "Ειδοποίηση Συνεδρίας Wayland",
-        "xwayland_fail": "Δεν είναι ενεργοποιημένο, παρακαλώ εκκινήστε το Cherry Studio με τη σημαία `--ozone-platform=x11`",
+        "xwayland_fail": "Δεν είναι ενεργοποιημένο, παρακαλώ εκκινήστε το Modaui Studio με τη σημαία `--ozone-platform=x11`",
         "xwayland_label": "Λειτουργία XWayland:",
         "xwayland_pass": "Ενεργοποιημένο"
       },
@@ -3965,7 +3965,7 @@
           "button": "Έναρξη μεταφοράς",
           "connected": "Συνδεδεμένος",
           "connection_failed": "Η σύνδεση απέτυχε",
-          "content": "Βεβαιωθείτε ότι ο υπολογιστής και το κινητό βρίσκονται στο ίδιο δίκτυο για να χρησιμοποιήσετε τη μεταφορά LAN. Ανοίξτε την εφαρμογή Cherry Studio και σαρώστε αυτόν τον κωδικό QR.",
+          "content": "Βεβαιωθείτε ότι ο υπολογιστής και το κινητό βρίσκονται στο ίδιο δίκτυο για να χρησιμοποιήσετε τη μεταφορά LAN. Ανοίξτε την εφαρμογή Modaui Studio και σαρώστε αυτόν τον κωδικό QR.",
           "device_list_title": "Τοπικές συσκευές δικτύου",
           "discovered_devices": "Ανακαλυφθείσες συσκευές",
           "error": {
@@ -3991,14 +3991,14 @@
             "test_message_received": "Λήφθηκε pong από {{device}}",
             "test_message_sent": "Στάλθηκε δοκιμαστικό φορτίο hello world"
           },
-          "idle_hint": "Η σάρωση διακόπηκε. Ξεκινήστε τη σάρωση για να βρείτε ομότιμους του Cherry Studio στο τοπικό σας δίκτυο.",
+          "idle_hint": "Η σάρωση διακόπηκε. Ξεκινήστε τη σάρωση για να βρείτε ομότιμους του Modaui Studio στο τοπικό σας δίκτυο.",
           "ip_addresses": "Διευθύνσεις IP",
           "last_seen": "Τελευταία φορά εθεάθηκε στις {{time}}",
           "metadata": "Μεταδεδομένα",
-          "no_connection_warning": "Παρακαλώ ανοίξτε τη μεταφορά LAN στο Cherry Studio mobile",
+          "no_connection_warning": "Παρακαλώ ανοίξτε τη μεταφορά LAN στο Modaui Studio mobile",
           "no_devices": "Δεν βρέθηκαν ακόμα συσκευές LAN",
           "scan_devices": "Σάρωση συσκευών",
-          "scanning_hint": "Σάρωση του τοπικού σας δικτύου για ομότιμους του Cherry Studio...",
+          "scanning_hint": "Σάρωση του τοπικού σας δικτύου για ομότιμους του Modaui Studio...",
           "send_file": "Αποστολή Αρχείου",
           "status": {
             "completed": "Η μεταφορά ολοκληρώθηκε",
@@ -4348,7 +4348,7 @@
         },
         "root": {
           "label": "Κατάλογος αντιγράφου ασφαλείας (προαιρετικό)",
-          "placeholder": "Π.χ.: /cherry-studio"
+          "placeholder": "Π.χ.: /modaui-studio"
         },
         "secretAccessKey": {
           "label": "Secret Access Key",
@@ -4384,7 +4384,7 @@
           "title": "Έλεγχος Σύνδεσης"
         },
         "root_path": "Κεντρική διαδρομή εγγράφων",
-        "root_path_placeholder": "Παράδειγμα: /CherryStudio",
+        "root_path_placeholder": "Παράδειγμα: /ModauiStudio",
         "title": "Ρυθμίσεις του Siyuan Σημειώσεων",
         "token": {
           "help": "Λήψη από Siyuan Σημειώσεις -> Ρυθμίσεις -> Σχετικά",
@@ -4782,7 +4782,7 @@
       },
       "oauth": {
         "callback": {
-          "message": "Μπορείτε να κλείσετε αυτήν τη σελίδα και να επιστρέψετε στο Cherry Studio",
+          "message": "Μπορείτε να κλείσετε αυτήν τη σελίδα και να επιστρέψετε στο Modaui Studio",
           "title": "Επιτυχής Ταυτοποίηση"
         }
       },

@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, Button, Flex, Tooltip } from '@cherrystudio/ui'
+import { Avatar, AvatarFallback, Button, Flex, Tooltip } from '@modauistudio/ui'
 import ExpandableText from '@renderer/components/ExpandableText'
 import ModelIdWithTags from '@renderer/components/ModelIdWithTags'
 import CustomTag from '@renderer/components/Tags/CustomTag'

@@ -19,7 +19,9 @@ import {
   MousePointerClick,
   NotepadText,
   Palette,
-  Sparkle
+  Sparkle,
+  Store,
+  Wand2
 } from 'lucide-react'
 import type { Ref } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -32,7 +34,7 @@ import { Sidebar as UISidebar } from '../Sidebar'
 import { getSidebarLayout } from '../Sidebar/constants'
 import type { SidebarMenuItem, SidebarMiniApp, SidebarMiniAppTab, SidebarUser } from '../Sidebar/types'
 
-const APP_LOGO = <img src={AppLogo} alt="Cherry Studio" className="h-9 w-9 rounded-lg" draggable={false} />
+const APP_LOGO = <img src={AppLogo} alt="Modaui Studio" className="h-9 w-9 rounded-lg" draggable={false} />
 const noop = () => {}
 
 const routePrefixMap: Record<SidebarIconType, string> = {
@@ -46,7 +48,9 @@ const routePrefixMap: Record<SidebarIconType, string> = {
   files: '/app/files',
   code_tools: '/app/code',
   notes: '/app/notes',
-  openclaw: '/app/openclaw'
+  openclaw: '/app/openclaw',
+  fashion: '/app/fashion',
+  deepay: '/app/deepay'
 }
 
 const iconMap: Record<SidebarIconType, SidebarMenuItem['icon']> = {
@@ -60,7 +64,9 @@ const iconMap: Record<SidebarIconType, SidebarMenuItem['icon']> = {
   files: Folder,
   code_tools: Code,
   notes: NotepadText,
-  openclaw: OpenClawSidebarIcon
+  openclaw: OpenClawSidebarIcon,
+  fashion: Wand2,
+  deepay: Store
 }
 
 function getMenuPath(icon: SidebarIconType, defaultPaintingProvider: string): string {
@@ -194,7 +200,7 @@ export default function Sidebar({ ref }: { ref?: Ref<HTMLDivElement | null> }) {
   const sidebarProps = {
     activeItem,
     items,
-    title: 'Cherry Studio',
+    title: 'Modaui Studio',
     logo: APP_LOGO,
     user: sidebarUser,
     activeTabId: minappShow ? currentMinappId : undefined,

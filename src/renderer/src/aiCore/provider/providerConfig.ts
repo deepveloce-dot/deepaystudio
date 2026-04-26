@@ -1,4 +1,4 @@
-import { formatPrivateKey, hasProviderConfig, type StringKeys } from '@cherrystudio/ai-core/provider'
+import { formatPrivateKey, hasProviderConfig, type StringKeys } from '@modauistudio/ai-core/provider'
 import type { AppProviderId, AppProviderSettingsMap } from '@renderer/aiCore/types'
 import {
   getAwsBedrockAccessKeyId,

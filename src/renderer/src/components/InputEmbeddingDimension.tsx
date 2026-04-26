@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@cherrystudio/ui'
+import { Button, Tooltip } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { RefreshIcon } from '@renderer/components/Icons'
 import { useProvider } from '@renderer/hooks/useProvider'

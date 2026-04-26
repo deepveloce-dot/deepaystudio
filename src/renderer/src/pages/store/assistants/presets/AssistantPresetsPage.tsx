@@ -1,4 +1,4 @@
-import { Button, ColFlex, Flex, RowFlex } from '@cherrystudio/ui'
+import { Button, ColFlex, Flex, RowFlex } from '@modauistudio/ui'
 import { Navbar, NavbarCenter } from '@renderer/components/app/Navbar'
 import ListItem from '@renderer/components/ListItem'
 import Scrollbar from '@renderer/components/Scrollbar'

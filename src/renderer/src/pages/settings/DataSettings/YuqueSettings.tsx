@@ -1,4 +1,4 @@
-import { Button, InfoTooltip, RowFlex } from '@cherrystudio/ui'
+import { Button, InfoTooltip, RowFlex } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { AppLogo } from '@renderer/config/env'
 import { useTheme } from '@renderer/context/ThemeProvider'

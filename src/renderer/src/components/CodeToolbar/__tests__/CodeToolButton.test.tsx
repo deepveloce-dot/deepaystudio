@@ -22,7 +22,7 @@ vi.mock('antd', () => ({
   Dropdown: mocks.Dropdown
 }))
 
-vi.mock('@cherrystudio/ui', () => ({
+vi.mock('@modauistudio/ui', () => ({
   Tooltip: mocks.Tooltip
 }))
 

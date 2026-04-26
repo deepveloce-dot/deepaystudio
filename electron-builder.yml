@@ -1,5 +1,5 @@
-appId: com.kangfenmao.CherryStudio
-productName: Cherry Studio
+appId: com.kangfenmao.ModauiStudio
+productName: Modaui Studio
 electronLanguages:
   - zh-CN
   - zh-TW
@@ -14,9 +14,9 @@ directories:
   buildResources: build
 
 protocols:
-  - name: Cherry Studio
+  - name: Modaui Studio
     schemes:
-      - cherrystudio
+      - modauistudio
 files:
   - "**/*"
   - "!**/{.vscode,.yarn,.yarn-lock,.github,.cursorrules,.prettierrc}"
@@ -78,7 +78,7 @@ extraResources:
   - from: "migrations/sqlite-drizzle"
     to: "migrations/sqlite-drizzle"
 win:
-  executableName: Cherry Studio
+  executableName: Modaui Studio
   artifactName: ${productName}-${version}-${arch}-setup.${ext}
   target:
     - target: nsis
@@ -115,7 +115,7 @@ dmg:
   writeUpdateInfo: false
 linux:
   artifactName: ${productName}-${version}-${arch}.${ext}
-  executableName: CherryStudio
+  executableName: ModauiStudio
   target:
     - target: AppImage
     - target: deb
@@ -124,10 +124,10 @@ linux:
   category: Utility
   desktop:
     entry:
-      Name: Cherry Studio
-      StartupWMClass: CherryStudio
+      Name: Modaui Studio
+      StartupWMClass: ModauiStudio
   mimeTypes:
-    - x-scheme-handler/cherrystudio
+    - x-scheme-handler/modauistudio
 rpm:
   # Workaround for electron build issue on rpm package:
   # https://github.com/electron/forge/issues/3594
@@ -144,7 +144,7 @@ artifactBuildCompleted: scripts/artifact-build-completed.js
 releaseInfo:
   releaseNotes: |
     <!--LANG:en-->
-    Cherry Studio 1.9.2 - Skills Creation & Vietnamese Support
+    Modaui Studio 1.9.2 - Skills Creation & Vietnamese Support
 
     ✨ New Features
     - [Skills] Agents can now author and register new skills directly from chat using the skills tool
@@ -169,7 +169,7 @@ releaseInfo:
     - [Electron] Upgrade to Electron 41.2.1 with improved window resize handling on Windows
 
     <!--LANG:zh-CN-->
-    Cherry Studio 1.9.2 - 技能创作与越南语支持
+    Modaui Studio 1.9.2 - 技能创作与越南语支持
 
     ✨ 新功能
     - [技能] 智能体现在可以直接在对话中通过 skills 工具编写和注册新技能

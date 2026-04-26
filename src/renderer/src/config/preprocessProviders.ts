@@ -1,4 +1,4 @@
-import { Doc2x, Mineru, Mistral, Paddleocr } from '@cherrystudio/ui/icons'
+import { Doc2x, Mineru, Mistral, Paddleocr } from '@modauistudio/ui/icons'
 import type { PreprocessProviderId } from '@renderer/types'
 
 export function getPreprocessProviderLogo(providerId: PreprocessProviderId) {

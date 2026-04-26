@@ -696,7 +696,7 @@
     },
     "authHeaderText": "Использовать в заголовке авторизации:",
     "configuration": "Конфигурация",
-    "description": "Предоставляет возможности ИИ Cherry Studio через HTTP API, совместимые с OpenAI",
+    "description": "Предоставляет возможности ИИ Modaui Studio через HTTP API, совместимые с OpenAI",
     "documentation": {
       "title": "Документация API"
     },
@@ -2801,12 +2801,12 @@
       "select_other_provider": "Выбрать другого поставщика",
       "setup_hint": "Пожалуйста, настройте хотя бы одного поставщика для лучшего опыта",
       "subtitle": "Наслаждайтесь услугами ИИ высшего уровня с CherryIN",
-      "title": "Добро пожаловать в Cherry Studio"
+      "title": "Добро пожаловать в Modaui Studio"
     }
   },
   "openclaw": {
     "checking_installation": "Проверка установки OpenClaw...",
-    "description": "Интегрируйте провайдеров Cherry Studio с шлюзом OpenClaw, чтобы включить агентов кодирования ИИ, таких как Claude Code, Qwen-Coder и другие.",
+    "description": "Интегрируйте провайдеров Modaui Studio с шлюзом OpenClaw, чтобы включить агентов кодирования ИИ, таких как Claude Code, Qwen-Coder и другие.",
     "error": {
       "select_provider_model": "Пожалуйста, сначала выберите поставщика и модель"
     },
@@ -2844,7 +2844,7 @@
       "title": "Конфигурация модели"
     },
     "node_missing": {
-      "description": "OpenClaw требует Node.js/npm. Пожалуйста, сначала установите Node.js, затем перезапустите Cherry Studio.",
+      "description": "OpenClaw требует Node.js/npm. Пожалуйста, сначала установите Node.js, затем перезапустите Modaui Studio.",
       "download_button": "Скачать Node.js",
       "hint": "macOS: brew install node | Windows: Скачайте LTS-версию с nodejs.org",
       "title": "Требуется Node.js"
@@ -2915,7 +2915,7 @@
       "stop": "Остановить OVMS",
       "stopping": "Остановка"
     },
-    "description": "<div><p>1. Загрузите модели OV.</p><p>2. Добавьте модели в 'Менеджер'.</p><p>Поддерживается только Windows!</p><p>Путь установки OVMS: '%USERPROFILE%\\.cherrystudio\\ovms'.</p><p>Пожалуйста, ознакомьтесь с <a href=https://github.com/openvinotoolkit/model_server/blob/c55551763d02825829337b62c2dcef9339706f79/docs/deploying_server_baremetal.md>руководством Intel OVMS</a></p></dev>",
+    "description": "<div><p>1. Загрузите модели OV.</p><p>2. Добавьте модели в 'Менеджер'.</p><p>Поддерживается только Windows!</p><p>Путь установки OVMS: '%USERPROFILE%\\.modauistudio\\ovms'.</p><p>Пожалуйста, ознакомьтесь с <a href=https://github.com/openvinotoolkit/model_server/blob/c55551763d02825829337b62c2dcef9339706f79/docs/deploying_server_baremetal.md>руководством Intel OVMS</a></p></dev>",
     "download": {
       "button": "Скачать",
       "error": "Ошибка загрузки",
@@ -3674,7 +3674,7 @@
           },
           "description": {
             "0": "Помощник выбора требует <strong>Права доступа</strong> для правильной работы.",
-            "1": "Пожалуйста, перейдите в \"<strong>Настройки</strong>\" и нажмите \"<strong>Открыть системные настройки</strong>\" в запросе разрешения, который появится позже. Затем найдите \"<strong>Cherry Studio</strong>\" в списке приложений, который появится позже, и включите переключатель разрешения.",
+            "1": "Пожалуйста, перейдите в \"<strong>Настройки</strong>\" и нажмите \"<strong>Открыть системные настройки</strong>\" в запросе разрешения, который появится позже. Затем найдите \"<strong>Modaui Studio</strong>\" в списке приложений, который появится позже, и включите переключатель разрешения.",
             "2": "После завершения настроек, пожалуйста, перезапустите помощник выбора."
           },
           "title": "Права доступа"
@@ -3698,7 +3698,7 @@
         "wayland_checklist_subtitle": "Убедитесь, что выполнены следующие условия для оптимизации работы с Wayland:",
         "wayland_description": "Вы находитесь в сессии Wayland. Из-за ограничений системы панель инструментов может отображаться только в центре экрана вместо того, чтобы следовать за выделенным текстом в некоторых средах рабочего стола. Рекомендуется переключиться на сессию X11 для полноценного использования.",
         "wayland_title": "Уведомление о сессии Wayland",
-        "xwayland_fail": "Не включено, запустите Cherry Studio с флагом `--ozone-platform=x11`",
+        "xwayland_fail": "Не включено, запустите Modaui Studio с флагом `--ozone-platform=x11`",
         "xwayland_label": "Режим XWayland:",
         "xwayland_pass": "Включено"
       },
@@ -3965,7 +3965,7 @@
           "button": "Начать передачу",
           "connected": "Подключено",
           "connection_failed": "Соединение не удалось",
-          "content": "Убедитесь, что компьютер и телефон подключены к одной сети, чтобы использовать локальную передачу. Откройте приложение Cherry Studio и отсканируйте этот QR-код.",
+          "content": "Убедитесь, что компьютер и телефон подключены к одной сети, чтобы использовать локальную передачу. Откройте приложение Modaui Studio и отсканируйте этот QR-код.",
           "device_list_title": "Устройства локальной сети",
           "discovered_devices": "Обнаруженные устройства",
           "error": {
@@ -3991,14 +3991,14 @@
             "test_message_received": "Получен понг от {{device}}",
             "test_message_sent": "Отправлен тестовый полезный груз \"hello world\""
           },
-          "idle_hint": "Сканирование приостановлено. Начните сканирование, чтобы найти пиры Cherry Studio в вашей локальной сети.",
+          "idle_hint": "Сканирование приостановлено. Начните сканирование, чтобы найти пиры Modaui Studio в вашей локальной сети.",
           "ip_addresses": "IP-адреса",
           "last_seen": "В последний раз был(а) в сети в {{time}}",
           "metadata": "Метаданные",
-          "no_connection_warning": "Пожалуйста, откройте LAN Transfer в мобильном приложении Cherry Studio",
+          "no_connection_warning": "Пожалуйста, откройте LAN Transfer в мобильном приложении Modaui Studio",
           "no_devices": "Пока не найдено участников локальной сети",
           "scan_devices": "Сканировать устройства",
-          "scanning_hint": "Сканирование локальной сети на наличие узлов Cherry Studio...",
+          "scanning_hint": "Сканирование локальной сети на наличие узлов Modaui Studio...",
           "send_file": "Отправить файл",
           "status": {
             "completed": "Перевод завершён",
@@ -4348,7 +4348,7 @@
         },
         "root": {
           "label": "Каталог резервных копий (необязательно)",
-          "placeholder": "например: /cherry-studio"
+          "placeholder": "например: /modaui-studio"
         },
         "secretAccessKey": {
           "label": "Secret Access Key",
@@ -4384,7 +4384,7 @@
           "title": "Проверка соединения"
         },
         "root_path": "Корневой путь документа",
-        "root_path_placeholder": "Например: /CherryStudio",
+        "root_path_placeholder": "Например: /ModauiStudio",
         "title": "Конфигурация SiYuan Note",
         "token": {
           "help": "Получите в SiYuan Note -> Настройки -> О программе",
@@ -4782,7 +4782,7 @@
       },
       "oauth": {
         "callback": {
-          "message": "Вы можете закрыть эту страницу и вернуться в Cherry Studio",
+          "message": "Вы можете закрыть эту страницу и вернуться в Modaui Studio",
           "title": "Аутентификация Успешна"
         }
       },

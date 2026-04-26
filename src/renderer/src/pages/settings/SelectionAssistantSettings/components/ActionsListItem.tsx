@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import type { DraggableProvided } from '@hello-pangea/dnd'
 import type { SelectionActionItem } from '@shared/data/preference/preferenceTypes'
 import { Pencil, Settings2, Trash } from 'lucide-react'

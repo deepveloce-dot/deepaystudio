@@ -1,4 +1,4 @@
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { cn } from '@modauistudio/ui/lib/utils'
 import React from 'react'
 
 export interface BoxProps extends React.ComponentProps<'div'> {}

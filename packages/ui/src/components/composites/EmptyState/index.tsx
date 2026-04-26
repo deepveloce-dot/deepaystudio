@@ -1,5 +1,5 @@
-import { Button } from '@cherrystudio/ui/components/primitives/button'
-import { cn } from '@cherrystudio/ui/lib/utils'
+import { Button } from '@modauistudio/ui/components/primitives/button'
+import { cn } from '@modauistudio/ui/lib/utils'
 import {
   BookOpenCheck,
   Code2,

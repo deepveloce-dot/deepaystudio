@@ -7,7 +7,7 @@
  * TODO: We should separate them clearly. Keep renderer only types in renderer, and main only types in main, and shared types in shared.
  */
 
-import type { StringKeys } from '@cherrystudio/ai-core/provider'
+import type { StringKeys } from '@modauistudio/ai-core/provider'
 
 import type { AppProviderSettingsMap, AppRuntimeConfig } from './merged'
 

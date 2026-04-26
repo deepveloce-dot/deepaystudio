@@ -1,4 +1,4 @@
-import { Button, InfoTooltip, RowFlex, Switch } from '@cherrystudio/ui'
+import { Button, InfoTooltip, RowFlex, Switch } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { Client } from '@notionhq/client'
 import { AppLogo } from '@renderer/config/env'

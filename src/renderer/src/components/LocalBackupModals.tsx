@@ -1,4 +1,4 @@
-import { Button } from '@cherrystudio/ui'
+import { Button } from '@modauistudio/ui'
 import { loggerService } from '@logger'
 import { backupToLocal } from '@renderer/services/BackupService'
 import { Input, Modal } from 'antd'
@@ -66,7 +66,7 @@ export function useLocalBackupModal(localBackupDir: string | undefined) {
     const deviceType = await window.api.system.getDeviceType()
     const hostname = await window.api.system.getHostname()
     const timestamp = dayjs().format('YYYYMMDDHHmmss')
-    const defaultFileName = `cherry-studio.${timestamp}.${hostname}.${deviceType}.zip`
+    const defaultFileName = `modaui-studio.${timestamp}.${hostname}.${deviceType}.zip`
     setCustomFileName(defaultFileName)
     setIsModalVisible(true)
   }, [])

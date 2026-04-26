@@ -1,6 +1,6 @@
 import { RedoOutlined } from '@ant-design/icons'
-import { RowFlex } from '@cherrystudio/ui'
-import { Tooltip } from '@cherrystudio/ui'
+import { RowFlex } from '@modauistudio/ui'
+import { Tooltip } from '@modauistudio/ui'
 import { usePreference } from '@data/hooks/usePreference'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { TRANSLATE_PROMPT } from '@shared/config/prompts'
